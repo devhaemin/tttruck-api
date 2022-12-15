@@ -68,6 +68,10 @@ app.set('views', viewsDir);
 const staticDir = path.join(__dirname, 'public');
 app.use(express.static(staticDir));
 
+// Set api documentation directory (api-doc)
+const apidocDir = path.join(__dirname, '../apidoc');
+app.use(express.static(staticDir));
+
 // Nav to login pg by default
 app.get('/', (_: Request, res: Response) => {
   res.sendFile('login.html', {root: viewsDir});
@@ -81,6 +85,10 @@ app.get('/users', (req: Request, res: Response) => {
   } else {
     res.sendFile('users.html', {root: viewsDir});
   }
+});
+
+app.get('/apidoc', (req: Request, res: Response) => {
+     res.sendFile('index.html', {root: apidocDir});
 });
 
 

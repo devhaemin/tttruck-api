@@ -1,0 +1,7 @@
+{
+  "name": "tttruck-api",
+  "version": "0.1.0",
+  "description": "땡땡 트럭 REST API",
+  "title": "Custom apiDoc browser title",
+  "url" : "http://api.tttruck.co.kr/api/v1"
+}

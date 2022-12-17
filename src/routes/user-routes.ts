@@ -20,7 +20,7 @@ const paths = {
 // **** Functions **** //
 
 /**
- * @api {get} /users Request All User List
+ * @api {get} /users/all Request All User List
  * @apiName GetUser
  * @apiGroup User
  *

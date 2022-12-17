@@ -1,5 +1,5 @@
 import {Sequelize} from 'sequelize';
-import {dbconfig} from '../config/dbconfig'
+import {dbconfig} from '../../config/dbconfig'
 
 // export const sequelize = new Sequelize('typescript_test', 'root','Jaehyeon2!',{
 //     host : 'localhost',

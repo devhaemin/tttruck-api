@@ -5,6 +5,8 @@ import adminMw from './shared/adminMw';
 import User from '@src/models/User';
 import authRoutes from './auth-routes';
 import userRoutes from './user-routes';
+import productRoutes from './product-routes';
+import {tt_product} from "@src/models/init-models";
 
 
 // **** Init **** //
@@ -62,7 +64,33 @@ userRouter.delete(
 // Add userRouter
 apiRouter.use(userRoutes.paths.basePath, adminMw, userRouter);
 
+const productRouter = Router();
 
+// Get all users
+productRouter.get(productRoutes.paths.get, productRoutes.getAll);
+
+// Add one user
+productRouter.post(
+    productRoutes.paths.add,
+    //validate(['product',typeof tt_product]),
+    productRoutes.add,
+);
+
+// Update one user
+productRouter.put(
+    productRoutes.paths.update,
+    validate(['product', typeof tt_product]),
+    productRoutes.update,
+);
+
+// Delete one user
+productRouter.delete(
+    productRoutes.paths.delete,
+    validate(['id', 'number', 'params']),
+    productRoutes.delete,
+);
 // **** Export default **** //
 
+// Add userRouter
+apiRouter.use(productRoutes.paths.basePath, productRouter);
 export default apiRouter;

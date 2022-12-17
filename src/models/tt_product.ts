@@ -7,7 +7,7 @@ import type { tt_user, tt_userId } from './tt_user';
 export interface tt_productAttributes {
   PRODUCT_ID: number;
   SUBJECT: string;
-  'PRIORITY': number;
+  PRIORITY: number;
   PRODUCT_CATEGORY_ID: number;
   PRODUCT_PRICE: number;
   PRODUCT_SIZE: string;
@@ -35,7 +35,7 @@ export type tt_productCreationAttributes = Optional<tt_productAttributes, tt_pro
 export class tt_product extends Model<tt_productAttributes, tt_productCreationAttributes> implements tt_productAttributes {
   PRODUCT_ID!: number;
   SUBJECT!: string;
-  'PRIORITY'!: number;
+  PRIORITY!: number;
   PRODUCT_CATEGORY_ID!: number;
   PRODUCT_PRICE!: number;
   PRODUCT_SIZE!: string;
@@ -98,7 +98,7 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
       allowNull: false,
       comment: "제목"
     },
-    'PRIORITY': {
+    PRIORITY: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 999,

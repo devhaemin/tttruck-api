@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
-import { DataTypes, Model, Optional } from 'sequelize';
-import type { tt_access_log, tt_access_logId } from './tt_access_log';
-import type { tt_authority, tt_authorityId } from './tt_authority';
+import {DataTypes, Model, Optional} from 'sequelize';
+import type {tt_access_log, tt_access_logId} from './tt_access_log';
+import type {tt_authority, tt_authorityId} from './tt_authority';
 
 export interface tt_api_listAttributes {
   API_ID: number;
@@ -16,7 +16,15 @@ export interface tt_api_listAttributes {
 
 export type tt_api_listPk = "API_ID";
 export type tt_api_listId = tt_api_list[tt_api_listPk];
-export type tt_api_listOptionalAttributes = "API_ID" | "API_ROUTES" | "API_AUTHORITY_ID" | "API_NAME" | "API_COMMENT" | "API_PARAMS" | "API_METHOD" | "API_VERSION";
+export type tt_api_listOptionalAttributes =
+  "API_ID"
+  | "API_ROUTES"
+  | "API_AUTHORITY_ID"
+  | "API_NAME"
+  | "API_COMMENT"
+  | "API_PARAMS"
+  | "API_METHOD"
+  | "API_VERSION";
 export type tt_api_listCreationAttributes = Optional<tt_api_listAttributes, tt_api_listOptionalAttributes>;
 
 export class tt_api_list extends Model<tt_api_listAttributes, tt_api_listCreationAttributes> implements tt_api_listAttributes {
@@ -49,73 +57,73 @@ export class tt_api_list extends Model<tt_api_listAttributes, tt_api_listCreatio
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_api_list {
     return tt_api_list.init({
-    API_ID: {
-      autoIncrement: true,
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false,
-      primaryKey: true,
-      comment: "API ID"
-    },
-    API_ROUTES: {
-      type: DataTypes.STRING(100),
-      allowNull: true,
-      comment: "API Routes"
-    },
-    API_AUTHORITY_ID: {
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: true,
-      comment: "API 권한 ID",
-      references: {
-        model: 'tt_authority',
-        key: 'AUTHORITY_ID'
-      }
-    },
-    API_NAME: {
-      type: DataTypes.STRING(100),
-      allowNull: true,
-      comment: "API 이름"
-    },
-    API_COMMENT: {
-      type: DataTypes.STRING(300),
-      allowNull: true,
-      comment: "API 코멘트"
-    },
-    API_PARAMS: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-      comment: "API 피라미터"
-    },
-    API_METHOD: {
-      type: DataTypes.STRING(100),
-      allowNull: true,
-      comment: "API 메소드"
-    },
-    API_VERSION: {
-      type: DataTypes.STRING(100),
-      allowNull: true,
-      comment: "API 버전"
-    }
-  }, {
-    sequelize,
-    tableName: 'tt_api_list',
-    timestamps: false,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "API_ID" },
-        ]
+      API_ID: {
+        autoIncrement: true,
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: false,
+        primaryKey: true,
+        comment: "API ID",
       },
-      {
-        name: "FK_tt_api_list_API_AUTHORITY_ID_tt_authority_AUTHORITY_ID",
-        using: "BTREE",
-        fields: [
-          { name: "API_AUTHORITY_ID" },
-        ]
+      API_ROUTES: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+        comment: "API Routes",
       },
-    ]
-  });
+      API_AUTHORITY_ID: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true,
+        comment: "API 권한 ID",
+        references: {
+          model: 'tt_authority',
+          key: 'AUTHORITY_ID',
+        },
+      },
+      API_NAME: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+        comment: "API 이름",
+      },
+      API_COMMENT: {
+        type: DataTypes.STRING(300),
+        allowNull: true,
+        comment: "API 코멘트",
+      },
+      API_PARAMS: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        comment: "API 피라미터",
+      },
+      API_METHOD: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+        comment: "API 메소드",
+      },
+      API_VERSION: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+        comment: "API 버전",
+      },
+    }, {
+      sequelize,
+      tableName: 'tt_api_list',
+      timestamps: false,
+      indexes: [
+        {
+          name: "PRIMARY",
+          unique: true,
+          using: "BTREE",
+          fields: [
+            {name: "API_ID"},
+          ],
+        },
+        {
+          name: "FK_tt_api_list_API_AUTHORITY_ID_tt_authority_AUTHORITY_ID",
+          using: "BTREE",
+          fields: [
+            {name: "API_AUTHORITY_ID"},
+          ],
+        },
+      ],
+    });
   }
 }

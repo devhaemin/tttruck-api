@@ -1,9 +1,12 @@
 import * as Sequelize from 'sequelize';
-import { DataTypes, Model, Optional } from 'sequelize';
-import type { tt_content, tt_contentId } from './tt_content';
-import type { tt_file_download_log, tt_file_download_logId } from './tt_file_download_log';
-import type { tt_notice_image, tt_notice_imageId } from './tt_notice_image';
-import type { tt_product_image, tt_product_imageId } from './tt_product_image';
+import {DataTypes, Model, Optional} from 'sequelize';
+import type {tt_content, tt_contentId} from './tt_content';
+import type {
+  tt_file_download_log,
+  tt_file_download_logId,
+} from './tt_file_download_log';
+import type {tt_notice_image, tt_notice_imageId} from './tt_notice_image';
+import type {tt_product_image, tt_product_imageId} from './tt_product_image';
 
 export interface tt_fileAttributes {
   FILE_ID: number;
@@ -17,11 +20,22 @@ export interface tt_fileAttributes {
   FILE_URL?: string;
   THUMB_PATH?: string;
   FILE_TYPE?: string;
+  UPLOAD_TIME?: Date;
 }
 
 export type tt_filePk = "FILE_ID";
 export type tt_fileId = tt_file[tt_filePk];
-export type tt_fileOptionalAttributes = "CONTENT_TYPE" | "FILE_NAME" | "FILE_PATH" | "FILE_SIZE" | "ORG_FILE_SEQ" | "FILE_DOWNLOAD_COUNT" | "FILE_URL" | "THUMB_PATH" | "FILE_TYPE";
+export type tt_fileOptionalAttributes =
+  "CONTENT_TYPE"
+  | "FILE_NAME"
+  | "FILE_PATH"
+  | "FILE_SIZE"
+  | "ORG_FILE_SEQ"
+  | "FILE_DOWNLOAD_COUNT"
+  | "FILE_URL"
+  | "THUMB_PATH"
+  | "FILE_TYPE"
+  | "UPLOAD_TIME";
 export type tt_fileCreationAttributes = Optional<tt_fileAttributes, tt_fileOptionalAttributes>;
 
 export class tt_file extends Model<tt_fileAttributes, tt_fileCreationAttributes> implements tt_fileAttributes {
@@ -36,6 +50,7 @@ export class tt_file extends Model<tt_fileAttributes, tt_fileCreationAttributes>
   FILE_URL?: string;
   THUMB_PATH?: string;
   FILE_TYPE?: string;
+  UPLOAD_TIME?: Date;
 
   // tt_file belongsTo tt_content via CONTENT_ID
   CONTENT!: tt_content;
@@ -81,88 +96,93 @@ export class tt_file extends Model<tt_fileAttributes, tt_fileCreationAttributes>
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_file {
     return tt_file.init({
-    FILE_ID: {
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false,
-      primaryKey: true,
-      comment: "파일 ID"
-    },
-    CONTENT_ID: {
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false,
-      comment: "컨텐츠 ID",
-      references: {
-        model: 'tt_content',
-        key: 'CONTENT_ID'
-      }
-    },
-    CONTENT_TYPE: {
-      type: DataTypes.STRING(20),
-      allowNull: true,
-      comment: "컨텐츠 타입"
-    },
-    FILE_NAME: {
-      type: DataTypes.STRING(800),
-      allowNull: true,
-      comment: "첨부파일명"
-    },
-    FILE_PATH: {
-      type: DataTypes.STRING(800),
-      allowNull: true,
-      comment: "첨부파일 경로"
-    },
-    FILE_SIZE: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      comment: "첨부파일 크기"
-    },
-    ORG_FILE_SEQ: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      comment: "기존 파일 시퀀스"
-    },
-    FILE_DOWNLOAD_COUNT: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-      comment: "다운로드 횟수"
-    },
-    FILE_URL: {
-      type: DataTypes.STRING(500),
-      allowNull: true,
-      comment: "다운로드 URL"
-    },
-    THUMB_PATH: {
-      type: DataTypes.STRING(800),
-      allowNull: true,
-      comment: "썸네일 경로"
-    },
-    FILE_TYPE: {
-      type: DataTypes.STRING(20),
-      allowNull: true,
-      comment: "파일 타입"
-    }
-  }, {
-    sequelize,
-    tableName: 'tt_file',
-    timestamps: false,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "FILE_ID" },
-        ]
+      FILE_ID: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: false,
+        primaryKey: true,
+        comment: "파일 ID",
       },
-      {
-        name: "FK_tt_file_CONTENT_ID_tt_content_CONTENT_ID",
-        using: "BTREE",
-        fields: [
-          { name: "CONTENT_ID" },
-        ]
+      CONTENT_ID: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: false,
+        comment: "컨텐츠 ID",
+        references: {
+          model: 'tt_content',
+          key: 'CONTENT_ID',
+        },
       },
-    ]
-  });
+      CONTENT_TYPE: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+        comment: "컨텐츠 타입",
+      },
+      FILE_NAME: {
+        type: DataTypes.STRING(800),
+        allowNull: true,
+        comment: "첨부파일명",
+      },
+      FILE_PATH: {
+        type: DataTypes.STRING(800),
+        allowNull: true,
+        comment: "첨부파일 경로",
+      },
+      FILE_SIZE: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        comment: "첨부파일 크기",
+      },
+      ORG_FILE_SEQ: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        comment: "기존 파일 시퀀스",
+      },
+      FILE_DOWNLOAD_COUNT: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+        comment: "다운로드 횟수",
+      },
+      FILE_URL: {
+        type: DataTypes.STRING(500),
+        allowNull: true,
+        comment: "다운로드 URL",
+      },
+      THUMB_PATH: {
+        type: DataTypes.STRING(800),
+        allowNull: true,
+        comment: "썸네일 경로",
+      },
+      FILE_TYPE: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+        comment: "파일 타입",
+      },
+      UPLOAD_TIME: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
+      },
+    }, {
+      sequelize,
+      tableName: 'tt_file',
+      timestamps: false,
+      indexes: [
+        {
+          name: "PRIMARY",
+          unique: true,
+          using: "BTREE",
+          fields: [
+            {name: "FILE_ID"},
+          ],
+        },
+        {
+          name: "FK_tt_file_CONTENT_ID_tt_content_CONTENT_ID",
+          using: "BTREE",
+          fields: [
+            {name: "CONTENT_ID"},
+          ],
+        },
+      ],
+    });
   }
 }

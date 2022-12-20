@@ -1,4 +1,4 @@
-import { TAll } from 'jet-validator';
+import {TAll} from 'jet-validator';
 
 
 // **** Variables **** //

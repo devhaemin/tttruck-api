@@ -1,10 +1,10 @@
 import * as Sequelize from 'sequelize';
-import { DataTypes, Model, Optional } from 'sequelize';
-import type { tt_file, tt_fileId } from './tt_file';
-import type { tt_notice, tt_noticeId } from './tt_notice';
-import type { tt_notice_image, tt_notice_imageId } from './tt_notice_image';
-import type { tt_product_image, tt_product_imageId } from './tt_product_image';
-import type { tt_view_log, tt_view_logId } from './tt_view_log';
+import {DataTypes, Model, Optional} from 'sequelize';
+import type {tt_file, tt_fileId} from './tt_file';
+import type {tt_notice, tt_noticeId} from './tt_notice';
+import type {tt_notice_image, tt_notice_imageId} from './tt_notice_image';
+import type {tt_product_image, tt_product_imageId} from './tt_product_image';
+import type {tt_view_log, tt_view_logId} from './tt_view_log';
 
 export interface tt_contentAttributes {
   CONTENT_ID: number;
@@ -83,32 +83,32 @@ export class tt_content extends Model<tt_contentAttributes, tt_contentCreationAt
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_content {
     return tt_content.init({
-    CONTENT_ID: {
-      autoIncrement: true,
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false,
-      primaryKey: true,
-      comment: "컨텐츠 ID"
-    },
-    CONTENT_TYPE: {
-      type: DataTypes.STRING(20),
-      allowNull: true,
-      comment: "컨텐츠 타입"
-    }
-  }, {
-    sequelize,
-    tableName: 'tt_content',
-    timestamps: false,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "CONTENT_ID" },
-        ]
+      CONTENT_ID: {
+        autoIncrement: true,
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: false,
+        primaryKey: true,
+        comment: "컨텐츠 ID",
       },
-    ]
-  });
+      CONTENT_TYPE: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+        comment: "컨텐츠 타입",
+      },
+    }, {
+      sequelize,
+      tableName: 'tt_content',
+      timestamps: false,
+      indexes: [
+        {
+          name: "PRIMARY",
+          unique: true,
+          using: "BTREE",
+          fields: [
+            {name: "CONTENT_ID"},
+          ],
+        },
+      ],
+    });
   }
 }

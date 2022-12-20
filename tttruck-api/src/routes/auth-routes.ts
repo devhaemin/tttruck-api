@@ -2,7 +2,7 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 
 import authService from '@src/services/auth-service';
 import EnvVars from '@src/declarations/major/EnvVars';
-import { IReq, IRes } from './shared/types';
+import {IReq, IRes} from './shared/types';
 
 
 // **** Variables **** //

@@ -1,7 +1,7 @@
 import * as e from 'express';
 import { Query } from 'express-serve-static-core';
 
-import { ISessionUser } from '@src/routes/shared/adminMw';
+import {tt_user} from "@src/models/tt_user";
 
 
 // **** Express **** //
@@ -17,6 +17,6 @@ export interface IReqQuery<T extends Query, U = void> extends e.Request {
 
 export interface IRes extends e.Response {
   locals: {
-    sessionUser: ISessionUser;
+    user:tt_user;
   };
 }

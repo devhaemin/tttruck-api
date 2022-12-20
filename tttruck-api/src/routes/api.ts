@@ -1,10 +1,7 @@
-import { Router } from 'express';
+import {Router} from 'express';
 import jetValidator from 'jet-validator';
 
-import adminMw from './shared/adminMw';
-import User from '@src/models/User';
-import authRoutes from './auth-routes';
-import userRoutes from './user-routes';
+import {normalUserMw} from './shared/userCheckMw';
 import productRoutes from './product-routes';
 import {tt_product} from "@src/models/init-models";
 
@@ -12,18 +9,18 @@ import {tt_product} from "@src/models/init-models";
 // **** Init **** //
 
 const apiRouter = Router(),
-    validate = jetValidator();
+  validate = jetValidator();
 
 
 // **** Setup auth routes **** //
 
 const authRouter = Router();
-
+/*
 // Login user
 authRouter.post(
-    authRoutes.paths.login,
-    validate('email', 'password'),
-    authRoutes.login,
+  authRoutes.paths.login,
+  validate('email', 'password'),
+  authRoutes.login,
 );
 
 // Logout user
@@ -38,56 +35,70 @@ apiRouter.use(authRoutes.paths.basePath, authRouter);
 const userRouter = Router();
 
 // Get all users
-userRouter.get(userRoutes.paths.get, userRoutes.getAll);
+userRouter.get(userRoutes.paths.get, adminMw ,userRoutes.getAll);
 
 // Add one user
 userRouter.post(
-    userRoutes.paths.add,
-    validate(['user', User.instanceOf]),
-    userRoutes.add,
+  userRoutes.paths.add,
+  adminMw,
+  validate(['user', User.instanceOf]),
+  userRoutes.add,
 );
 
 // Update one user
 userRouter.put(
-    userRoutes.paths.update,
-    validate(['user', User.instanceOf]),
-    userRoutes.update,
+  userRoutes.paths.update,
+  adminMw,
+  validate(['user', User.instanceOf]),
+  userRoutes.update,
 );
 
 // Delete one user
 userRouter.delete(
-    userRoutes.paths.delete,
-    validate(['id', 'number', 'params']),
-    userRoutes.delete,
+  userRoutes.paths.delete,
+  adminMw,
+  validate(['id', 'number', 'params']),
+  userRoutes.delete,
 );
 
 // Add userRouter
-apiRouter.use(userRoutes.paths.basePath,  userRouter);
-
+apiRouter.use(userRoutes.paths.basePath,
+  adminMw,
+  userRouter);
+*/
 const productRouter = Router();
 
-// Get all users
-productRouter.get(productRoutes.paths.get, productRoutes.getAll);
+// Get all products
+productRouter.get(productRoutes.paths.getAll, productRoutes.getAll);
 
-// Add one user
+// Get products by category
+productRouter.get(productRoutes.paths.getByCategory, productRoutes.getByCategory);
+
+// Get product by ID
+productRouter.get(productRoutes.paths.getById, productRoutes.getById);
+
+// Add a product
 productRouter.post(
-    productRoutes.paths.add,
-    //validate(['product',typeof tt_product]),
-    productRoutes.add,
+  productRoutes.paths.add,
+  validate(['product', typeof tt_product]),
+  normalUserMw,
+  productRoutes.add,
 );
 
-// Update one user
+// Update a product
 productRouter.put(
-    productRoutes.paths.update,
-    validate(['product', typeof tt_product]),
-    productRoutes.update,
+  productRoutes.paths.update,
+  validate(['product', typeof tt_product]),
+  normalUserMw,
+  productRoutes.update,
 );
 
 // Delete one user
 productRouter.delete(
-    productRoutes.paths.delete,
-    validate(['id', 'number', 'params']),
-    productRoutes.delete,
+  productRoutes.paths.delete,
+  validate(['id', 'number', 'params']),
+  normalUserMw,
+  productRoutes.delete,
 );
 // **** Export default **** //
 

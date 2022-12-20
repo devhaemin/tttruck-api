@@ -1,30 +1,38 @@
 import * as Sequelize from 'sequelize';
-import { DataTypes, Model, Optional } from 'sequelize';
-import type { tt_access_log, tt_access_logId } from './tt_access_log';
-import type { tt_authority, tt_authorityId } from './tt_authority';
-import type { tt_file_download_log, tt_file_download_logId } from './tt_file_download_log';
-import type { tt_login_log, tt_login_logId } from './tt_login_log';
-import type { tt_nickname_log, tt_nickname_logId } from './tt_nickname_log';
-import type { tt_notice, tt_noticeId } from './tt_notice';
-import type { tt_notice_master, tt_notice_masterId } from './tt_notice_master';
-import type { tt_product, tt_productId } from './tt_product';
-import type { tt_product_trade_log, tt_product_trade_logId } from './tt_product_trade_log';
-import type { tt_sns_auth, tt_sns_authId } from './tt_sns_auth';
-import type { tt_view_log, tt_view_logId } from './tt_view_log';
+import {DataTypes, Model, Optional} from 'sequelize';
+import type {tt_access_log, tt_access_logId} from './tt_access_log';
+import type {
+  tt_file_download_log,
+  tt_file_download_logId,
+} from './tt_file_download_log';
+import type {tt_login_log, tt_login_logId} from './tt_login_log';
+import type {tt_nickname_log, tt_nickname_logId} from './tt_nickname_log';
+import type {tt_notice, tt_noticeId} from './tt_notice';
+import type {tt_notice_master, tt_notice_masterId} from './tt_notice_master';
+import type {tt_product, tt_productId} from './tt_product';
+import type {
+  tt_product_category,
+  tt_product_categoryId,
+} from './tt_product_category';
+import type {
+  tt_product_trade_log,
+  tt_product_trade_logId,
+} from './tt_product_trade_log';
+import type {tt_sns_auth, tt_sns_authId} from './tt_sns_auth';
+import type {tt_view_log, tt_view_logId} from './tt_view_log';
 
 export interface tt_userAttributes {
   USER_ID: number;
-  USERNAME: string;
+  PHONE: string;
   PASSWORD: string;
+  NICKNAME?: string;
+  NAME: string;
   ACCESSTOKEN: string;
   WASTE_SAVINGS: number;
-  GROUP: string;
-  NAME: string;
+  GROUP: number;
   PROFILE_IMAGE?: string;
   INTERIOR_COMPANY_TF: string;
   INTERIOR_COMPANY_NAME?: string;
-  NICKNAME?: string;
-  PHONE_NUMBER: string;
   BIRTHDAY?: string;
   GENDER?: number;
   ZIP_CODE?: string;
@@ -37,31 +45,53 @@ export interface tt_userAttributes {
   PHONE_AUTH_DATE?: Date;
   PHONE_AUTH_SUCCEED_DATE?: Date;
   PHONE_AUTH_TF: string;
-  REG_DATE?: Date;
-  UPD_DATE?: Date;
-  JOIN_DATE?: Date;
+  REG_TIME?: Date;
+  UPD_TIME?: Date;
+  JOIN_TIME?: Date;
   JOIN_PERMIT_USER_ID?: number;
   JOIN_AGREE?: string;
 }
 
 export type tt_userPk = "USER_ID";
 export type tt_userId = tt_user[tt_userPk];
-export type tt_userOptionalAttributes = "USER_ID" | "WASTE_SAVINGS" | "PROFILE_IMAGE" | "INTERIOR_COMPANY_TF" | "INTERIOR_COMPANY_NAME" | "NICKNAME" | "BIRTHDAY" | "GENDER" | "ZIP_CODE" | "ADDRESS" | "DETAIL_ADDRESS" | "JOIN_STATE" | "RESTING_TF" | "LEAVE_TF" | "PHONE_AUTH_CODE" | "PHONE_AUTH_DATE" | "PHONE_AUTH_SUCCEED_DATE" | "PHONE_AUTH_TF" | "REG_DATE" | "UPD_DATE" | "JOIN_DATE" | "JOIN_PERMIT_USER_ID" | "JOIN_AGREE";
+export type tt_userOptionalAttributes =
+  "USER_ID"
+  | "NICKNAME"
+  | "WASTE_SAVINGS"
+  | "PROFILE_IMAGE"
+  | "INTERIOR_COMPANY_TF"
+  | "INTERIOR_COMPANY_NAME"
+  | "BIRTHDAY"
+  | "GENDER"
+  | "ZIP_CODE"
+  | "ADDRESS"
+  | "DETAIL_ADDRESS"
+  | "JOIN_STATE"
+  | "RESTING_TF"
+  | "LEAVE_TF"
+  | "PHONE_AUTH_CODE"
+  | "PHONE_AUTH_DATE"
+  | "PHONE_AUTH_SUCCEED_DATE"
+  | "PHONE_AUTH_TF"
+  | "REG_TIME"
+  | "UPD_TIME"
+  | "JOIN_TIME"
+  | "JOIN_PERMIT_USER_ID"
+  | "JOIN_AGREE";
 export type tt_userCreationAttributes = Optional<tt_userAttributes, tt_userOptionalAttributes>;
 
 export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes> implements tt_userAttributes {
   USER_ID!: number;
-  USERNAME!: string;
+  PHONE!: string;
   PASSWORD!: string;
+  NICKNAME?: string;
+  NAME!: string;
   ACCESSTOKEN!: string;
   WASTE_SAVINGS!: number;
-  GROUP!: string;
-  NAME!: string;
+  GROUP!: number;
   PROFILE_IMAGE?: string;
   INTERIOR_COMPANY_TF!: string;
   INTERIOR_COMPANY_NAME?: string;
-  NICKNAME?: string;
-  PHONE_NUMBER!: string;
   BIRTHDAY?: string;
   GENDER?: number;
   ZIP_CODE?: string;
@@ -74,9 +104,9 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   PHONE_AUTH_DATE?: Date;
   PHONE_AUTH_SUCCEED_DATE?: Date;
   PHONE_AUTH_TF!: string;
-  REG_DATE?: Date;
-  UPD_DATE?: Date;
-  JOIN_DATE?: Date;
+  REG_TIME?: Date;
+  UPD_TIME?: Date;
+  JOIN_TIME?: Date;
   JOIN_PERMIT_USER_ID?: number;
   JOIN_AGREE?: string;
 
@@ -92,30 +122,6 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   hasTt_access_log!: Sequelize.HasManyHasAssociationMixin<tt_access_log, tt_access_logId>;
   hasTt_access_logs!: Sequelize.HasManyHasAssociationsMixin<tt_access_log, tt_access_logId>;
   countTt_access_logs!: Sequelize.HasManyCountAssociationsMixin;
-  // tt_user hasMany tt_authority via REG_USER_ID
-  tt_authorities!: tt_authority[];
-  getTt_authorities!: Sequelize.HasManyGetAssociationsMixin<tt_authority>;
-  setTt_authorities!: Sequelize.HasManySetAssociationsMixin<tt_authority, tt_authorityId>;
-  addTt_authority!: Sequelize.HasManyAddAssociationMixin<tt_authority, tt_authorityId>;
-  addTt_authorities!: Sequelize.HasManyAddAssociationsMixin<tt_authority, tt_authorityId>;
-  createTt_authority!: Sequelize.HasManyCreateAssociationMixin<tt_authority>;
-  removeTt_authority!: Sequelize.HasManyRemoveAssociationMixin<tt_authority, tt_authorityId>;
-  removeTt_authorities!: Sequelize.HasManyRemoveAssociationsMixin<tt_authority, tt_authorityId>;
-  hasTt_authority!: Sequelize.HasManyHasAssociationMixin<tt_authority, tt_authorityId>;
-  hasTt_authorities!: Sequelize.HasManyHasAssociationsMixin<tt_authority, tt_authorityId>;
-  countTt_authorities!: Sequelize.HasManyCountAssociationsMixin;
-  // tt_user hasMany tt_authority via UPD_USER_ID
-  UPD_USER_tt_authorities!: tt_authority[];
-  getUPD_USER_tt_authorities!: Sequelize.HasManyGetAssociationsMixin<tt_authority>;
-  setUPD_USER_tt_authorities!: Sequelize.HasManySetAssociationsMixin<tt_authority, tt_authorityId>;
-  addUPD_USER_tt_authority!: Sequelize.HasManyAddAssociationMixin<tt_authority, tt_authorityId>;
-  addUPD_USER_tt_authorities!: Sequelize.HasManyAddAssociationsMixin<tt_authority, tt_authorityId>;
-  createUPD_USER_tt_authority!: Sequelize.HasManyCreateAssociationMixin<tt_authority>;
-  removeUPD_USER_tt_authority!: Sequelize.HasManyRemoveAssociationMixin<tt_authority, tt_authorityId>;
-  removeUPD_USER_tt_authorities!: Sequelize.HasManyRemoveAssociationsMixin<tt_authority, tt_authorityId>;
-  hasUPD_USER_tt_authority!: Sequelize.HasManyHasAssociationMixin<tt_authority, tt_authorityId>;
-  hasUPD_USER_tt_authorities!: Sequelize.HasManyHasAssociationsMixin<tt_authority, tt_authorityId>;
-  countUPD_USER_tt_authorities!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user hasMany tt_file_download_log via USER_ID
   tt_file_download_logs!: tt_file_download_log[];
   getTt_file_download_logs!: Sequelize.HasManyGetAssociationsMixin<tt_file_download_log>;
@@ -212,6 +218,30 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   hasTt_product!: Sequelize.HasManyHasAssociationMixin<tt_product, tt_productId>;
   hasTt_products!: Sequelize.HasManyHasAssociationsMixin<tt_product, tt_productId>;
   countTt_products!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_product_category via UPDATE_USER_ID
+  tt_product_categories!: tt_product_category[];
+  getTt_product_categories!: Sequelize.HasManyGetAssociationsMixin<tt_product_category>;
+  setTt_product_categories!: Sequelize.HasManySetAssociationsMixin<tt_product_category, tt_product_categoryId>;
+  addTt_product_category!: Sequelize.HasManyAddAssociationMixin<tt_product_category, tt_product_categoryId>;
+  addTt_product_categories!: Sequelize.HasManyAddAssociationsMixin<tt_product_category, tt_product_categoryId>;
+  createTt_product_category!: Sequelize.HasManyCreateAssociationMixin<tt_product_category>;
+  removeTt_product_category!: Sequelize.HasManyRemoveAssociationMixin<tt_product_category, tt_product_categoryId>;
+  removeTt_product_categories!: Sequelize.HasManyRemoveAssociationsMixin<tt_product_category, tt_product_categoryId>;
+  hasTt_product_category!: Sequelize.HasManyHasAssociationMixin<tt_product_category, tt_product_categoryId>;
+  hasTt_product_categories!: Sequelize.HasManyHasAssociationsMixin<tt_product_category, tt_product_categoryId>;
+  countTt_product_categories!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_product_category via CREATE_USER_ID
+  CREATE_USER_tt_product_categories!: tt_product_category[];
+  getCREATE_USER_tt_product_categories!: Sequelize.HasManyGetAssociationsMixin<tt_product_category>;
+  setCREATE_USER_tt_product_categories!: Sequelize.HasManySetAssociationsMixin<tt_product_category, tt_product_categoryId>;
+  addCREATE_USER_tt_product_category!: Sequelize.HasManyAddAssociationMixin<tt_product_category, tt_product_categoryId>;
+  addCREATE_USER_tt_product_categories!: Sequelize.HasManyAddAssociationsMixin<tt_product_category, tt_product_categoryId>;
+  createCREATE_USER_tt_product_category!: Sequelize.HasManyCreateAssociationMixin<tt_product_category>;
+  removeCREATE_USER_tt_product_category!: Sequelize.HasManyRemoveAssociationMixin<tt_product_category, tt_product_categoryId>;
+  removeCREATE_USER_tt_product_categories!: Sequelize.HasManyRemoveAssociationsMixin<tt_product_category, tt_product_categoryId>;
+  hasCREATE_USER_tt_product_category!: Sequelize.HasManyHasAssociationMixin<tt_product_category, tt_product_categoryId>;
+  hasCREATE_USER_tt_product_categories!: Sequelize.HasManyHasAssociationsMixin<tt_product_category, tt_product_categoryId>;
+  countCREATE_USER_tt_product_categories!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user hasMany tt_product_trade_log via SELLER_USER_ID
   tt_product_trade_logs!: tt_product_trade_log[];
   getTt_product_trade_logs!: Sequelize.HasManyGetAssociationsMixin<tt_product_trade_log>;
@@ -268,185 +298,190 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_user {
     return tt_user.init({
-    USER_ID: {
-      autoIncrement: true,
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false,
-      primaryKey: true,
-      comment: "유저 ID"
-    },
-    USERNAME: {
-      type: DataTypes.STRING(128),
-      allowNull: false,
-      comment: "아이디(이메일)"
-    },
-    PASSWORD: {
-      type: DataTypes.STRING(500),
-      allowNull: false,
-      comment: "패스워드"
-    },
-    ACCESSTOKEN: {
-      type: DataTypes.STRING(500),
-      allowNull: false,
-      comment: "접근 토큰"
-    },
-    WASTE_SAVINGS: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      defaultValue: 0,
-      comment: "폐기절감량"
-    },
-    GROUP: {
-      type: DataTypes.STRING(5),
-      allowNull: false,
-      comment: "사용자 그룹 (01: 일반, 99:관리자)"
-    },
-    NAME: {
-      type: DataTypes.STRING(300),
-      allowNull: false,
-      comment: "이름"
-    },
-    PROFILE_IMAGE: {
-      type: DataTypes.STRING(300),
-      allowNull: true,
-      comment: "프로필 이미지"
-    },
-    INTERIOR_COMPANY_TF: {
-      type: DataTypes.STRING(1),
-      allowNull: false,
-      defaultValue: "F",
-      comment: "인테리어 회사 소속 여부"
-    },
-    INTERIOR_COMPANY_NAME: {
-      type: DataTypes.STRING(100),
-      allowNull: true,
-      comment: "인테리어 회사 이름 (NULL :무소속)"
-    },
-    NICKNAME: {
-      type: DataTypes.STRING(30),
-      allowNull: true,
-      comment: "닉네임"
-    },
-    PHONE_NUMBER: {
-      type: DataTypes.STRING(20),
-      allowNull: false,
-      comment: "전화번호"
-    },
-    BIRTHDAY: {
-      type: DataTypes.STRING(10),
-      allowNull: true,
-      comment: "생일 (YYYYMMDD)"
-    },
-    GENDER: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      comment: "성별 (남 : 0 ; 여 : 1, etc : 9)"
-    },
-    ZIP_CODE: {
-      type: DataTypes.STRING(100),
-      allowNull: true,
-      comment: "우편번호"
-    },
-    ADDRESS: {
-      type: DataTypes.STRING(200),
-      allowNull: true,
-      comment: "주소"
-    },
-    DETAIL_ADDRESS: {
-      type: DataTypes.STRING(200),
-      allowNull: true,
-      comment: "상세 주소"
-    },
-    JOIN_STATE: {
-      type: DataTypes.STRING(5),
-      allowNull: true,
-      comment: "가입 상태 (01:승인대기, 02:승인거부, 03:관리자승인대기, 04:완료)"
-    },
-    RESTING_TF: {
-      type: DataTypes.STRING(1),
-      allowNull: false,
-      defaultValue: "F",
-      comment: "휴면 여부"
-    },
-    LEAVE_TF: {
-      type: DataTypes.STRING(1),
-      allowNull: false,
-      defaultValue: "F",
-      comment: "탈퇴 여부"
-    },
-    PHONE_AUTH_CODE: {
-      type: DataTypes.STRING(6),
-      allowNull: true,
-      comment: "휴대폰 인증코드"
-    },
-    PHONE_AUTH_DATE: {
-      type: DataTypes.DATE,
-      allowNull: true,
-      comment: "휴대폰 인증유효 시간"
-    },
-    PHONE_AUTH_SUCCEED_DATE: {
-      type: DataTypes.DATE,
-      allowNull: true,
-      comment: "휴대폰 인증 완료 시간"
-    },
-    PHONE_AUTH_TF: {
-      type: DataTypes.STRING(1),
-      allowNull: false,
-      defaultValue: "F",
-      comment: "휴대폰 인증 여부"
-    },
-    REG_DATE: {
-      type: DataTypes.DATE,
-      allowNull: true,
-      defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
-      comment: "가입일"
-    },
-    UPD_DATE: {
-      type: DataTypes.DATE,
-      allowNull: true,
-      defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
-      comment: "수정일"
-    },
-    JOIN_DATE: {
-      type: DataTypes.DATE,
-      allowNull: true,
-      comment: "가입 승인 날짜"
-    },
-    JOIN_PERMIT_USER_ID: {
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: true,
-      comment: "가입 승인해준 USER_ID",
-      references: {
-        model: 'tt_user',
-        key: 'USER_ID'
-      }
-    },
-    JOIN_AGREE: {
-      type: DataTypes.STRING(10),
-      allowNull: true,
-      comment: "가입 약관 동의 여부(0: 개인정보 수집 및 이용동의 1: 개인정보 수집 목적 내 제3자 제공 동의 2: 14세 미만 법정 대리인 동의)"
-    }
-  }, {
-    sequelize,
-    tableName: 'tt_user',
-    timestamps: false,
-    indexes: [
-      {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "USER_ID" },
-        ]
+      USER_ID: {
+        autoIncrement: true,
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: false,
+        primaryKey: true,
+        comment: "유저 ID",
       },
-      {
-        name: "FK_tt_user_JOIN_PERMIT_USER_ID_tt_user_USER_ID",
-        using: "BTREE",
-        fields: [
-          { name: "JOIN_PERMIT_USER_ID" },
-        ]
+      PHONE: {
+        type: DataTypes.STRING(20),
+        allowNull: false,
+        comment: "전화번호",
+        unique: "tt_user_unique_key",
       },
-    ]
-  });
+      PASSWORD: {
+        type: DataTypes.STRING(500),
+        allowNull: false,
+        comment: "패스워드",
+      },
+      NICKNAME: {
+        type: DataTypes.STRING(30),
+        allowNull: true,
+        comment: "닉네임",
+      },
+      NAME: {
+        type: DataTypes.STRING(300),
+        allowNull: false,
+        comment: "이름",
+      },
+      ACCESSTOKEN: {
+        type: DataTypes.STRING(500),
+        allowNull: false,
+        comment: "접근 토큰",
+      },
+      WASTE_SAVINGS: {
+        type: DataTypes.BIGINT,
+        allowNull: false,
+        defaultValue: 0,
+        comment: "폐기절감량",
+      },
+      GROUP: {
+        type: DataTypes.BIGINT,
+        allowNull: false,
+        comment: "사용자 그룹 (01: 일반, 99:관리자)",
+      },
+      PROFILE_IMAGE: {
+        type: DataTypes.STRING(300),
+        allowNull: true,
+        comment: "프로필 이미지",
+      },
+      INTERIOR_COMPANY_TF: {
+        type: DataTypes.STRING(1),
+        allowNull: false,
+        defaultValue: "F",
+        comment: "인테리어 회사 소속 여부",
+      },
+      INTERIOR_COMPANY_NAME: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+        comment: "인테리어 회사 이름 (NULL :무소속)",
+      },
+      BIRTHDAY: {
+        type: DataTypes.STRING(30),
+        allowNull: true,
+        comment: "생일 (YYYYMMDD)",
+      },
+      GENDER: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        comment: "성별 (남 : 0 ; 여 : 1, etc : 9)",
+      },
+      ZIP_CODE: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+        comment: "우편번호",
+      },
+      ADDRESS: {
+        type: DataTypes.STRING(200),
+        allowNull: true,
+        comment: "주소",
+      },
+      DETAIL_ADDRESS: {
+        type: DataTypes.STRING(200),
+        allowNull: true,
+        comment: "상세 주소",
+      },
+      JOIN_STATE: {
+        type: DataTypes.STRING(5),
+        allowNull: true,
+        comment: "가입 상태 (01:승인대기, 02:승인거부, 03:관리자승인대기, 04:완료)",
+      },
+      RESTING_TF: {
+        type: DataTypes.STRING(1),
+        allowNull: false,
+        defaultValue: "F",
+        comment: "휴면 여부",
+      },
+      LEAVE_TF: {
+        type: DataTypes.STRING(1),
+        allowNull: false,
+        defaultValue: "F",
+        comment: "탈퇴 여부",
+      },
+      PHONE_AUTH_CODE: {
+        type: DataTypes.STRING(6),
+        allowNull: true,
+        comment: "휴대폰 인증코드",
+      },
+      PHONE_AUTH_DATE: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        comment: "휴대폰 인증유효 시간",
+      },
+      PHONE_AUTH_SUCCEED_DATE: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        comment: "휴대폰 인증 완료 시간",
+      },
+      PHONE_AUTH_TF: {
+        type: DataTypes.STRING(1),
+        allowNull: false,
+        defaultValue: "F",
+        comment: "휴대폰 인증 여부",
+      },
+      REG_TIME: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
+        comment: "가입일",
+      },
+      UPD_TIME: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
+        comment: "수정일",
+      },
+      JOIN_TIME: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
+        comment: "가입 승인 날짜",
+      },
+      JOIN_PERMIT_USER_ID: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        allowNull: true,
+        comment: "가입 승인해준 USER_ID",
+        references: {
+          model: 'tt_user',
+          key: 'USER_ID',
+        },
+      },
+      JOIN_AGREE: {
+        type: DataTypes.STRING(10),
+        allowNull: true,
+        comment: "가입 약관 동의 여부(0: 개인정보 수집 및 이용동의 1: 개인정보 수집 목적 내 제3자 제공 동의 2: 14세 미만 법정 대리인 동의)",
+      },
+    }, {
+      sequelize,
+      tableName: 'tt_user',
+      timestamps: false,
+      indexes: [
+        {
+          name: "PRIMARY",
+          unique: true,
+          using: "BTREE",
+          fields: [
+            {name: "USER_ID"},
+          ],
+        },
+        {
+          name: "tt_user_unique_key",
+          unique: true,
+          using: "BTREE",
+          fields: [
+            {name: "PHONE"},
+          ],
+        },
+        {
+          name: "FK_tt_user_JOIN_PERMIT_USER_ID_tt_user_USER_ID",
+          using: "BTREE",
+          fields: [
+            {name: "JOIN_PERMIT_USER_ID"},
+          ],
+        },
+      ],
+    });
   }
 }

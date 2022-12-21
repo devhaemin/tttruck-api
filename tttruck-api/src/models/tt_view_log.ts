@@ -99,17 +99,17 @@ export class tt_view_log extends Model<tt_view_logAttributes, tt_view_logCreatio
         ]
       },
       {
-        name: "FK_tt_view_log_USER_ID_tt_user_USER_ID",
-        using: "BTREE",
-        fields: [
-          { name: "USER_ID" },
-        ]
-      },
-      {
         name: "FK_tt_view_log_CONTENT_ID_tt_content_CONTENT_ID",
         using: "BTREE",
         fields: [
           { name: "CONTENT_ID" },
+        ]
+      },
+      {
+        name: "FK_tt_view_log_USER_ID_tt_user_USER_ID",
+        using: "BTREE",
+        fields: [
+          { name: "USER_ID" },
         ]
       },
     ]

@@ -167,6 +167,13 @@ export class tt_product_trade_log extends Model<tt_product_trade_logAttributes, 
         ]
       },
       {
+        name: "FK_tt_product_trade_log_BUYER_USER_ID_tt_user_USER_ID",
+        using: "BTREE",
+        fields: [
+          { name: "BUYER_USER_ID" },
+        ]
+      },
+      {
         name: "FK_tt_product_trade_log_PRODUCT_ID_tt_product_PRODUCT_ID",
         using: "BTREE",
         fields: [
@@ -178,13 +185,6 @@ export class tt_product_trade_log extends Model<tt_product_trade_logAttributes, 
         using: "BTREE",
         fields: [
           { name: "SELLER_USER_ID" },
-        ]
-      },
-      {
-        name: "FK_tt_product_trade_log_BUYER_USER_ID_tt_user_USER_ID",
-        using: "BTREE",
-        fields: [
-          { name: "BUYER_USER_ID" },
         ]
       },
     ]

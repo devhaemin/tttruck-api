@@ -148,17 +148,17 @@ export class tt_product_category extends Model<tt_product_categoryAttributes, tt
         ]
       },
       {
-        name: "FK_tt_product_category_UPDATE_USER_ID_tt_user_USER_ID",
-        using: "BTREE",
-        fields: [
-          { name: "UPDATE_USER_ID" },
-        ]
-      },
-      {
         name: "FK_tt_product_category_CREATE_USER_ID_tt_user_USER_ID",
         using: "BTREE",
         fields: [
           { name: "CREATE_USER_ID" },
+        ]
+      },
+      {
+        name: "FK_tt_product_category_UPDATE_USER_ID_tt_user_USER_ID",
+        using: "BTREE",
+        fields: [
+          { name: "UPDATE_USER_ID" },
         ]
       },
     ]

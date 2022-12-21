@@ -136,10 +136,10 @@ export class tt_product_image extends Model<tt_product_imageAttributes, tt_produ
         ]
       },
       {
-        name: "FK_tt_product_image_PRODUCT_ID_tt_product_update_log_PRODUCT_ID",
+        name: "FK_tt_product_image_CONTENT_ID_tt_content_CONTENT_ID",
         using: "BTREE",
         fields: [
-          { name: "PRODUCT_ID" },
+          { name: "CONTENT_ID" },
         ]
       },
       {
@@ -150,10 +150,10 @@ export class tt_product_image extends Model<tt_product_imageAttributes, tt_produ
         ]
       },
       {
-        name: "FK_tt_product_image_CONTENT_ID_tt_content_CONTENT_ID",
+        name: "FK_tt_product_image_PRODUCT_ID_tt_product_update_log_PRODUCT_ID",
         using: "BTREE",
         fields: [
-          { name: "CONTENT_ID" },
+          { name: "PRODUCT_ID" },
         ]
       },
     ]

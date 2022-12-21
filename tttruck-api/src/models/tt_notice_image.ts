@@ -126,17 +126,17 @@ export class tt_notice_image extends Model<tt_notice_imageAttributes, tt_notice_
         ]
       },
       {
-        name: "FK_tt_notice_image_FILE_ID_tt_file_FILE_ID",
-        using: "BTREE",
-        fields: [
-          { name: "FILE_ID" },
-        ]
-      },
-      {
         name: "FK_tt_notice_image_CONTENT_ID_tt_content_CONTENT_ID",
         using: "BTREE",
         fields: [
           { name: "CONTENT_ID" },
+        ]
+      },
+      {
+        name: "FK_tt_notice_image_FILE_ID_tt_file_FILE_ID",
+        using: "BTREE",
+        fields: [
+          { name: "FILE_ID" },
         ]
       },
     ]

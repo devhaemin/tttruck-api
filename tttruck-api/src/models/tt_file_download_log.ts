@@ -106,17 +106,17 @@ export class tt_file_download_log extends Model<tt_file_download_logAttributes, 
         ]
       },
       {
-        name: "FK_tt_file_download_log_USER_ID_tt_user_USER_ID",
-        using: "BTREE",
-        fields: [
-          { name: "USER_ID" },
-        ]
-      },
-      {
         name: "FK_tt_file_download_log_FILE_ID_tt_file_FILE_ID",
         using: "BTREE",
         fields: [
           { name: "FILE_ID" },
+        ]
+      },
+      {
+        name: "FK_tt_file_download_log_USER_ID_tt_user_USER_ID",
+        using: "BTREE",
+        fields: [
+          { name: "USER_ID" },
         ]
       },
     ]

@@ -369,7 +369,7 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
       comment: "탈퇴 여부"
     },
     PHONE_AUTH_CODE: {
-      type: DataTypes.STRING(6),
+      type: DataTypes.STRING(10),
       allowNull: true,
       comment: "휴대폰 인증코드"
     },

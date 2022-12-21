@@ -4,8 +4,9 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import {RouteError} from '@src/declarations/classes';
 import {tick} from '@src/declarations/functions';
 import {tt_user} from "@src/models/tt_user";
-import {tt_phone_auth, tt_phone_authPk} from "@src/models/tt_phone_auth";
-import {sendPhoneAuthSMS, sendSMS} from "@src/util/sms-util";
+import {tt_phone_auth} from "@src/models/tt_phone_auth";
+import {sendPhoneAuthSMS} from "@src/util/sms-util";
+import logger from "jet-logger";
 
 
 // **** Variables **** //
@@ -20,9 +21,9 @@ export const errors = {
 
 
 // **** Functions **** //
-//ncp:push:kr:298309687059:tttruck
 async function setPhoneAuth(code:string, phone:string): Promise<tt_phone_auth>{
-  //await sendPhoneAuthSMS(code, phone);
+  const sendSMS = await sendPhoneAuthSMS(code, phone);
+  logger.info(sendSMS);
   return tt_phone_auth.create({PHONE_AUTH_CODE : code, PHONE : phone});
 }
 async function addNormalUser(user:tt_user): Promise<tt_user>{
@@ -36,7 +37,13 @@ async function addNormalUser(user:tt_user): Promise<tt_user>{
       "code required not found",
     );
   }
-  if( !phoneAuth ||
+  if(!phoneAuth || phoneAuth.EXPIRED_TIME < new Date()){
+    throw new RouteError(
+      HttpStatusCodes.UNAUTHORIZED,
+      "인증 코드가 만료되었습니다.",
+    )
+  }
+  if(
     user.PHONE_AUTH_CODE !== phoneAuth.PHONE_AUTH_CODE){
     throw new RouteError(
       HttpStatusCodes.UNAUTHORIZED,
@@ -44,6 +51,11 @@ async function addNormalUser(user:tt_user): Promise<tt_user>{
     );
   }
   user.PHONE_AUTH_TF = 'T';
+  user.GROUP = 0;
+  user.ACCESSTOKEN = await jwtUtil.sign({
+    phone: user.PHONE,
+    password: user.PASSWORD,
+  });
   phoneAuth.update({PHONE_AUTH_TF : 'T'});
   return tt_user.create(user);
 }

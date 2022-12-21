@@ -20,3 +20,4 @@ export interface IRes extends e.Response {
     user:tt_user;
   };
 }
+

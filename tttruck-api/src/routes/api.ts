@@ -23,6 +23,23 @@ authRouter.post(
   validate('phone', 'password'),
   authRoutes.login,
 );
+authRouter.post(
+  authRoutes.paths.signup,
+  validate("phone",
+    "password",
+    "nickname",
+    "interior_company_tf",
+    "interior_company_name",
+    "birthday",
+    "gender",
+    "zip_code"),
+  authRoutes.signup,
+);
+authRouter.post(
+  authRoutes.paths.phoneRequestAuth,
+  validate('phone'),
+  authRoutes.phoneRequestAuth,
+);
 
 // Logout user
 authRouter.get(authRoutes.paths.logout, authRoutes.logout);

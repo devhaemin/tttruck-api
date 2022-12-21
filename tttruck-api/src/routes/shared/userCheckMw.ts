@@ -62,6 +62,32 @@ export async function adminMw(
       .json({error: userUnauthErr});
   }
 }
+export async function noPhoneUserMw(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+)
+{
+  const userToken = req.headers['authorization'];
+  if (!userToken) {
+    return res
+      .status(HttpStatusCodes.UNAUTHORIZED)
+      .json({error: jwtNotPresentErr});
+  }
+  const clientData = await tt_user.findAll({where : {ACCESSTOKEN : userToken}});
+  if (
+    clientData &&
+    (clientData[0].GROUP >= tt_user_group.NORMAL)
+  ) {
+    res.locals.user = clientData;
+    return next();
+    // Return an unauth error if user is not an admin
+  } else {
+    return res
+      .status(HttpStatusCodes.UNAUTHORIZED)
+      .json({error: userUnauthErr});
+  }
+}
 export async function normalUserMw(
   req: Request,
   res: Response,
@@ -77,7 +103,8 @@ export async function normalUserMw(
   const clientData = await tt_user.findAll({where : {ACCESSTOKEN : userToken}});
   if (
     clientData &&
-    (clientData[0].GROUP >= tt_user_group.NORMAL)
+    (clientData[0].GROUP >= tt_user_group.NORMAL) &&
+    clientData[0].PHONE_AUTH_TF === 'T'
   ) {
     res.locals.user = clientData;
     return next();

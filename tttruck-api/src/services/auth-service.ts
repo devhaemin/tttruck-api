@@ -4,7 +4,8 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import {RouteError} from '@src/declarations/classes';
 import {tick} from '@src/declarations/functions';
 import {tt_user} from "@src/models/tt_user";
-import logger from "jet-logger";
+import {tt_phone_auth, tt_phone_authPk} from "@src/models/tt_phone_auth";
+import {sendPhoneAuthSMS, sendSMS} from "@src/util/sms-util";
 
 
 // **** Variables **** //
@@ -12,12 +13,40 @@ import logger from "jet-logger";
 // Errors
 export const errors = {
   unauth: 'Unauthorized',
+  notCorrectCode: (code: string) => `Code "${code}" not correct`,
   phoneNotFound: (phone: string) => `User with phone "${phone}" not found`,
+  tokenNotFound: (token: string) => `User with phone "${token}" not found`,
 } as const;
 
 
 // **** Functions **** //
-
+//ncp:push:kr:298309687059:tttruck
+async function setPhoneAuth(code:string, phone:string): Promise<tt_phone_auth>{
+  //await sendPhoneAuthSMS(code, phone);
+  return tt_phone_auth.create({PHONE_AUTH_CODE : code, PHONE : phone});
+}
+async function addNormalUser(user:tt_user): Promise<tt_user>{
+  const phoneAuth = await tt_phone_auth.findOne({
+    where:{$PHONE$:user.PHONE},
+    order:[['AUTH_ID','DESC']],
+  });
+  if(!user.PHONE_AUTH_CODE){
+    throw new RouteError(
+      HttpStatusCodes.BAD_REQUEST,
+      "code required not found",
+    );
+  }
+  if( !phoneAuth ||
+    user.PHONE_AUTH_CODE !== phoneAuth.PHONE_AUTH_CODE){
+    throw new RouteError(
+      HttpStatusCodes.UNAUTHORIZED,
+      errors.notCorrectCode(user.PHONE_AUTH_CODE),
+    );
+  }
+  user.PHONE_AUTH_TF = 'T';
+  phoneAuth.update({PHONE_AUTH_TF : 'T'});
+  return tt_user.create(user);
+}
 /**
  * Login a user.
  */
@@ -54,5 +83,7 @@ async function getJwtUser(phone: string, password: string): Promise<tt_user> {
 // **** Export default **** //
 
 export default {
+  addNormalUser,
+  setPhoneAuth,
   getJwtUser,
 } as const;

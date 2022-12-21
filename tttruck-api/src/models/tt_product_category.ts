@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
-import {DataTypes, Model, Optional} from 'sequelize';
-import type {tt_product, tt_productId} from './tt_product';
-import type {tt_user, tt_userId} from './tt_user';
+import { DataTypes, Model, Optional } from 'sequelize';
+import type { tt_product, tt_productId } from './tt_product';
+import type { tt_user, tt_userId } from './tt_user';
 
 export interface tt_product_categoryAttributes {
   PRODUCT_CATEGORY_ID: number;
@@ -20,19 +20,7 @@ export interface tt_product_categoryAttributes {
 
 export type tt_product_categoryPk = "PRODUCT_CATEGORY_ID";
 export type tt_product_categoryId = tt_product_category[tt_product_categoryPk];
-export type tt_product_categoryOptionalAttributes =
-  "PRODUCT_CATEGORY_ID"
-  | "PRODUCT_CATEGORY_NAME"
-  | "PRODUCT_CATEGORY_PRIORITY"
-  | "VISIBLE_TF"
-  | "UPDATE_USER_ID"
-  | "UPDATE_USER_IPv4"
-  | "UPDATE_USER_IPv6"
-  | "UPDATE_TIME"
-  | "CREATE_USER_ID"
-  | "CREATE_USER_IPv4"
-  | "CREATE_USER_IPv6"
-  | "CREATE_TIME";
+export type tt_product_categoryOptionalAttributes = "PRODUCT_CATEGORY_ID" | "PRODUCT_CATEGORY_NAME" | "PRODUCT_CATEGORY_PRIORITY" | "VISIBLE_TF" | "UPDATE_USER_ID" | "UPDATE_USER_IPv4" | "UPDATE_USER_IPv6" | "UPDATE_TIME" | "CREATE_USER_ID" | "CREATE_USER_IPv4" | "CREATE_USER_IPv6" | "CREATE_TIME";
 export type tt_product_categoryCreationAttributes = Optional<tt_product_categoryAttributes, tt_product_categoryOptionalAttributes>;
 
 export class tt_product_category extends Model<tt_product_categoryAttributes, tt_product_categoryCreationAttributes> implements tt_product_categoryAttributes {
@@ -74,106 +62,106 @@ export class tt_product_category extends Model<tt_product_categoryAttributes, tt
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_product_category {
     return tt_product_category.init({
-      PRODUCT_CATEGORY_ID: {
-        autoIncrement: true,
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: false,
-        primaryKey: true,
-        comment: "상품 카테고리 ID",
+    PRODUCT_CATEGORY_ID: {
+      autoIncrement: true,
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false,
+      primaryKey: true,
+      comment: "상품 카테고리 ID"
+    },
+    PRODUCT_CATEGORY_NAME: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+      comment: "카테고리명"
+    },
+    PRODUCT_CATEGORY_PRIORITY: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      comment: "카테고리 우선순위"
+    },
+    VISIBLE_TF: {
+      type: DataTypes.STRING(1),
+      allowNull: true,
+      comment: "카테고리 노출 여부"
+    },
+    UPDATE_USER_ID: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: true,
+      comment: "수정 사용자 ID",
+      references: {
+        model: 'tt_user',
+        key: 'USER_ID'
+      }
+    },
+    UPDATE_USER_IPv4: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+      comment: "수정 사용자 IPv4"
+    },
+    UPDATE_USER_IPv6: {
+      type: DataTypes.BLOB,
+      allowNull: true,
+      comment: "수정 사용자 IPv6"
+    },
+    UPDATE_TIME: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
+      comment: "수정일"
+    },
+    CREATE_USER_ID: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: true,
+      comment: "생성 사용자 ID",
+      references: {
+        model: 'tt_user',
+        key: 'USER_ID'
+      }
+    },
+    CREATE_USER_IPv4: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+      comment: "생성 사용자 IPv4"
+    },
+    CREATE_USER_IPv6: {
+      type: DataTypes.BLOB,
+      allowNull: true,
+      comment: "생성 사용자 IPv6"
+    },
+    CREATE_TIME: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
+      comment: "생성일"
+    }
+  }, {
+    sequelize,
+    tableName: 'tt_product_category',
+    timestamps: false,
+    indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "PRODUCT_CATEGORY_ID" },
+        ]
       },
-      PRODUCT_CATEGORY_NAME: {
-        type: DataTypes.STRING(100),
-        allowNull: true,
-        comment: "카테고리명",
+      {
+        name: "FK_tt_product_category_UPDATE_USER_ID_tt_user_USER_ID",
+        using: "BTREE",
+        fields: [
+          { name: "UPDATE_USER_ID" },
+        ]
       },
-      PRODUCT_CATEGORY_PRIORITY: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        comment: "카테고리 우선순위",
+      {
+        name: "FK_tt_product_category_CREATE_USER_ID_tt_user_USER_ID",
+        using: "BTREE",
+        fields: [
+          { name: "CREATE_USER_ID" },
+        ]
       },
-      VISIBLE_TF: {
-        type: DataTypes.STRING(1),
-        allowNull: true,
-        comment: "카테고리 노출 여부",
-      },
-      UPDATE_USER_ID: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: true,
-        comment: "수정 사용자 ID",
-        references: {
-          model: 'tt_user',
-          key: 'USER_ID',
-        },
-      },
-      UPDATE_USER_IPv4: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: true,
-        comment: "수정 사용자 IPv4",
-      },
-      UPDATE_USER_IPv6: {
-        type: DataTypes.BLOB,
-        allowNull: true,
-        comment: "수정 사용자 IPv6",
-      },
-      UPDATE_TIME: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
-        comment: "수정일",
-      },
-      CREATE_USER_ID: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: true,
-        comment: "생성 사용자 ID",
-        references: {
-          model: 'tt_user',
-          key: 'USER_ID',
-        },
-      },
-      CREATE_USER_IPv4: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: true,
-        comment: "생성 사용자 IPv4",
-      },
-      CREATE_USER_IPv6: {
-        type: DataTypes.BLOB,
-        allowNull: true,
-        comment: "생성 사용자 IPv6",
-      },
-      CREATE_TIME: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
-        comment: "생성일",
-      },
-    }, {
-      sequelize,
-      tableName: 'tt_product_category',
-      timestamps: false,
-      indexes: [
-        {
-          name: "PRIMARY",
-          unique: true,
-          using: "BTREE",
-          fields: [
-            {name: "PRODUCT_CATEGORY_ID"},
-          ],
-        },
-        {
-          name: "FK_tt_product_category_UPDATE_USER_ID_tt_user_USER_ID",
-          using: "BTREE",
-          fields: [
-            {name: "UPDATE_USER_ID"},
-          ],
-        },
-        {
-          name: "FK_tt_product_category_CREATE_USER_ID_tt_user_USER_ID",
-          using: "BTREE",
-          fields: [
-            {name: "CREATE_USER_ID"},
-          ],
-        },
-      ],
-    });
+    ]
+  });
   }
 }

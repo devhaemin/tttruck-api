@@ -1,25 +1,16 @@
 import * as Sequelize from 'sequelize';
-import {DataTypes, Model, Optional} from 'sequelize';
-import type {tt_access_log, tt_access_logId} from './tt_access_log';
-import type {
-  tt_file_download_log,
-  tt_file_download_logId,
-} from './tt_file_download_log';
-import type {tt_login_log, tt_login_logId} from './tt_login_log';
-import type {tt_nickname_log, tt_nickname_logId} from './tt_nickname_log';
-import type {tt_notice, tt_noticeId} from './tt_notice';
-import type {tt_notice_master, tt_notice_masterId} from './tt_notice_master';
-import type {tt_product, tt_productId} from './tt_product';
-import type {
-  tt_product_category,
-  tt_product_categoryId,
-} from './tt_product_category';
-import type {
-  tt_product_trade_log,
-  tt_product_trade_logId,
-} from './tt_product_trade_log';
-import type {tt_sns_auth, tt_sns_authId} from './tt_sns_auth';
-import type {tt_view_log, tt_view_logId} from './tt_view_log';
+import { DataTypes, Model, Optional } from 'sequelize';
+import type { tt_access_log, tt_access_logId } from './tt_access_log';
+import type { tt_file_download_log, tt_file_download_logId } from './tt_file_download_log';
+import type { tt_login_log, tt_login_logId } from './tt_login_log';
+import type { tt_nickname_log, tt_nickname_logId } from './tt_nickname_log';
+import type { tt_notice, tt_noticeId } from './tt_notice';
+import type { tt_notice_master, tt_notice_masterId } from './tt_notice_master';
+import type { tt_product, tt_productId } from './tt_product';
+import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
+import type { tt_product_trade_log, tt_product_trade_logId } from './tt_product_trade_log';
+import type { tt_sns_auth, tt_sns_authId } from './tt_sns_auth';
+import type { tt_view_log, tt_view_logId } from './tt_view_log';
 
 export interface tt_userAttributes {
   USER_ID: number;
@@ -54,30 +45,7 @@ export interface tt_userAttributes {
 
 export type tt_userPk = "USER_ID";
 export type tt_userId = tt_user[tt_userPk];
-export type tt_userOptionalAttributes =
-  "USER_ID"
-  | "NICKNAME"
-  | "WASTE_SAVINGS"
-  | "PROFILE_IMAGE"
-  | "INTERIOR_COMPANY_TF"
-  | "INTERIOR_COMPANY_NAME"
-  | "BIRTHDAY"
-  | "GENDER"
-  | "ZIP_CODE"
-  | "ADDRESS"
-  | "DETAIL_ADDRESS"
-  | "JOIN_STATE"
-  | "RESTING_TF"
-  | "LEAVE_TF"
-  | "PHONE_AUTH_CODE"
-  | "PHONE_AUTH_DATE"
-  | "PHONE_AUTH_SUCCEED_DATE"
-  | "PHONE_AUTH_TF"
-  | "REG_TIME"
-  | "UPD_TIME"
-  | "JOIN_TIME"
-  | "JOIN_PERMIT_USER_ID"
-  | "JOIN_AGREE";
+export type tt_userOptionalAttributes = "USER_ID" | "NICKNAME" | "WASTE_SAVINGS" | "PROFILE_IMAGE" | "INTERIOR_COMPANY_TF" | "INTERIOR_COMPANY_NAME" | "BIRTHDAY" | "GENDER" | "ZIP_CODE" | "ADDRESS" | "DETAIL_ADDRESS" | "JOIN_STATE" | "RESTING_TF" | "LEAVE_TF" | "PHONE_AUTH_CODE" | "PHONE_AUTH_DATE" | "PHONE_AUTH_SUCCEED_DATE" | "PHONE_AUTH_TF" | "REG_TIME" | "UPD_TIME" | "JOIN_TIME" | "JOIN_PERMIT_USER_ID" | "JOIN_AGREE";
 export type tt_userCreationAttributes = Optional<tt_userAttributes, tt_userOptionalAttributes>;
 
 export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes> implements tt_userAttributes {
@@ -298,190 +266,190 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_user {
     return tt_user.init({
-      USER_ID: {
-        autoIncrement: true,
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: false,
-        primaryKey: true,
-        comment: "유저 ID",
+    USER_ID: {
+      autoIncrement: true,
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false,
+      primaryKey: true,
+      comment: "유저 ID"
+    },
+    PHONE: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+      comment: "전화번호",
+      unique: "tt_user_unique_key"
+    },
+    PASSWORD: {
+      type: DataTypes.STRING(500),
+      allowNull: false,
+      comment: "패스워드"
+    },
+    NICKNAME: {
+      type: DataTypes.STRING(30),
+      allowNull: true,
+      comment: "닉네임"
+    },
+    NAME: {
+      type: DataTypes.STRING(300),
+      allowNull: false,
+      comment: "이름"
+    },
+    ACCESSTOKEN: {
+      type: DataTypes.STRING(500),
+      allowNull: false,
+      comment: "접근 토큰"
+    },
+    WASTE_SAVINGS: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      defaultValue: 0,
+      comment: "폐기절감량"
+    },
+    GROUP: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      comment: "사용자 그룹 (01: 일반, 99:관리자)"
+    },
+    PROFILE_IMAGE: {
+      type: DataTypes.STRING(300),
+      allowNull: true,
+      comment: "프로필 이미지"
+    },
+    INTERIOR_COMPANY_TF: {
+      type: DataTypes.STRING(1),
+      allowNull: false,
+      defaultValue: "F",
+      comment: "인테리어 회사 소속 여부"
+    },
+    INTERIOR_COMPANY_NAME: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+      comment: "인테리어 회사 이름 (NULL :무소속)"
+    },
+    BIRTHDAY: {
+      type: DataTypes.STRING(30),
+      allowNull: true,
+      comment: "생일 (YYYYMMDD)"
+    },
+    GENDER: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      comment: "성별 (남 : 0 ; 여 : 1, etc : 9)"
+    },
+    ZIP_CODE: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+      comment: "우편번호"
+    },
+    ADDRESS: {
+      type: DataTypes.STRING(200),
+      allowNull: true,
+      comment: "주소"
+    },
+    DETAIL_ADDRESS: {
+      type: DataTypes.STRING(200),
+      allowNull: true,
+      comment: "상세 주소"
+    },
+    JOIN_STATE: {
+      type: DataTypes.STRING(5),
+      allowNull: true,
+      comment: "가입 상태 (01:승인대기, 02:승인거부, 03:관리자승인대기, 04:완료)"
+    },
+    RESTING_TF: {
+      type: DataTypes.STRING(1),
+      allowNull: false,
+      defaultValue: "F",
+      comment: "휴면 여부"
+    },
+    LEAVE_TF: {
+      type: DataTypes.STRING(1),
+      allowNull: false,
+      defaultValue: "F",
+      comment: "탈퇴 여부"
+    },
+    PHONE_AUTH_CODE: {
+      type: DataTypes.STRING(6),
+      allowNull: true,
+      comment: "휴대폰 인증코드"
+    },
+    PHONE_AUTH_DATE: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      comment: "휴대폰 인증유효 시간"
+    },
+    PHONE_AUTH_SUCCEED_DATE: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      comment: "휴대폰 인증 완료 시간"
+    },
+    PHONE_AUTH_TF: {
+      type: DataTypes.STRING(1),
+      allowNull: false,
+      defaultValue: "F",
+      comment: "휴대폰 인증 여부"
+    },
+    REG_TIME: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
+      comment: "가입일"
+    },
+    UPD_TIME: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
+      comment: "수정일"
+    },
+    JOIN_TIME: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
+      comment: "가입 승인 날짜"
+    },
+    JOIN_PERMIT_USER_ID: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: true,
+      comment: "가입 승인해준 USER_ID",
+      references: {
+        model: 'tt_user',
+        key: 'USER_ID'
+      }
+    },
+    JOIN_AGREE: {
+      type: DataTypes.STRING(10),
+      allowNull: true,
+      comment: "가입 약관 동의 여부(0: 개인정보 수집 및 이용동의 1: 개인정보 수집 목적 내 제3자 제공 동의 2: 14세 미만 법정 대리인 동의)"
+    }
+  }, {
+    sequelize,
+    tableName: 'tt_user',
+    timestamps: false,
+    indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "USER_ID" },
+        ]
       },
-      PHONE: {
-        type: DataTypes.STRING(20),
-        allowNull: false,
-        comment: "전화번호",
-        unique: "tt_user_unique_key",
+      {
+        name: "tt_user_unique_key",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "PHONE" },
+        ]
       },
-      PASSWORD: {
-        type: DataTypes.STRING(500),
-        allowNull: false,
-        comment: "패스워드",
+      {
+        name: "FK_tt_user_JOIN_PERMIT_USER_ID_tt_user_USER_ID",
+        using: "BTREE",
+        fields: [
+          { name: "JOIN_PERMIT_USER_ID" },
+        ]
       },
-      NICKNAME: {
-        type: DataTypes.STRING(30),
-        allowNull: true,
-        comment: "닉네임",
-      },
-      NAME: {
-        type: DataTypes.STRING(300),
-        allowNull: false,
-        comment: "이름",
-      },
-      ACCESSTOKEN: {
-        type: DataTypes.STRING(500),
-        allowNull: false,
-        comment: "접근 토큰",
-      },
-      WASTE_SAVINGS: {
-        type: DataTypes.BIGINT,
-        allowNull: false,
-        defaultValue: 0,
-        comment: "폐기절감량",
-      },
-      GROUP: {
-        type: DataTypes.BIGINT,
-        allowNull: false,
-        comment: "사용자 그룹 (01: 일반, 99:관리자)",
-      },
-      PROFILE_IMAGE: {
-        type: DataTypes.STRING(300),
-        allowNull: true,
-        comment: "프로필 이미지",
-      },
-      INTERIOR_COMPANY_TF: {
-        type: DataTypes.STRING(1),
-        allowNull: false,
-        defaultValue: "F",
-        comment: "인테리어 회사 소속 여부",
-      },
-      INTERIOR_COMPANY_NAME: {
-        type: DataTypes.STRING(100),
-        allowNull: true,
-        comment: "인테리어 회사 이름 (NULL :무소속)",
-      },
-      BIRTHDAY: {
-        type: DataTypes.STRING(30),
-        allowNull: true,
-        comment: "생일 (YYYYMMDD)",
-      },
-      GENDER: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        comment: "성별 (남 : 0 ; 여 : 1, etc : 9)",
-      },
-      ZIP_CODE: {
-        type: DataTypes.STRING(100),
-        allowNull: true,
-        comment: "우편번호",
-      },
-      ADDRESS: {
-        type: DataTypes.STRING(200),
-        allowNull: true,
-        comment: "주소",
-      },
-      DETAIL_ADDRESS: {
-        type: DataTypes.STRING(200),
-        allowNull: true,
-        comment: "상세 주소",
-      },
-      JOIN_STATE: {
-        type: DataTypes.STRING(5),
-        allowNull: true,
-        comment: "가입 상태 (01:승인대기, 02:승인거부, 03:관리자승인대기, 04:완료)",
-      },
-      RESTING_TF: {
-        type: DataTypes.STRING(1),
-        allowNull: false,
-        defaultValue: "F",
-        comment: "휴면 여부",
-      },
-      LEAVE_TF: {
-        type: DataTypes.STRING(1),
-        allowNull: false,
-        defaultValue: "F",
-        comment: "탈퇴 여부",
-      },
-      PHONE_AUTH_CODE: {
-        type: DataTypes.STRING(6),
-        allowNull: true,
-        comment: "휴대폰 인증코드",
-      },
-      PHONE_AUTH_DATE: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        comment: "휴대폰 인증유효 시간",
-      },
-      PHONE_AUTH_SUCCEED_DATE: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        comment: "휴대폰 인증 완료 시간",
-      },
-      PHONE_AUTH_TF: {
-        type: DataTypes.STRING(1),
-        allowNull: false,
-        defaultValue: "F",
-        comment: "휴대폰 인증 여부",
-      },
-      REG_TIME: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
-        comment: "가입일",
-      },
-      UPD_TIME: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
-        comment: "수정일",
-      },
-      JOIN_TIME: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
-        comment: "가입 승인 날짜",
-      },
-      JOIN_PERMIT_USER_ID: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: true,
-        comment: "가입 승인해준 USER_ID",
-        references: {
-          model: 'tt_user',
-          key: 'USER_ID',
-        },
-      },
-      JOIN_AGREE: {
-        type: DataTypes.STRING(10),
-        allowNull: true,
-        comment: "가입 약관 동의 여부(0: 개인정보 수집 및 이용동의 1: 개인정보 수집 목적 내 제3자 제공 동의 2: 14세 미만 법정 대리인 동의)",
-      },
-    }, {
-      sequelize,
-      tableName: 'tt_user',
-      timestamps: false,
-      indexes: [
-        {
-          name: "PRIMARY",
-          unique: true,
-          using: "BTREE",
-          fields: [
-            {name: "USER_ID"},
-          ],
-        },
-        {
-          name: "tt_user_unique_key",
-          unique: true,
-          using: "BTREE",
-          fields: [
-            {name: "PHONE"},
-          ],
-        },
-        {
-          name: "FK_tt_user_JOIN_PERMIT_USER_ID_tt_user_USER_ID",
-          using: "BTREE",
-          fields: [
-            {name: "JOIN_PERMIT_USER_ID"},
-          ],
-        },
-      ],
-    });
+    ]
+  });
   }
 }

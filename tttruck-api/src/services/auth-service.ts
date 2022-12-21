@@ -1,9 +1,10 @@
-import userRepo from '@src/repos/user-repo';
 import jwtUtil from '@src/util/jwt-util';
 import pwdUtil from '@src/util/pwd-util';
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
-import { RouteError } from '@src/declarations/classes';
-import { tick } from '@src/declarations/functions';
+import {RouteError} from '@src/declarations/classes';
+import {tick} from '@src/declarations/functions';
+import {tt_user} from "@src/models/tt_user";
+import logger from "jet-logger";
 
 
 // **** Variables **** //
@@ -11,7 +12,7 @@ import { tick } from '@src/declarations/functions';
 // Errors
 export const errors = {
   unauth: 'Unauthorized',
-  emailNotFound: (email: string) => `User with email "${email}" not found`,
+  phoneNotFound: (phone: string) => `User with phone "${phone}" not found`,
 } as const;
 
 
@@ -20,38 +21,38 @@ export const errors = {
 /**
  * Login a user.
  */
-async function getJwt(email: string, password: string): Promise<string> {
+async function getJwtUser(phone: string, password: string): Promise<tt_user> {
   // Fetch user
-  const user = await userRepo.getOne(email);
+  const user = await tt_user.findOne({where:{$PHONE$:phone}});
   if (!user) {
     throw new RouteError(
       HttpStatusCodes.UNAUTHORIZED,
-      errors.emailNotFound(email),
+      errors.phoneNotFound(phone),
     );
   }
   // Check password
-  const hash = (user.pwdHash ?? '');
+  const hash = (user.PASSWORD ?? '');
   const pwdPassed = await pwdUtil.compare(password, hash);
   if (!pwdPassed) {
     // If password failed, wait 500ms this will increase security
     await tick(500);
     throw new RouteError(
-      HttpStatusCodes.UNAUTHORIZED, 
+      HttpStatusCodes.UNAUTHORIZED,
       errors.unauth,
     );
   }
   // Setup Admin Cookie
-  return jwtUtil.sign({
-    id: user.id,
-    email: user.name,
-    name: user.name,
-    role: user.role,
+  user.ACCESSTOKEN = await jwtUtil.sign({
+    phone: user.PHONE,
+    password: user.PASSWORD,
   });
+
+  return user;
 }
 
 
 // **** Export default **** //
 
 export default {
-  getJwt,
+  getJwtUser,
 } as const;

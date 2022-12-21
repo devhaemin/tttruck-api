@@ -4,6 +4,7 @@ import jetValidator from 'jet-validator';
 import {normalUserMw} from './shared/userCheckMw';
 import productRoutes from './product-routes';
 import {tt_product} from "@src/models/init-models";
+import authRoutes from "@src/routes/auth-routes";
 
 
 // **** Init **** //
@@ -15,11 +16,11 @@ const apiRouter = Router(),
 // **** Setup auth routes **** //
 
 const authRouter = Router();
-/*
+
 // Login user
 authRouter.post(
   authRoutes.paths.login,
-  validate('email', 'password'),
+  validate('phone', 'password'),
   authRoutes.login,
 );
 
@@ -29,7 +30,7 @@ authRouter.get(authRoutes.paths.logout, authRoutes.logout);
 // Add authRouter
 apiRouter.use(authRoutes.paths.basePath, authRouter);
 
-
+/*
 // **** Setup user routes **** //
 
 const userRouter = Router();

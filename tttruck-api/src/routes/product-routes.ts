@@ -24,10 +24,11 @@ const paths = {
 // **** Functions **** //
 
 /**
- * @api {get} /products/all Request All User List
+ * @api {get} /products/all Get All Product List
  * @apiName GetProduct
  * @apiGroup Product
  *
+ * @apiPermission none
  *
  * @apiSuccess {String} Nothing
  *
@@ -101,7 +102,7 @@ async function getAll(req: IReq, res: IRes) {
  * @apiName GetProductByCategory
  * @apiGroup Product
  *
- *
+ * @apiPermission none
  * @apiParam {Number} id
  *
  * @apiSuccessExample Success-Response:
@@ -175,6 +176,7 @@ async function getByCategory(req: IReq, res: IRes) {
  * @apiName GetProductByID
  * @apiGroup Product
  *
+ * @apiPermission none
  *
  * @apiParam {Number} id
  *
@@ -227,6 +229,8 @@ async function getById(req: IReq, res: IRes) {
  * @apiName AddProduct
  * @apiGroup Product
  *
+ * @apiPermission normalUser
+ *
  * @apiParamExample {json} Request-Example:
  * {
  *   "product" : {
@@ -270,6 +274,7 @@ async function add(req: IReq<{ product: tt_product }>, res: IRes) {
  * @apiGroup Product
  *
  *
+ * @apiPermission normalUser
  *
  * @apiParamExample {json} Request-Example:
  * {
@@ -309,6 +314,8 @@ async function update(req: IReq<{ product: tt_product }>, res: IRes) {
  * @api {delete} /products/delete/:id delete product
  * @apiName DeleteProduct
  * @apiGroup Product
+ *
+ * @apiPermission normalUser
  *
  * @apiParam {Number} id
  *

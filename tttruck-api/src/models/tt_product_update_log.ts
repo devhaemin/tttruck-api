@@ -1,7 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_product, tt_productId } from './tt_product';
-import type { tt_product_image, tt_product_imageId } from './tt_product_image';
 
 export interface tt_product_update_logAttributes {
   PRODUCT_ID?: number;
@@ -56,18 +55,6 @@ export class tt_product_update_log extends Model<tt_product_update_logAttributes
   getPRODUCT!: Sequelize.BelongsToGetAssociationMixin<tt_product>;
   setPRODUCT!: Sequelize.BelongsToSetAssociationMixin<tt_product, tt_productId>;
   createPRODUCT!: Sequelize.BelongsToCreateAssociationMixin<tt_product>;
-  // tt_product_update_log hasMany tt_product_image via PRODUCT_ID
-  tt_product_images!: tt_product_image[];
-  getTt_product_images!: Sequelize.HasManyGetAssociationsMixin<tt_product_image>;
-  setTt_product_images!: Sequelize.HasManySetAssociationsMixin<tt_product_image, tt_product_imageId>;
-  addTt_product_image!: Sequelize.HasManyAddAssociationMixin<tt_product_image, tt_product_imageId>;
-  addTt_product_images!: Sequelize.HasManyAddAssociationsMixin<tt_product_image, tt_product_imageId>;
-  createTt_product_image!: Sequelize.HasManyCreateAssociationMixin<tt_product_image>;
-  removeTt_product_image!: Sequelize.HasManyRemoveAssociationMixin<tt_product_image, tt_product_imageId>;
-  removeTt_product_images!: Sequelize.HasManyRemoveAssociationsMixin<tt_product_image, tt_product_imageId>;
-  hasTt_product_image!: Sequelize.HasManyHasAssociationMixin<tt_product_image, tt_product_imageId>;
-  hasTt_product_images!: Sequelize.HasManyHasAssociationsMixin<tt_product_image, tt_product_imageId>;
-  countTt_product_images!: Sequelize.HasManyCountAssociationsMixin;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_product_update_log {
     return tt_product_update_log.init({

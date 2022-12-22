@@ -6,7 +6,7 @@ import productRoutes from './product-routes';
 import {tt_product} from "@src/models/init-models";
 import authRoutes from "@src/routes/auth-routes";
 
-
+import {getS3Multer} from "@src/routes/shared/awsMultipart";
 // **** Init **** //
 
 const apiRouter = Router(),
@@ -83,7 +83,10 @@ apiRouter.use(userRoutes.paths.basePath,
   adminMw,
   userRouter);
 */
+
+
 const productRouter = Router();
+const productImageMulter = getS3Multer('product/image');
 
 // Get all products
 productRouter.get(productRoutes.paths.getAll, productRoutes.getAll);
@@ -110,6 +113,14 @@ productRouter.put(
   productRoutes.update,
 );
 
+productRouter.post(
+  productRoutes.paths.imageUpload,
+  //validate(["productId","number","body"]),
+  normalUserMw,
+  productImageMulter.single('file'),
+  productRoutes.imageUpload,
+);
+
 // Delete one user
 productRouter.delete(
   productRoutes.paths.delete,
@@ -117,6 +128,7 @@ productRouter.delete(
   normalUserMw,
   productRoutes.delete,
 );
+
 // **** Export default **** //
 
 // Add userRouter

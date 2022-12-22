@@ -1,6 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
+import type { tt_product_image, tt_product_imageId } from './tt_product_image';
 import type { tt_product_trade_log, tt_product_trade_logId } from './tt_product_trade_log';
 import type { tt_product_update_log, tt_product_update_logId } from './tt_product_update_log';
 import type { tt_user, tt_userId } from './tt_user';
@@ -55,6 +56,18 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
   UPDATE_USER_IPv6?: any;
   UPDATE_DATE?: Date;
 
+  // tt_product hasMany tt_product_image via PRODUCT_ID
+  tt_product_images!: tt_product_image[];
+  getTt_product_images!: Sequelize.HasManyGetAssociationsMixin<tt_product_image>;
+  setTt_product_images!: Sequelize.HasManySetAssociationsMixin<tt_product_image, tt_product_imageId>;
+  addTt_product_image!: Sequelize.HasManyAddAssociationMixin<tt_product_image, tt_product_imageId>;
+  addTt_product_images!: Sequelize.HasManyAddAssociationsMixin<tt_product_image, tt_product_imageId>;
+  createTt_product_image!: Sequelize.HasManyCreateAssociationMixin<tt_product_image>;
+  removeTt_product_image!: Sequelize.HasManyRemoveAssociationMixin<tt_product_image, tt_product_imageId>;
+  removeTt_product_images!: Sequelize.HasManyRemoveAssociationsMixin<tt_product_image, tt_product_imageId>;
+  hasTt_product_image!: Sequelize.HasManyHasAssociationMixin<tt_product_image, tt_product_imageId>;
+  hasTt_product_images!: Sequelize.HasManyHasAssociationsMixin<tt_product_image, tt_product_imageId>;
+  countTt_product_images!: Sequelize.HasManyCountAssociationsMixin;
   // tt_product hasMany tt_product_trade_log via PRODUCT_ID
   tt_product_trade_logs!: tt_product_trade_log[];
   getTt_product_trade_logs!: Sequelize.HasManyGetAssociationsMixin<tt_product_trade_log>;

@@ -140,14 +140,14 @@ export function initModels(sequelize: Sequelize) {
   tt_file.hasMany(tt_product_image, { as: "tt_product_images", foreignKey: "FILE_ID"});
   tt_notice.belongsTo(tt_notice_master, { as: "NOTICE_MASTER", foreignKey: "NOTICE_MASTER_ID"});
   tt_notice_master.hasMany(tt_notice, { as: "tt_notices", foreignKey: "NOTICE_MASTER_ID"});
+  tt_product_image.belongsTo(tt_product, { as: "PRODUCT", foreignKey: "PRODUCT_ID"});
+  tt_product.hasMany(tt_product_image, { as: "tt_product_images", foreignKey: "PRODUCT_ID"});
   tt_product_trade_log.belongsTo(tt_product, { as: "PRODUCT", foreignKey: "PRODUCT_ID"});
   tt_product.hasMany(tt_product_trade_log, { as: "tt_product_trade_logs", foreignKey: "PRODUCT_ID"});
   tt_product_update_log.belongsTo(tt_product, { as: "PRODUCT", foreignKey: "PRODUCT_ID"});
   tt_product.hasMany(tt_product_update_log, { as: "tt_product_update_logs", foreignKey: "PRODUCT_ID"});
   tt_product.belongsTo(tt_product_category, { as: "PRODUCT_CATEGORY", foreignKey: "PRODUCT_CATEGORY_ID"});
   tt_product_category.hasMany(tt_product, { as: "tt_products", foreignKey: "PRODUCT_CATEGORY_ID"});
-  tt_product_image.belongsTo(tt_product_update_log, { as: "PRODUCT", foreignKey: "PRODUCT_ID"});
-  tt_product_update_log.hasMany(tt_product_image, { as: "tt_product_images", foreignKey: "PRODUCT_ID"});
   tt_access_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasMany(tt_access_log, { as: "tt_access_logs", foreignKey: "USER_ID"});
   tt_file_download_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});

@@ -2,9 +2,13 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 
 import productService from '@src/services/product-service';
 import {IReq, IRes} from './shared/types';
-import {tt_product} from '@src/models/init-models';
+import {tt_product, tt_product_image} from '@src/models/init-models';
 import logger from "jet-logger";
 import {getClientIP} from "@src/util/ip-util";
+import {S3File} from "@src/routes/shared/awsMultipart";
+import {tt_productId} from "@src/models/tt_product";
+import {RouteError} from "@src/declarations/classes";
+import multer from "multer";
 
 
 // **** Variables **** //
@@ -16,6 +20,7 @@ const paths = {
   getByCategory: '/category/:id',
   getById: '/:id',
   add: '/add',
+  imageUpload: '/image/upload',
   update: '/update',
   delete: '/delete/:id',
 } as const;
@@ -269,6 +274,58 @@ async function add(req: IReq<{ product: tt_product }>, res: IRes) {
 }
 
 /**
+ * @api {post} /products/image Add product image file
+ * @apiName AddProductImage
+ * @apiGroup Product
+ *
+ * @apiPermission normalUser
+ *
+ * @apiBody Number productId 상품 ID 값
+ * @apiBody File image 상품에 추가할 이미지
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {}
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "ProductNotFound"
+ *     }
+ */
+//todo: 상품 이미지랑 파일 db 에 추가하는 service 생성하고 로직만들기.
+async function imageUpload(req: IReq<{productId: tt_productId }>, res: IRes) {
+  const {productId} = req.body;
+  const file = req.file as S3File;
+  logger.info(file);
+  const product = await tt_product.findByPk(productId);
+  if(!product) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      "", //todo: prodNotFound 추가
+    );
+  }
+  if(!file) {
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      "AWS API Connection error.", //todo: prodNotFound 추가
+    );
+  }
+  product.UPDATE_USER_IPv4 = getClientIP(req);
+  product.UPDATE_USER_ID = res.locals.user.USER_ID;
+  tt_product_image.create({
+    PRODUCT_ID: product.PRODUCT_ID,
+    FILE_NAME : file.key,
+    FILE_PATH : file.acl,
+    FILE_URL : file.location,
+    FILE_SIZE : file.size,
+  });
+  await product.update(product);
+  return res.status(HttpStatusCodes.CREATED).end();
+}
+
+
+/**
  * @api {update} /products/update Add product
  * @apiName AddProduct
  * @apiGroup Product
@@ -347,6 +404,7 @@ export default {
   getByCategory,
   getById,
   add,
+  imageUpload,
   update,
   delete: _delete,
 } as const;

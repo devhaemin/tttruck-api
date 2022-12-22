@@ -12,6 +12,7 @@ import {IUser, UserRoles} from '@src/models/User';
 import {tt_user, tt_userAttributes} from "@src/models/tt_user";
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
 import {IReq} from "@src/routes/shared/types";
+import logger from "jet-logger";
 
 
 // **** Variables **** //
@@ -94,15 +95,17 @@ export async function normalUserMw(
   next: NextFunction,
 ) {
 
-  const userToken = req.headers['authorization'];
+  let userToken = req.headers['authorization'];
   if (!userToken) {
     return res
       .status(HttpStatusCodes.UNAUTHORIZED)
       .json({error: jwtNotPresentErr});
   }
+  userToken = userToken.split(" ")[1];
   const clientData = await tt_user.findAll({where : {ACCESSTOKEN : userToken}});
+  logger.info(clientData);
   if (
-    clientData &&
+    clientData && clientData.length > 0 &&
     (clientData[0].GROUP >= tt_user_group.NORMAL) &&
     clientData[0].PHONE_AUTH_TF === 'T'
   ) {

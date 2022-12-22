@@ -120,12 +120,12 @@ export async function sendPhoneAuthSMS(code: string, phone: string) {
     contentType: "COMM", //"(COMM | AD)",
     from: process.env.SMS_FROM_PHONE_NUM, //"발신번호",
     subject: "땡땡트럭", //"string",
-    content: "본인확인 인증번호[" + code + "]를 입력해주세요.", //"string",
+    content: "[땡땡트럭] 본인확인 인증번호[" + code + "]를 입력해주세요.", //"string",
     messages: [
       {
         to: phone,
         subject: "땡땡트럭",
-        content: "본인확인 인증번호[" + code + "]를 입력해주세요.",
+        content: "[땡땡트럭] 본인확인 인증번호[" + code + "]를 입력해주세요.",
       },
     ],
   };

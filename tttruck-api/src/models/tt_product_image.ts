@@ -2,7 +2,7 @@ import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_content, tt_contentId } from './tt_content';
 import type { tt_file, tt_fileId } from './tt_file';
-import type { tt_product_update_log, tt_product_update_logId } from './tt_product_update_log';
+import type { tt_product, tt_productId } from './tt_product';
 
 export interface tt_product_imageAttributes {
   PRODUCT_IMAGE_ID: number;
@@ -20,7 +20,7 @@ export interface tt_product_imageAttributes {
 
 export type tt_product_imagePk = "PRODUCT_IMAGE_ID";
 export type tt_product_imageId = tt_product_image[tt_product_imagePk];
-export type tt_product_imageOptionalAttributes = "FILE_NAME" | "FILE_PATH" | "FILE_SIZE" | "ORG_FILE_SEQ" | "FILE_URL" | "THUMB_PATH" | "FILE_ID" | "CONTENT_ID" | "TIME";
+export type tt_product_imageOptionalAttributes = "PRODUCT_IMAGE_ID" | "FILE_NAME" | "FILE_PATH" | "FILE_SIZE" | "ORG_FILE_SEQ" | "FILE_URL" | "THUMB_PATH" | "FILE_ID" | "CONTENT_ID" | "TIME";
 export type tt_product_imageCreationAttributes = Optional<tt_product_imageAttributes, tt_product_imageOptionalAttributes>;
 
 export class tt_product_image extends Model<tt_product_imageAttributes, tt_product_imageCreationAttributes> implements tt_product_imageAttributes {
@@ -46,15 +46,16 @@ export class tt_product_image extends Model<tt_product_imageAttributes, tt_produ
   getFILE!: Sequelize.BelongsToGetAssociationMixin<tt_file>;
   setFILE!: Sequelize.BelongsToSetAssociationMixin<tt_file, tt_fileId>;
   createFILE!: Sequelize.BelongsToCreateAssociationMixin<tt_file>;
-  // tt_product_image belongsTo tt_product_update_log via PRODUCT_ID
-  PRODUCT!: tt_product_update_log;
-  getPRODUCT!: Sequelize.BelongsToGetAssociationMixin<tt_product_update_log>;
-  setPRODUCT!: Sequelize.BelongsToSetAssociationMixin<tt_product_update_log, tt_product_update_logId>;
-  createPRODUCT!: Sequelize.BelongsToCreateAssociationMixin<tt_product_update_log>;
+  // tt_product_image belongsTo tt_product via PRODUCT_ID
+  PRODUCT!: tt_product;
+  getPRODUCT!: Sequelize.BelongsToGetAssociationMixin<tt_product>;
+  setPRODUCT!: Sequelize.BelongsToSetAssociationMixin<tt_product, tt_productId>;
+  createPRODUCT!: Sequelize.BelongsToCreateAssociationMixin<tt_product>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_product_image {
     return tt_product_image.init({
     PRODUCT_IMAGE_ID: {
+      autoIncrement: true,
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       primaryKey: true,
@@ -65,7 +66,7 @@ export class tt_product_image extends Model<tt_product_imageAttributes, tt_produ
       allowNull: false,
       comment: "상품 ID",
       references: {
-        model: 'tt_product_update_log',
+        model: 'tt_product',
         key: 'PRODUCT_ID'
       }
     },

@@ -26,7 +26,7 @@ export interface tt_notice_masterAttributes {
 
 export type tt_notice_masterPk = "NOTICE_MASTER_ID";
 export type tt_notice_masterId = tt_notice_master[tt_notice_masterPk];
-export type tt_notice_masterOptionalAttributes = "TITLE" | "COMMENT_TF" | "SECRET_TF" | "ATTACH_TF" | "DISPLAY_TF" | "DIV_CODE" | "CREATE_USER_ID" | "CREATE_TIME" | "REG_IPv4" | "REG_IPv6" | "UPDATE_USER_ID" | "UPDATE_TIME" | "UPDATE_IPv4" | "UPDATE_IPv6" | "EXTRA_FIELD_FIRST_LABEL" | "EXTRA_FIELD_FIRST_CODE" | "DELETE_TF";
+export type tt_notice_masterOptionalAttributes = "NOTICE_MASTER_ID" | "TITLE" | "COMMENT_TF" | "SECRET_TF" | "ATTACH_TF" | "DISPLAY_TF" | "DIV_CODE" | "CREATE_USER_ID" | "CREATE_TIME" | "REG_IPv4" | "REG_IPv6" | "UPDATE_USER_ID" | "UPDATE_TIME" | "UPDATE_IPv4" | "UPDATE_IPv6" | "EXTRA_FIELD_FIRST_LABEL" | "EXTRA_FIELD_FIRST_CODE" | "DELETE_TF";
 export type tt_notice_masterCreationAttributes = Optional<tt_notice_masterAttributes, tt_notice_masterOptionalAttributes>;
 
 export class tt_notice_master extends Model<tt_notice_masterAttributes, tt_notice_masterCreationAttributes> implements tt_notice_masterAttributes {
@@ -75,6 +75,7 @@ export class tt_notice_master extends Model<tt_notice_masterAttributes, tt_notic
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_notice_master {
     return tt_notice_master.init({
     NOTICE_MASTER_ID: {
+      autoIncrement: true,
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       primaryKey: true,

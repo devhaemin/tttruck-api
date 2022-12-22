@@ -1,7 +1,5 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
-import type { tt_content, tt_contentId } from './tt_content';
-import type { tt_file, tt_fileId } from './tt_file';
 import type { tt_product, tt_productId } from './tt_product';
 
 export interface tt_product_imageAttributes {
@@ -36,16 +34,6 @@ export class tt_product_image extends Model<tt_product_imageAttributes, tt_produ
   CONTENT_ID?: number;
   TIME?: Date;
 
-  // tt_product_image belongsTo tt_content via CONTENT_ID
-  CONTENT!: tt_content;
-  getCONTENT!: Sequelize.BelongsToGetAssociationMixin<tt_content>;
-  setCONTENT!: Sequelize.BelongsToSetAssociationMixin<tt_content, tt_contentId>;
-  createCONTENT!: Sequelize.BelongsToCreateAssociationMixin<tt_content>;
-  // tt_product_image belongsTo tt_file via FILE_ID
-  FILE!: tt_file;
-  getFILE!: Sequelize.BelongsToGetAssociationMixin<tt_file>;
-  setFILE!: Sequelize.BelongsToSetAssociationMixin<tt_file, tt_fileId>;
-  createFILE!: Sequelize.BelongsToCreateAssociationMixin<tt_file>;
   // tt_product_image belongsTo tt_product via PRODUCT_ID
   PRODUCT!: tt_product;
   getPRODUCT!: Sequelize.BelongsToGetAssociationMixin<tt_product>;
@@ -103,20 +91,12 @@ export class tt_product_image extends Model<tt_product_imageAttributes, tt_produ
     FILE_ID: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: true,
-      comment: "파일 ID",
-      references: {
-        model: 'tt_file',
-        key: 'FILE_ID'
-      }
+      comment: "파일 ID"
     },
     CONTENT_ID: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: true,
-      comment: "컨텐츠 ID",
-      references: {
-        model: 'tt_content',
-        key: 'CONTENT_ID'
-      }
+      comment: "컨텐츠 ID"
     },
     TIME: {
       type: DataTypes.DATE,

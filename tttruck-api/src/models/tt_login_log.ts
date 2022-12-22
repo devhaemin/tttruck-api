@@ -13,7 +13,7 @@ export interface tt_login_logAttributes {
 
 export type tt_login_logPk = "LOGIN_LOG_ID";
 export type tt_login_logId = tt_login_log[tt_login_logPk];
-export type tt_login_logOptionalAttributes = "SNS_TYPE" | "IPv4" | "IPv6" | "time";
+export type tt_login_logOptionalAttributes = "LOGIN_LOG_ID" | "SNS_TYPE" | "IPv4" | "IPv6" | "time";
 export type tt_login_logCreationAttributes = Optional<tt_login_logAttributes, tt_login_logOptionalAttributes>;
 
 export class tt_login_log extends Model<tt_login_logAttributes, tt_login_logCreationAttributes> implements tt_login_logAttributes {
@@ -33,6 +33,7 @@ export class tt_login_log extends Model<tt_login_logAttributes, tt_login_logCrea
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_login_log {
     return tt_login_log.init({
     LOGIN_LOG_ID: {
+      autoIncrement: true,
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       primaryKey: true,

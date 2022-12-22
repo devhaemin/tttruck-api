@@ -281,7 +281,7 @@ async function add(req: IReq<{ product: tt_product }>, res: IRes) {
  * @apiPermission normalUser
  *
  * @apiBody Number productId 상품 ID 값
- * @apiBody File image 상품에 추가할 이미지
+ * @apiBody File file 상품에 추가할 이미지
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -297,30 +297,8 @@ async function add(req: IReq<{ product: tt_product }>, res: IRes) {
 async function imageUpload(req: IReq<{productId: tt_productId }>, res: IRes) {
   const {productId} = req.body;
   const file = req.file as S3File;
-  logger.info(file);
   const product = await tt_product.findByPk(productId);
-  if(!product) {
-    throw new RouteError(
-      HttpStatusCodes.NOT_FOUND,
-      "", //todo: prodNotFound 추가
-    );
-  }
-  if(!file) {
-    throw new RouteError(
-      HttpStatusCodes.INTERNAL_SERVER_ERROR,
-      "AWS API Connection error.", //todo: prodNotFound 추가
-    );
-  }
-  product.UPDATE_USER_IPv4 = getClientIP(req);
-  product.UPDATE_USER_ID = res.locals.user.USER_ID;
-  tt_product_image.create({
-    PRODUCT_ID: product.PRODUCT_ID,
-    FILE_NAME : file.key,
-    FILE_PATH : file.acl,
-    FILE_URL : file.location,
-    FILE_SIZE : file.size,
-  });
-  await product.update(product);
+  await productService.uploadImage(product,file,res.locals.user,getClientIP(req));
   return res.status(HttpStatusCodes.CREATED).end();
 }
 

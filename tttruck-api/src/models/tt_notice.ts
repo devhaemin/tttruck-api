@@ -1,12 +1,12 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
-import type { tt_content, tt_contentId } from './tt_content';
+import type { tt_notice_image, tt_notice_imageId } from './tt_notice_image';
 import type { tt_notice_master, tt_notice_masterId } from './tt_notice_master';
 import type { tt_user, tt_userId } from './tt_user';
 
 export interface tt_noticeAttributes {
   NOTICE_MASTER_ID: number;
-  MAIN_NOTICE_ID: number;
+  NOTICE_ID: number;
   SUBJECT?: string;
   HTML_TF?: string;
   CONTENTS?: string;
@@ -25,14 +25,14 @@ export interface tt_noticeAttributes {
   TOP_FIX_TF: string;
 }
 
-export type tt_noticePk = "MAIN_NOTICE_ID";
+export type tt_noticePk = "NOTICE_ID";
 export type tt_noticeId = tt_notice[tt_noticePk];
-export type tt_noticeOptionalAttributes = "SUBJECT" | "HTML_TF" | "CONTENTS" | "DISPLAY_TF" | "DISPLAY_START_TIME" | "DISPLAY_END_TIME" | "POST_USER_ID" | "POST_TIME" | "POST_IPv4" | "POST_IPv6" | "UPDATE_USER_ID" | "UPDATE_TIME" | "UPDATE_IPv4" | "UPDATE_IPv6" | "CONTENT_ID" | "TOP_FIX_TF";
+export type tt_noticeOptionalAttributes = "NOTICE_ID" | "SUBJECT" | "HTML_TF" | "CONTENTS" | "DISPLAY_TF" | "DISPLAY_START_TIME" | "DISPLAY_END_TIME" | "POST_USER_ID" | "POST_TIME" | "POST_IPv4" | "POST_IPv6" | "UPDATE_USER_ID" | "UPDATE_TIME" | "UPDATE_IPv4" | "UPDATE_IPv6" | "CONTENT_ID" | "TOP_FIX_TF";
 export type tt_noticeCreationAttributes = Optional<tt_noticeAttributes, tt_noticeOptionalAttributes>;
 
 export class tt_notice extends Model<tt_noticeAttributes, tt_noticeCreationAttributes> implements tt_noticeAttributes {
   NOTICE_MASTER_ID!: number;
-  MAIN_NOTICE_ID!: number;
+  NOTICE_ID!: number;
   SUBJECT?: string;
   HTML_TF?: string;
   CONTENTS?: string;
@@ -50,11 +50,18 @@ export class tt_notice extends Model<tt_noticeAttributes, tt_noticeCreationAttri
   CONTENT_ID?: number;
   TOP_FIX_TF!: string;
 
-  // tt_notice belongsTo tt_content via CONTENT_ID
-  CONTENT!: tt_content;
-  getCONTENT!: Sequelize.BelongsToGetAssociationMixin<tt_content>;
-  setCONTENT!: Sequelize.BelongsToSetAssociationMixin<tt_content, tt_contentId>;
-  createCONTENT!: Sequelize.BelongsToCreateAssociationMixin<tt_content>;
+  // tt_notice hasMany tt_notice_image via NOTICE_ID
+  tt_notice_images!: tt_notice_image[];
+  getTt_notice_images!: Sequelize.HasManyGetAssociationsMixin<tt_notice_image>;
+  setTt_notice_images!: Sequelize.HasManySetAssociationsMixin<tt_notice_image, tt_notice_imageId>;
+  addTt_notice_image!: Sequelize.HasManyAddAssociationMixin<tt_notice_image, tt_notice_imageId>;
+  addTt_notice_images!: Sequelize.HasManyAddAssociationsMixin<tt_notice_image, tt_notice_imageId>;
+  createTt_notice_image!: Sequelize.HasManyCreateAssociationMixin<tt_notice_image>;
+  removeTt_notice_image!: Sequelize.HasManyRemoveAssociationMixin<tt_notice_image, tt_notice_imageId>;
+  removeTt_notice_images!: Sequelize.HasManyRemoveAssociationsMixin<tt_notice_image, tt_notice_imageId>;
+  hasTt_notice_image!: Sequelize.HasManyHasAssociationMixin<tt_notice_image, tt_notice_imageId>;
+  hasTt_notice_images!: Sequelize.HasManyHasAssociationsMixin<tt_notice_image, tt_notice_imageId>;
+  countTt_notice_images!: Sequelize.HasManyCountAssociationsMixin;
   // tt_notice belongsTo tt_notice_master via NOTICE_MASTER_ID
   NOTICE_MASTER!: tt_notice_master;
   getNOTICE_MASTER!: Sequelize.BelongsToGetAssociationMixin<tt_notice_master>;
@@ -82,7 +89,8 @@ export class tt_notice extends Model<tt_noticeAttributes, tt_noticeCreationAttri
         key: 'NOTICE_MASTER_ID'
       }
     },
-    MAIN_NOTICE_ID: {
+    NOTICE_ID: {
+      autoIncrement: true,
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       primaryKey: true,
@@ -175,11 +183,7 @@ export class tt_notice extends Model<tt_noticeAttributes, tt_noticeCreationAttri
     CONTENT_ID: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: true,
-      comment: "컨텐츠 ID",
-      references: {
-        model: 'tt_content',
-        key: 'CONTENT_ID'
-      }
+      comment: "컨텐츠 ID"
     },
     TOP_FIX_TF: {
       type: DataTypes.STRING(1),
@@ -197,7 +201,7 @@ export class tt_notice extends Model<tt_noticeAttributes, tt_noticeCreationAttri
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "MAIN_NOTICE_ID" },
+          { name: "NOTICE_ID" },
         ]
       },
       {

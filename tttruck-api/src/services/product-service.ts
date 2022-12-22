@@ -1,8 +1,10 @@
-import {tt_product, tt_user} from '@src/models/init-models';
+import {tt_product, tt_product_image, tt_user} from '@src/models/init-models';
 import {RouteError} from '@src/declarations/classes';
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import logger from "jet-logger";
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
+import {getClientIP} from "@src/util/ip-util";
+import {S3File} from "@src/routes/shared/awsMultipart";
 
 
 // **** Variables **** //
@@ -89,6 +91,31 @@ async function updateOne(user: tt_user, product: tt_product): Promise<tt_product
   return product;
 }
 
+async function uploadImage(product:tt_product|null, file:S3File|null,user:tt_user, ip:number){
+  if(!product) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      "", //todo: prodNotFound 추가
+    );
+  }
+  if(!file) {
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      "AWS API Connection error.", //todo: prodNotFound 추가
+    );
+  }
+  product.UPDATE_USER_IPv4 = ip;
+  product.UPDATE_USER_ID = user.USER_ID;
+  tt_product_image.create({
+    PRODUCT_ID: product.PRODUCT_ID,
+    FILE_NAME : file.key,
+    FILE_PATH : file.path,
+    FILE_URL : file.location,
+    FILE_SIZE : file.size,
+  });
+  return await product.update(product);
+}
+
 /**
  * Delete a user by their id.
  */
@@ -111,6 +138,7 @@ async function _delete(user: tt_user, id: number): Promise<void> {
 }
 
 
+
 // **** Export default **** //
 
 export default {
@@ -119,5 +147,6 @@ export default {
   getById,
   addOne,
   updateOne,
+  uploadImage,
   delete: _delete,
 } as const;

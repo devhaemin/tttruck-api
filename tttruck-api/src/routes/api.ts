@@ -1,11 +1,11 @@
 import {Router} from 'express';
 import jetValidator from 'jet-validator';
 
-import {normalUserMw} from './shared/userCheckMw';
+import {adminMw, normalUserMw} from './shared/userCheckMw';
 import productRoutes from './product-routes';
-import {tt_product} from "@src/models/init-models";
+import {tt_notice, tt_product} from "@src/models/init-models";
 import authRoutes from "@src/routes/auth-routes";
-
+import noticeRoutes from "@src/routes/notice-routes";
 import {getS3Multer} from "@src/routes/shared/awsMultipart";
 // **** Init **** //
 
@@ -17,6 +17,11 @@ const apiRouter = Router(),
 
 const authRouter = Router();
 
+authRouter.get(
+  authRoutes.paths.tokenLogin,
+  normalUserMw,
+  authRoutes.tokenLogin,
+);
 // Login user
 authRouter.post(
   authRoutes.paths.login,
@@ -46,44 +51,10 @@ authRouter.get(authRoutes.paths.logout, authRoutes.logout);
 // Add authRouter
 apiRouter.use(authRoutes.paths.basePath, authRouter);
 
-/*
-// **** Setup user routes **** //
 
-const userRouter = Router();
+// **** Setup auth routes **** //
 
-// Get all users
-userRouter.get(userRoutes.paths.get, adminMw ,userRoutes.getAll);
-
-// Add one user
-userRouter.post(
-  userRoutes.paths.add,
-  adminMw,
-  validate(['user', User.instanceOf]),
-  userRoutes.add,
-);
-
-// Update one user
-userRouter.put(
-  userRoutes.paths.update,
-  adminMw,
-  validate(['user', User.instanceOf]),
-  userRoutes.update,
-);
-
-// Delete one user
-userRouter.delete(
-  userRoutes.paths.delete,
-  adminMw,
-  validate(['id', 'number', 'params']),
-  userRoutes.delete,
-);
-
-// Add userRouter
-apiRouter.use(userRoutes.paths.basePath,
-  adminMw,
-  userRouter);
-*/
-
+// **** Setup product routes **** //
 
 const productRouter = Router();
 const productImageMulter = getS3Multer('product/image');
@@ -128,9 +99,57 @@ productRouter.delete(
   normalUserMw,
   productRoutes.delete,
 );
+// **** Setup Product routes **** //
+
+// **** Setup Notice routes **** //
+
+const noticeRouter = Router();
+const noticeImageMulter = getS3Multer('notice/image');
+
+// Get all products
+noticeRouter.get(noticeRoutes.paths.getAll, noticeRoutes.getAll);
+
+// Get products by category
+noticeRouter.get(noticeRoutes.paths.getByCategory, noticeRoutes.getByCategory);
+
+// Get product by ID
+noticeRouter.get(noticeRoutes.paths.getById, noticeRoutes.getById);
+
+// Add a product
+noticeRouter.post(
+  noticeRoutes.paths.add,
+  validate(['notice', typeof tt_notice]),
+  adminMw,
+  noticeRoutes.add,
+);
+
+// Update a product
+noticeRouter.put(
+  productRoutes.paths.update,
+  validate(['notice', typeof tt_notice]),
+  adminMw,
+  productRoutes.update,
+);
+
+noticeRouter.post(
+  noticeRoutes.paths.imageUpload,
+  //validate(["productId","number","body"]),
+  adminMw,
+  noticeImageMulter.single('file'),
+  noticeRoutes.imageUpload,
+);
+
+// Delete one user
+noticeRouter.delete(
+  noticeRoutes.paths.delete,
+  validate(['id', 'number', 'params']),
+  adminMw,
+  noticeRoutes.delete,
+);
+// **** Setup Product routes **** //
 
 // **** Export default **** //
 
 // Add userRouter
-apiRouter.use(productRoutes.paths.basePath, productRouter);
+apiRouter.use(noticeRoutes.paths.basePath, noticeRouter);
 export default apiRouter;

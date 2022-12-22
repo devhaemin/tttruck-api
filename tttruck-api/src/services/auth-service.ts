@@ -26,6 +26,7 @@ async function setPhoneAuth(code:string, phone:string): Promise<tt_phone_auth>{
   logger.info(sendSMS);
   return tt_phone_auth.create({PHONE_AUTH_CODE : code, PHONE : phone});
 }
+
 async function addNormalUser(user:tt_user): Promise<tt_user>{
   const phoneAuth = await tt_phone_auth.findOne({
     where:{$PHONE$:user.PHONE},

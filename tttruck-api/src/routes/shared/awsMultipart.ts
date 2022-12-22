@@ -2,8 +2,6 @@ import {S3Client} from '@aws-sdk/client-s3';
 import path from "path";
 import multer = require("multer");
 import multerS3 = require("multer-s3");
-import logger from "jet-logger";
-import {Multer} from "multer";
 
 const accessKeyId = process.env.AWS_KEY_ID ? process.env.AWS_KEY_ID : "";
 const secretAccessKey = process.env.AWS_SECRET_KEY ? process.env.AWS_SECRET_KEY : "";

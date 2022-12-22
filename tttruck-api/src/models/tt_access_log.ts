@@ -13,7 +13,7 @@ export interface tt_access_logAttributes {
 
 export type tt_access_logPk = "API_LOG_ID";
 export type tt_access_logId = tt_access_log[tt_access_logPk];
-export type tt_access_logOptionalAttributes = "USER_ID" | "ACCESS_DATE" | "IPv4" | "IPv6";
+export type tt_access_logOptionalAttributes = "API_LOG_ID" | "USER_ID" | "ACCESS_DATE" | "IPv4" | "IPv6";
 export type tt_access_logCreationAttributes = Optional<tt_access_logAttributes, tt_access_logOptionalAttributes>;
 
 export class tt_access_log extends Model<tt_access_logAttributes, tt_access_logCreationAttributes> implements tt_access_logAttributes {
@@ -33,6 +33,7 @@ export class tt_access_log extends Model<tt_access_logAttributes, tt_access_logC
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_access_log {
     return tt_access_log.init({
     API_LOG_ID: {
+      autoIncrement: true,
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       primaryKey: true,

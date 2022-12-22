@@ -5,10 +5,6 @@ import { tt_alarm as _tt_alarm } from "./tt_alarm";
 import type { tt_alarmAttributes, tt_alarmCreationAttributes } from "./tt_alarm";
 import { tt_content as _tt_content } from "./tt_content";
 import type { tt_contentAttributes, tt_contentCreationAttributes } from "./tt_content";
-import { tt_file as _tt_file } from "./tt_file";
-import type { tt_fileAttributes, tt_fileCreationAttributes } from "./tt_file";
-import { tt_file_download_log as _tt_file_download_log } from "./tt_file_download_log";
-import type { tt_file_download_logAttributes, tt_file_download_logCreationAttributes } from "./tt_file_download_log";
 import { tt_login_log as _tt_login_log } from "./tt_login_log";
 import type { tt_login_logAttributes, tt_login_logCreationAttributes } from "./tt_login_log";
 import { tt_nickname_log as _tt_nickname_log } from "./tt_nickname_log";
@@ -42,8 +38,6 @@ export {
   _tt_access_log as tt_access_log,
   _tt_alarm as tt_alarm,
   _tt_content as tt_content,
-  _tt_file as tt_file,
-  _tt_file_download_log as tt_file_download_log,
   _tt_login_log as tt_login_log,
   _tt_nickname_log as tt_nickname_log,
   _tt_notice as tt_notice,
@@ -67,10 +61,6 @@ export type {
   tt_alarmCreationAttributes,
   tt_contentAttributes,
   tt_contentCreationAttributes,
-  tt_fileAttributes,
-  tt_fileCreationAttributes,
-  tt_file_download_logAttributes,
-  tt_file_download_logCreationAttributes,
   tt_login_logAttributes,
   tt_login_logCreationAttributes,
   tt_nickname_logAttributes,
@@ -105,8 +95,6 @@ export function initModels(sequelize: Sequelize) {
   const tt_access_log = _tt_access_log.initModel(sequelize);
   const tt_alarm = _tt_alarm.initModel(sequelize);
   const tt_content = _tt_content.initModel(sequelize);
-  const tt_file = _tt_file.initModel(sequelize);
-  const tt_file_download_log = _tt_file_download_log.initModel(sequelize);
   const tt_login_log = _tt_login_log.initModel(sequelize);
   const tt_nickname_log = _tt_nickname_log.initModel(sequelize);
   const tt_notice = _tt_notice.initModel(sequelize);
@@ -122,22 +110,8 @@ export function initModels(sequelize: Sequelize) {
   const tt_user = _tt_user.initModel(sequelize);
   const tt_view_log = _tt_view_log.initModel(sequelize);
 
-  tt_file.belongsTo(tt_content, { as: "CONTENT", foreignKey: "CONTENT_ID"});
-  tt_content.hasMany(tt_file, { as: "tt_files", foreignKey: "CONTENT_ID"});
-  tt_notice.belongsTo(tt_content, { as: "CONTENT", foreignKey: "CONTENT_ID"});
-  tt_content.hasMany(tt_notice, { as: "tt_notices", foreignKey: "CONTENT_ID"});
-  tt_notice_image.belongsTo(tt_content, { as: "CONTENT", foreignKey: "CONTENT_ID"});
-  tt_content.hasMany(tt_notice_image, { as: "tt_notice_images", foreignKey: "CONTENT_ID"});
-  tt_product_image.belongsTo(tt_content, { as: "CONTENT", foreignKey: "CONTENT_ID"});
-  tt_content.hasMany(tt_product_image, { as: "tt_product_images", foreignKey: "CONTENT_ID"});
-  tt_view_log.belongsTo(tt_content, { as: "CONTENT", foreignKey: "CONTENT_ID"});
-  tt_content.hasMany(tt_view_log, { as: "tt_view_logs", foreignKey: "CONTENT_ID"});
-  tt_file_download_log.belongsTo(tt_file, { as: "FILE", foreignKey: "FILE_ID"});
-  tt_file.hasMany(tt_file_download_log, { as: "tt_file_download_logs", foreignKey: "FILE_ID"});
-  tt_notice_image.belongsTo(tt_file, { as: "FILE", foreignKey: "FILE_ID"});
-  tt_file.hasMany(tt_notice_image, { as: "tt_notice_images", foreignKey: "FILE_ID"});
-  tt_product_image.belongsTo(tt_file, { as: "FILE", foreignKey: "FILE_ID"});
-  tt_file.hasMany(tt_product_image, { as: "tt_product_images", foreignKey: "FILE_ID"});
+  tt_notice_image.belongsTo(tt_notice, { as: "NOTICE", foreignKey: "NOTICE_ID"});
+  tt_notice.hasMany(tt_notice_image, { as: "tt_notice_images", foreignKey: "NOTICE_ID"});
   tt_notice.belongsTo(tt_notice_master, { as: "NOTICE_MASTER", foreignKey: "NOTICE_MASTER_ID"});
   tt_notice_master.hasMany(tt_notice, { as: "tt_notices", foreignKey: "NOTICE_MASTER_ID"});
   tt_product_image.belongsTo(tt_product, { as: "PRODUCT", foreignKey: "PRODUCT_ID"});
@@ -150,8 +124,6 @@ export function initModels(sequelize: Sequelize) {
   tt_product_category.hasMany(tt_product, { as: "tt_products", foreignKey: "PRODUCT_CATEGORY_ID"});
   tt_access_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasMany(tt_access_log, { as: "tt_access_logs", foreignKey: "USER_ID"});
-  tt_file_download_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
-  tt_user.hasMany(tt_file_download_log, { as: "tt_file_download_logs", foreignKey: "USER_ID"});
   tt_login_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasMany(tt_login_log, { as: "tt_login_logs", foreignKey: "USER_ID"});
   tt_nickname_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
@@ -185,8 +157,6 @@ export function initModels(sequelize: Sequelize) {
     tt_access_log: tt_access_log,
     tt_alarm: tt_alarm,
     tt_content: tt_content,
-    tt_file: tt_file,
-    tt_file_download_log: tt_file_download_log,
     tt_login_log: tt_login_log,
     tt_nickname_log: tt_nickname_log,
     tt_notice: tt_notice,

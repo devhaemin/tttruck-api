@@ -12,6 +12,7 @@ import {tt_phone_auth, tt_user} from "@src/models/init-models";
 const paths = {
   basePath: '/auth',
   login: '/login',
+  tokenLogin:'/tokenLogin',
   logout: '/logout',
   signup: '/signup',
   phoneRequestAuth: '/phone/requestAuth',
@@ -39,6 +40,18 @@ interface IPhoneAuthReq {
 }
 
 // **** Functions **** //
+/** /**
+ * @api {get} /auth/tokenLogin 토큰 로그인
+ * @apiName tokenLogin
+ * @apiGroup Auth
+ * @apiPermission normalUser
+ *
+ *
+ *
+ */
+function tokenLogin(req: IReq, res: IRes){
+  return res.locals.user;
+}
 
 /**
  * @api {post} /auth/login Login with Phone
@@ -188,6 +201,7 @@ function logout(_: IReq, res: IRes) {
 
 export default {
   paths,
+  tokenLogin,
   login,
   logout,
   phoneRequestAuth,

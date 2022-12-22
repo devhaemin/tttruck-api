@@ -14,7 +14,7 @@ export interface tt_nickname_logAttributes {
 
 export type tt_nickname_logPk = "NICKNAME_LOG_ID";
 export type tt_nickname_logId = tt_nickname_log[tt_nickname_logPk];
-export type tt_nickname_logOptionalAttributes = "USER_ID" | "IPv4" | "IPv6" | "time";
+export type tt_nickname_logOptionalAttributes = "NICKNAME_LOG_ID" | "USER_ID" | "IPv4" | "IPv6" | "time";
 export type tt_nickname_logCreationAttributes = Optional<tt_nickname_logAttributes, tt_nickname_logOptionalAttributes>;
 
 export class tt_nickname_log extends Model<tt_nickname_logAttributes, tt_nickname_logCreationAttributes> implements tt_nickname_logAttributes {
@@ -35,6 +35,7 @@ export class tt_nickname_log extends Model<tt_nickname_logAttributes, tt_nicknam
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_nickname_log {
     return tt_nickname_log.init({
     NICKNAME_LOG_ID: {
+      autoIncrement: true,
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       primaryKey: true,

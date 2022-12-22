@@ -1,7 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_access_log, tt_access_logId } from './tt_access_log';
-import type { tt_file_download_log, tt_file_download_logId } from './tt_file_download_log';
 import type { tt_login_log, tt_login_logId } from './tt_login_log';
 import type { tt_nickname_log, tt_nickname_logId } from './tt_nickname_log';
 import type { tt_notice, tt_noticeId } from './tt_notice';
@@ -90,18 +89,6 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   hasTt_access_log!: Sequelize.HasManyHasAssociationMixin<tt_access_log, tt_access_logId>;
   hasTt_access_logs!: Sequelize.HasManyHasAssociationsMixin<tt_access_log, tt_access_logId>;
   countTt_access_logs!: Sequelize.HasManyCountAssociationsMixin;
-  // tt_user hasMany tt_file_download_log via USER_ID
-  tt_file_download_logs!: tt_file_download_log[];
-  getTt_file_download_logs!: Sequelize.HasManyGetAssociationsMixin<tt_file_download_log>;
-  setTt_file_download_logs!: Sequelize.HasManySetAssociationsMixin<tt_file_download_log, tt_file_download_logId>;
-  addTt_file_download_log!: Sequelize.HasManyAddAssociationMixin<tt_file_download_log, tt_file_download_logId>;
-  addTt_file_download_logs!: Sequelize.HasManyAddAssociationsMixin<tt_file_download_log, tt_file_download_logId>;
-  createTt_file_download_log!: Sequelize.HasManyCreateAssociationMixin<tt_file_download_log>;
-  removeTt_file_download_log!: Sequelize.HasManyRemoveAssociationMixin<tt_file_download_log, tt_file_download_logId>;
-  removeTt_file_download_logs!: Sequelize.HasManyRemoveAssociationsMixin<tt_file_download_log, tt_file_download_logId>;
-  hasTt_file_download_log!: Sequelize.HasManyHasAssociationMixin<tt_file_download_log, tt_file_download_logId>;
-  hasTt_file_download_logs!: Sequelize.HasManyHasAssociationsMixin<tt_file_download_log, tt_file_download_logId>;
-  countTt_file_download_logs!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user hasMany tt_login_log via USER_ID
   tt_login_logs!: tt_login_log[];
   getTt_login_logs!: Sequelize.HasManyGetAssociationsMixin<tt_login_log>;

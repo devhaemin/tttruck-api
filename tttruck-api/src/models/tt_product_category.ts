@@ -77,16 +77,19 @@ export class tt_product_category extends Model<tt_product_categoryAttributes, tt
     PRODUCT_CATEGORY_PRIORITY: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      defaultValue: 0,
       comment: "카테고리 우선순위"
     },
     VISIBLE_TF: {
       type: DataTypes.STRING(1),
       allowNull: true,
+      defaultValue: "T",
       comment: "카테고리 노출 여부"
     },
     UPDATE_USER_ID: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: true,
+      defaultValue: 1,
       comment: "수정 사용자 ID",
       references: {
         model: 'tt_user',
@@ -112,6 +115,7 @@ export class tt_product_category extends Model<tt_product_categoryAttributes, tt
     CREATE_USER_ID: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: true,
+      defaultValue: 1,
       comment: "생성 사용자 ID",
       references: {
         model: 'tt_user',

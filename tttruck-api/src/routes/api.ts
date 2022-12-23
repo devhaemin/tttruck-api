@@ -99,6 +99,7 @@ productRouter.delete(
   normalUserMw,
   productRoutes.delete,
 );
+apiRouter.use(productRoutes.paths.basePath, productRouter);
 // **** Setup Product routes **** //
 
 // **** Setup Notice routes **** //
@@ -146,10 +147,10 @@ noticeRouter.delete(
   adminMw,
   noticeRoutes.delete,
 );
+apiRouter.use(noticeRoutes.paths.basePath, noticeRouter);
 // **** Setup Product routes **** //
 
 // **** Export default **** //
 
 // Add userRouter
-apiRouter.use(noticeRoutes.paths.basePath, noticeRouter);
 export default apiRouter;

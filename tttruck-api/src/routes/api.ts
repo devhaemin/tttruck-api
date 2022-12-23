@@ -7,6 +7,7 @@ import {tt_notice, tt_product} from "@src/models/init-models";
 import authRoutes from "@src/routes/auth-routes";
 import noticeRoutes from "@src/routes/notice-routes";
 import {getS3Multer} from "@src/routes/shared/awsMultipart";
+import tradeRoutes from "@src/routes/trade-routes";
 // **** Init **** //
 
 const apiRouter = Router(),
@@ -150,6 +151,26 @@ noticeRouter.delete(
 apiRouter.use(noticeRoutes.paths.basePath, noticeRouter);
 // **** Setup Product routes **** //
 
+// **** Setup Trade routes **** //
+const tradeRouter = Router();
+
+tradeRouter.get(
+  tradeRoutes.paths.getUserBought,
+  normalUserMw,
+  tradeRoutes.getUserBought);
+
+tradeRouter.get(
+  tradeRoutes.paths.getUserSold,
+  normalUserMw,
+  tradeRoutes.getUserSold);
+
+tradeRouter.post(
+  tradeRoutes.paths.doTrade,
+  validate("id"),
+  normalUserMw,
+  tradeRoutes.doTrade);
+
+// **** Setup Trade routes **** //
 // **** Export default **** //
 
 // Add userRouter

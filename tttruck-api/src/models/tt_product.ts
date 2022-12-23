@@ -2,8 +2,8 @@ import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
 import type { tt_product_image, tt_product_imageId } from './tt_product_image';
-import type { tt_product_trade_log, tt_product_trade_logId } from './tt_product_trade_log';
 import type { tt_product_update_log, tt_product_update_logId } from './tt_product_update_log';
+import type { tt_trade, tt_tradeCreationAttributes, tt_tradeId } from './tt_trade';
 import type { tt_user, tt_userId } from './tt_user';
 
 export interface tt_productAttributes {
@@ -68,18 +68,6 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
   hasTt_product_image!: Sequelize.HasManyHasAssociationMixin<tt_product_image, tt_product_imageId>;
   hasTt_product_images!: Sequelize.HasManyHasAssociationsMixin<tt_product_image, tt_product_imageId>;
   countTt_product_images!: Sequelize.HasManyCountAssociationsMixin;
-  // tt_product hasMany tt_product_trade_log via PRODUCT_ID
-  tt_product_trade_logs!: tt_product_trade_log[];
-  getTt_product_trade_logs!: Sequelize.HasManyGetAssociationsMixin<tt_product_trade_log>;
-  setTt_product_trade_logs!: Sequelize.HasManySetAssociationsMixin<tt_product_trade_log, tt_product_trade_logId>;
-  addTt_product_trade_log!: Sequelize.HasManyAddAssociationMixin<tt_product_trade_log, tt_product_trade_logId>;
-  addTt_product_trade_logs!: Sequelize.HasManyAddAssociationsMixin<tt_product_trade_log, tt_product_trade_logId>;
-  createTt_product_trade_log!: Sequelize.HasManyCreateAssociationMixin<tt_product_trade_log>;
-  removeTt_product_trade_log!: Sequelize.HasManyRemoveAssociationMixin<tt_product_trade_log, tt_product_trade_logId>;
-  removeTt_product_trade_logs!: Sequelize.HasManyRemoveAssociationsMixin<tt_product_trade_log, tt_product_trade_logId>;
-  hasTt_product_trade_log!: Sequelize.HasManyHasAssociationMixin<tt_product_trade_log, tt_product_trade_logId>;
-  hasTt_product_trade_logs!: Sequelize.HasManyHasAssociationsMixin<tt_product_trade_log, tt_product_trade_logId>;
-  countTt_product_trade_logs!: Sequelize.HasManyCountAssociationsMixin;
   // tt_product hasMany tt_product_update_log via PRODUCT_ID
   tt_product_update_logs!: tt_product_update_log[];
   getTt_product_update_logs!: Sequelize.HasManyGetAssociationsMixin<tt_product_update_log>;
@@ -92,6 +80,11 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
   hasTt_product_update_log!: Sequelize.HasManyHasAssociationMixin<tt_product_update_log, tt_product_update_logId>;
   hasTt_product_update_logs!: Sequelize.HasManyHasAssociationsMixin<tt_product_update_log, tt_product_update_logId>;
   countTt_product_update_logs!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_product hasOne tt_trade via PRODUCT_ID
+  tt_trade!: tt_trade;
+  getTt_trade!: Sequelize.HasOneGetAssociationMixin<tt_trade>;
+  setTt_trade!: Sequelize.HasOneSetAssociationMixin<tt_trade, tt_tradeId>;
+  createTt_trade!: Sequelize.HasOneCreateAssociationMixin<tt_trade>;
   // tt_product belongsTo tt_product_category via PRODUCT_CATEGORY_ID
   PRODUCT_CATEGORY!: tt_product_category;
   getPRODUCT_CATEGORY!: Sequelize.BelongsToGetAssociationMixin<tt_product_category>;
@@ -221,6 +214,7 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
   }, {
     sequelize,
     tableName: 'tt_product',
+    hasTrigger: true,
     timestamps: false,
     indexes: [
       {

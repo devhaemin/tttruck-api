@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import jetValidator from 'jet-validator';
 
-import {adminMw, normalUserMw} from './shared/userCheckMw';
+import {adminMw, normalUserMw} from '@src/routes/shared/userCheckMw';
 import productRoutes from '@src/routes/product-routes';
 import {tt_notice, tt_product} from "@src/models/init-models";
 import authRoutes from "@src/routes/auth-routes";

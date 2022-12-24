@@ -14,7 +14,7 @@ export interface tt_trade_reviewAttributes {
   IPv6?: any;
   CREATE_TIME?: Date;
   UPDATE_TIME?: Date;
-  DELETE_TF?: string;
+  DELETE_TF?: number;
 }
 
 export type tt_trade_reviewPk = "TRADE_REVIEW_ID";
@@ -34,7 +34,7 @@ export class tt_trade_review extends Model<tt_trade_reviewAttributes, tt_trade_r
   IPv6?: any;
   CREATE_TIME?: Date;
   UPDATE_TIME?: Date;
-  DELETE_TF?: string;
+  DELETE_TF?: number;
 
   // tt_trade_review belongsTo tt_trade via PRODUCT_ID
   PRODUCT!: tt_trade;
@@ -98,9 +98,9 @@ export class tt_trade_review extends Model<tt_trade_reviewAttributes, tt_trade_r
       defaultValue: Sequelize.Sequelize.fn('current_timestamp')
     },
     DELETE_TF: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.BOOLEAN,
       allowNull: true,
-      defaultValue: "F"
+      defaultValue: 0
     }
   }, {
     sequelize,

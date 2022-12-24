@@ -1,8 +1,8 @@
 import * as Sequelize from 'sequelize';
-import {DataTypes, Model, Optional} from 'sequelize';
-import type {tt_product, tt_productId} from './tt_product';
-import type {tt_trade_review, tt_trade_reviewId} from './tt_trade_review';
-import type {tt_user, tt_userId} from './tt_user';
+import { DataTypes, Model, Optional } from 'sequelize';
+import type { tt_product, tt_productId } from './tt_product';
+import type { tt_trade_review, tt_trade_reviewId } from './tt_trade_review';
+import type { tt_user, tt_userId } from './tt_user';
 
 export interface tt_tradeAttributes {
   PRODUCT_ID: number;
@@ -14,21 +14,12 @@ export interface tt_tradeAttributes {
   BUYER_USER_ID?: number;
   BUYER_USER_IPv4?: number;
   BUYER_USER_IPv6?: any;
-  DELETE_TF?: string;
+  DELETE_TF?: number;
 }
 
 export type tt_tradePk = "PRODUCT_ID";
 export type tt_tradeId = tt_trade[tt_tradePk];
-export type tt_tradeOptionalAttributes =
-  "TRADE_TIME"
-  | "TRADE_STATUS"
-  | "SELLER_USER_ID"
-  | "SELLER_USER_IPv4"
-  | "SELLER_USER_IPv6"
-  | "BUYER_USER_ID"
-  | "BUYER_USER_IPv4"
-  | "BUYER_USER_IPv6"
-  | "DELETE_TF";
+export type tt_tradeOptionalAttributes = "TRADE_TIME" | "TRADE_STATUS" | "SELLER_USER_ID" | "SELLER_USER_IPv4" | "SELLER_USER_IPv6" | "BUYER_USER_ID" | "BUYER_USER_IPv4" | "BUYER_USER_IPv6" | "DELETE_TF";
 export type tt_tradeCreationAttributes = Optional<tt_tradeAttributes, tt_tradeOptionalAttributes>;
 
 export class tt_trade extends Model<tt_tradeAttributes, tt_tradeCreationAttributes> implements tt_tradeAttributes {
@@ -41,7 +32,7 @@ export class tt_trade extends Model<tt_tradeAttributes, tt_tradeCreationAttribut
   BUYER_USER_ID?: number;
   BUYER_USER_IPv4?: number;
   BUYER_USER_IPv6?: any;
-  DELETE_TF?: string;
+  DELETE_TF?: number;
 
   // tt_trade belongsTo tt_product via PRODUCT_ID
   PRODUCT!: tt_product;
@@ -73,108 +64,107 @@ export class tt_trade extends Model<tt_tradeAttributes, tt_tradeCreationAttribut
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_trade {
     return tt_trade.init({
-      PRODUCT_ID: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: false,
-        primaryKey: true,
-        comment: "거래 상품 ID",
-        references: {
-          model: 'tt_product',
-          key: 'PRODUCT_ID',
-        },
+    PRODUCT_ID: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false,
+      primaryKey: true,
+      comment: "거래 상품 ID",
+      references: {
+        model: 'tt_product',
+        key: 'PRODUCT_ID'
+      }
+    },
+    TRADE_TIME: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
+      comment: "거래일"
+    },
+    TRADE_STATUS: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      comment: "0:판매중,1:채팅중,9:거래완료"
+    },
+    SELLER_USER_ID: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: true,
+      comment: "판매자 ID",
+      references: {
+        model: 'tt_user',
+        key: 'USER_ID'
+      }
+    },
+    SELLER_USER_IPv4: {
+      type: DataTypes.STRING(45),
+      allowNull: true,
+      comment: "판매자 IPv4"
+    },
+    SELLER_USER_IPv6: {
+      type: DataTypes.BLOB,
+      allowNull: true,
+      comment: "판매자 IPv6"
+    },
+    BUYER_USER_ID: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: true,
+      comment: "구매자 ID",
+      references: {
+        model: 'tt_user',
+        key: 'USER_ID'
+      }
+    },
+    BUYER_USER_IPv4: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+      comment: "구매자 IPv4"
+    },
+    BUYER_USER_IPv6: {
+      type: DataTypes.BLOB,
+      allowNull: true,
+      comment: "구매자 IPv6"
+    },
+    DELETE_TF: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: 0,
+      comment: "삭제 여부"
+    }
+  }, {
+    sequelize,
+    tableName: 'tt_trade',
+    timestamps: false,
+    indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "PRODUCT_ID" },
+        ]
       },
-      TRADE_TIME: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
-        comment: "거래일",
+      {
+        name: "FK_tt_product_trade_log_BUYER_USER_ID_tt_user_USER_ID",
+        using: "BTREE",
+        fields: [
+          { name: "BUYER_USER_ID" },
+        ]
       },
-      TRADE_STATUS: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0,
-        comment: "0:판매중,1:채팅중,2:거래완료",
+      {
+        name: "FK_tt_product_trade_log_PRODUCT_ID_tt_product_PRODUCT_ID",
+        using: "BTREE",
+        fields: [
+          { name: "PRODUCT_ID" },
+        ]
       },
-      SELLER_USER_ID: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: true,
-        comment: "판매자 ID",
-        references: {
-          model: 'tt_user',
-          key: 'USER_ID',
-        },
+      {
+        name: "FK_tt_product_trade_log_SELLER_USER_ID_tt_user_USER_ID",
+        using: "BTREE",
+        fields: [
+          { name: "SELLER_USER_ID" },
+        ]
       },
-      SELLER_USER_IPv4: {
-        type: DataTypes.STRING(45),
-        allowNull: true,
-        comment: "판매자 IPv4",
-      },
-      SELLER_USER_IPv6: {
-        type: DataTypes.BLOB,
-        allowNull: true,
-        comment: "판매자 IPv6",
-      },
-      BUYER_USER_ID: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: true,
-        comment: "구매자 ID",
-        references: {
-          model: 'tt_user',
-          key: 'USER_ID',
-        },
-      },
-      BUYER_USER_IPv4: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: true,
-        comment: "구매자 IPv4",
-      },
-      BUYER_USER_IPv6: {
-        type: DataTypes.BLOB,
-        allowNull: true,
-        comment: "구매자 IPv6",
-      },
-      DELETE_TF: {
-        type: DataTypes.STRING(1),
-        allowNull: true,
-        defaultValue: "F",
-        comment: "삭제 여부",
-      },
-    }, {
-      sequelize,
-      tableName: 'tt_trade',
-      hasTrigger: true,
-      timestamps: false,
-      indexes: [
-        {
-          name: "PRIMARY",
-          unique: true,
-          using: "BTREE",
-          fields: [
-            {name: "PRODUCT_ID"},
-          ],
-        },
-        {
-          name: "FK_tt_product_trade_log_BUYER_USER_ID_tt_user_USER_ID",
-          using: "BTREE",
-          fields: [
-            {name: "BUYER_USER_ID"},
-          ],
-        },
-        {
-          name: "FK_tt_product_trade_log_PRODUCT_ID_tt_product_PRODUCT_ID",
-          using: "BTREE",
-          fields: [
-            {name: "PRODUCT_ID"},
-          ],
-        },
-        {
-          name: "FK_tt_product_trade_log_SELLER_USER_ID_tt_user_USER_ID",
-          using: "BTREE",
-          fields: [
-            {name: "SELLER_USER_ID"},
-          ],
-        },
-      ],
-    });
+    ]
+  });
   }
 }

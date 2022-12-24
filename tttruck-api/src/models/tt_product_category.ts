@@ -7,7 +7,7 @@ export interface tt_product_categoryAttributes {
   PRODUCT_CATEGORY_ID: number;
   PRODUCT_CATEGORY_NAME?: string;
   PRODUCT_CATEGORY_PRIORITY?: number;
-  VISIBLE_TF?: string;
+  VISIBLE_TF?: number;
   UPDATE_USER_ID?: number;
   UPDATE_USER_IPv4?: number;
   UPDATE_USER_IPv6?: any;
@@ -27,7 +27,7 @@ export class tt_product_category extends Model<tt_product_categoryAttributes, tt
   PRODUCT_CATEGORY_ID!: number;
   PRODUCT_CATEGORY_NAME?: string;
   PRODUCT_CATEGORY_PRIORITY?: number;
-  VISIBLE_TF?: string;
+  VISIBLE_TF?: number;
   UPDATE_USER_ID?: number;
   UPDATE_USER_IPv4?: number;
   UPDATE_USER_IPv6?: any;
@@ -81,9 +81,9 @@ export class tt_product_category extends Model<tt_product_categoryAttributes, tt
       comment: "카테고리 우선순위"
     },
     VISIBLE_TF: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.BOOLEAN,
       allowNull: true,
-      defaultValue: "T",
+      defaultValue: 1,
       comment: "카테고리 노출 여부"
     },
     UPDATE_USER_ID: {

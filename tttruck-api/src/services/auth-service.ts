@@ -51,17 +51,19 @@ async function addNormalUser(user:tt_user): Promise<tt_user>{
       errors.notCorrectCode(user.PHONE_AUTH_CODE),
     );
   }
-  user.PHONE_AUTH_TF = 'T';
+  user.PHONE_AUTH_TF = Number(true);
   user.GROUP = 0;
   user.ACCESSTOKEN = await jwtUtil.sign({
     phone: user.PHONE,
     password: user.PASSWORD,
   });
-  phoneAuth.update({PHONE_AUTH_TF : 'T'});
+  phoneAuth.update({PHONE_AUTH_TF : Number(true)});
   return tt_user.create(user);
 }
 /**
  * Login a user.
+ * @apiBody Number [field=defaultValue] [description
+ * ]
  */
 async function getJwtUser(phone: string, password: string): Promise<tt_user> {
   // Fetch user

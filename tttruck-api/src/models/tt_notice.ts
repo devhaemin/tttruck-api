@@ -8,9 +8,9 @@ export interface tt_noticeAttributes {
   NOTICE_MASTER_ID: number;
   NOTICE_ID: number;
   SUBJECT?: string;
-  HTML_TF?: string;
+  HTML_TF?: number;
   CONTENTS?: string;
-  DISPLAY_TF?: string;
+  DISPLAY_TF?: number;
   DISPLAY_START_TIME?: Date;
   DISPLAY_END_TIME?: Date;
   POST_USER_ID?: number;
@@ -22,7 +22,7 @@ export interface tt_noticeAttributes {
   UPDATE_IPv4?: number;
   UPDATE_IPv6?: any;
   CONTENT_ID?: number;
-  TOP_FIX_TF: string;
+  TOP_FIX_TF: number;
 }
 
 export type tt_noticePk = "NOTICE_ID";
@@ -34,9 +34,9 @@ export class tt_notice extends Model<tt_noticeAttributes, tt_noticeCreationAttri
   NOTICE_MASTER_ID!: number;
   NOTICE_ID!: number;
   SUBJECT?: string;
-  HTML_TF?: string;
+  HTML_TF?: number;
   CONTENTS?: string;
-  DISPLAY_TF?: string;
+  DISPLAY_TF?: number;
   DISPLAY_START_TIME?: Date;
   DISPLAY_END_TIME?: Date;
   POST_USER_ID?: number;
@@ -48,7 +48,7 @@ export class tt_notice extends Model<tt_noticeAttributes, tt_noticeCreationAttri
   UPDATE_IPv4?: number;
   UPDATE_IPv6?: any;
   CONTENT_ID?: number;
-  TOP_FIX_TF!: string;
+  TOP_FIX_TF!: number;
 
   // tt_notice hasMany tt_notice_image via NOTICE_ID
   tt_notice_images!: tt_notice_image[];
@@ -102,9 +102,9 @@ export class tt_notice extends Model<tt_noticeAttributes, tt_noticeCreationAttri
       comment: "제목"
     },
     HTML_TF: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.BOOLEAN,
       allowNull: true,
-      defaultValue: "F",
+      defaultValue: 0,
       comment: "HTML 여부"
     },
     CONTENTS: {
@@ -113,9 +113,9 @@ export class tt_notice extends Model<tt_noticeAttributes, tt_noticeCreationAttri
       comment: "내용"
     },
     DISPLAY_TF: {
-      type: DataTypes.CHAR(1),
+      type: DataTypes.BOOLEAN,
       allowNull: true,
-      defaultValue: "T",
+      defaultValue: 1,
       comment: "노출 여부"
     },
     DISPLAY_START_TIME: {
@@ -186,9 +186,9 @@ export class tt_notice extends Model<tt_noticeAttributes, tt_noticeCreationAttri
       comment: "컨텐츠 ID"
     },
     TOP_FIX_TF: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: "F",
+      defaultValue: 0,
       comment: "상단 고정 여부"
     }
   }, {

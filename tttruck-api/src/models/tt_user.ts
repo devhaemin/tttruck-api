@@ -21,7 +21,7 @@ export interface tt_userAttributes {
   WASTE_SAVINGS: number;
   GROUP: number;
   PROFILE_IMAGE?: string;
-  INTERIOR_COMPANY_TF: string;
+  INTERIOR_COMPANY_TF: number;
   INTERIOR_COMPANY_NAME?: string;
   BIRTHDAY?: string;
   GENDER?: number;
@@ -29,12 +29,12 @@ export interface tt_userAttributes {
   ADDRESS?: string;
   DETAIL_ADDRESS?: string;
   JOIN_STATE?: string;
-  RESTING_TF: string;
-  LEAVE_TF: string;
+  RESTING_TF: number;
+  LEAVE_TF: number;
   PHONE_AUTH_CODE?: string;
   PHONE_AUTH_DATE?: Date;
   PHONE_AUTH_SUCCEED_DATE?: Date;
-  PHONE_AUTH_TF: string;
+  PHONE_AUTH_TF: number;
   REG_TIME?: Date;
   UPD_TIME?: Date;
   JOIN_TIME?: Date;
@@ -57,7 +57,7 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   WASTE_SAVINGS!: number;
   GROUP!: number;
   PROFILE_IMAGE?: string;
-  INTERIOR_COMPANY_TF!: string;
+  INTERIOR_COMPANY_TF!: number;
   INTERIOR_COMPANY_NAME?: string;
   BIRTHDAY?: string;
   GENDER?: number;
@@ -65,12 +65,12 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   ADDRESS?: string;
   DETAIL_ADDRESS?: string;
   JOIN_STATE?: string;
-  RESTING_TF!: string;
-  LEAVE_TF!: string;
+  RESTING_TF!: number;
+  LEAVE_TF!: number;
   PHONE_AUTH_CODE?: string;
   PHONE_AUTH_DATE?: Date;
   PHONE_AUTH_SUCCEED_DATE?: Date;
-  PHONE_AUTH_TF!: string;
+  PHONE_AUTH_TF!: number;
   REG_TIME?: Date;
   UPD_TIME?: Date;
   JOIN_TIME?: Date;
@@ -303,9 +303,9 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
       comment: "프로필 이미지"
     },
     INTERIOR_COMPANY_TF: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: "F",
+      defaultValue: 0,
       comment: "인테리어 회사 소속 여부"
     },
     INTERIOR_COMPANY_NAME: {
@@ -344,15 +344,15 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
       comment: "가입 상태 (01:승인대기, 02:승인거부, 03:관리자승인대기, 04:완료)"
     },
     RESTING_TF: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: "F",
+      defaultValue: 0,
       comment: "휴면 여부"
     },
     LEAVE_TF: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: "F",
+      defaultValue: 0,
       comment: "탈퇴 여부"
     },
     PHONE_AUTH_CODE: {
@@ -371,9 +371,9 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
       comment: "휴대폰 인증 완료 시간"
     },
     PHONE_AUTH_TF: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: "F",
+      defaultValue: 0,
       comment: "휴대폰 인증 여부"
     },
     REG_TIME: {

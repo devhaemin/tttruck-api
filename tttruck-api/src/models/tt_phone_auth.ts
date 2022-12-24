@@ -7,7 +7,7 @@ export interface tt_phone_authAttributes {
   PHONE_AUTH_CODE?: string;
   REG_TIME: Date;
   UPD_TIME?: Date;
-  PHONE_AUTH_TF: string;
+  PHONE_AUTH_TF: number;
   EXPIRED_TIME: Date;
 }
 
@@ -22,7 +22,7 @@ export class tt_phone_auth extends Model<tt_phone_authAttributes, tt_phone_authC
   PHONE_AUTH_CODE?: string;
   REG_TIME!: Date;
   UPD_TIME?: Date;
-  PHONE_AUTH_TF!: string;
+  PHONE_AUTH_TF!: number;
   EXPIRED_TIME!: Date;
 
 
@@ -53,9 +53,9 @@ export class tt_phone_auth extends Model<tt_phone_authAttributes, tt_phone_authC
       defaultValue: Sequelize.Sequelize.fn('current_timestamp')
     },
     PHONE_AUTH_TF: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: "F"
+      defaultValue: 0
     },
     EXPIRED_TIME: {
       type: DataTypes.DATE,

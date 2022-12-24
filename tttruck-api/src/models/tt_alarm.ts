@@ -6,7 +6,7 @@ export interface tt_alarmAttributes {
   USER_ID: number;
   SUBJECT: string;
   CONTENTS?: string;
-  VIEW_TF?: number;
+  VIEW_TF: number;
   IMAGEURL?: string;
   TIME: Date;
 }
@@ -21,7 +21,7 @@ export class tt_alarm extends Model<tt_alarmAttributes, tt_alarmCreationAttribut
   USER_ID!: number;
   SUBJECT!: string;
   CONTENTS?: string;
-  VIEW_TF?: number;
+  VIEW_TF!: number;
   IMAGEURL?: string;
   TIME!: Date;
 
@@ -49,8 +49,9 @@ export class tt_alarm extends Model<tt_alarmAttributes, tt_alarmCreationAttribut
       comment: "알림 내용"
     },
     VIEW_TF: {
-      type: DataTypes.INTEGER,
-      allowNull: true
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 1
     },
     IMAGEURL: {
       type: DataTypes.TEXT,

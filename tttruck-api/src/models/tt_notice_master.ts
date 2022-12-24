@@ -6,10 +6,10 @@ import type { tt_user, tt_userId } from './tt_user';
 export interface tt_notice_masterAttributes {
   NOTICE_MASTER_ID: number;
   TITLE?: string;
-  COMMENT_TF?: string;
-  SECRET_TF?: string;
-  ATTACH_TF?: string;
-  DISPLAY_TF?: string;
+  COMMENT_TF?: number;
+  SECRET_TF?: number;
+  ATTACH_TF?: number;
+  DISPLAY_TF?: number;
   DIV_CODE?: string;
   CREATE_USER_ID?: number;
   CREATE_TIME?: Date;
@@ -21,7 +21,7 @@ export interface tt_notice_masterAttributes {
   UPDATE_IPv6?: any;
   EXTRA_FIELD_FIRST_LABEL?: string;
   EXTRA_FIELD_FIRST_CODE?: string;
-  DELETE_TF?: string;
+  DELETE_TF?: number;
 }
 
 export type tt_notice_masterPk = "NOTICE_MASTER_ID";
@@ -32,10 +32,10 @@ export type tt_notice_masterCreationAttributes = Optional<tt_notice_masterAttrib
 export class tt_notice_master extends Model<tt_notice_masterAttributes, tt_notice_masterCreationAttributes> implements tt_notice_masterAttributes {
   NOTICE_MASTER_ID!: number;
   TITLE?: string;
-  COMMENT_TF?: string;
-  SECRET_TF?: string;
-  ATTACH_TF?: string;
-  DISPLAY_TF?: string;
+  COMMENT_TF?: number;
+  SECRET_TF?: number;
+  ATTACH_TF?: number;
+  DISPLAY_TF?: number;
   DIV_CODE?: string;
   CREATE_USER_ID?: number;
   CREATE_TIME?: Date;
@@ -47,7 +47,7 @@ export class tt_notice_master extends Model<tt_notice_masterAttributes, tt_notic
   UPDATE_IPv6?: any;
   EXTRA_FIELD_FIRST_LABEL?: string;
   EXTRA_FIELD_FIRST_CODE?: string;
-  DELETE_TF?: string;
+  DELETE_TF?: number;
 
   // tt_notice_master hasMany tt_notice via NOTICE_MASTER_ID
   tt_notices!: tt_notice[];
@@ -87,27 +87,27 @@ export class tt_notice_master extends Model<tt_notice_masterAttributes, tt_notic
       comment: "소식 카테고리 이름"
     },
     COMMENT_TF: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.BOOLEAN,
       allowNull: true,
-      defaultValue: "T",
+      defaultValue: 1,
       comment: "댓글 사용 여부"
     },
     SECRET_TF: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.BOOLEAN,
       allowNull: true,
-      defaultValue: "F",
+      defaultValue: 0,
       comment: "비밀글 사용 여부"
     },
     ATTACH_TF: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.BOOLEAN,
       allowNull: true,
-      defaultValue: "T",
+      defaultValue: 1,
       comment: "첨부파일 사용 여부"
     },
     DISPLAY_TF: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.BOOLEAN,
       allowNull: true,
-      defaultValue: "F",
+      defaultValue: 0,
       comment: "노출 사용 여부"
     },
     DIV_CODE: {
@@ -176,9 +176,9 @@ export class tt_notice_master extends Model<tt_notice_masterAttributes, tt_notic
       comment: "레이블 값"
     },
     DELETE_TF: {
-      type: DataTypes.STRING(1),
+      type: DataTypes.BOOLEAN,
       allowNull: true,
-      defaultValue: "F",
+      defaultValue: 0,
       comment: "삭제 여부"
     }
   }, {

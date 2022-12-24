@@ -3,7 +3,6 @@ import {RouteError} from '@src/declarations/classes';
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import logger from "jet-logger";
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
-import {getClientIP} from "@src/util/ip-util";
 import {S3File} from "@src/routes/shared/awsMultipart";
 
 
@@ -62,14 +61,15 @@ async function getById(id: number): Promise<tt_product> {
 }
 
 /**
- * Add one user.
+ * Add one product
  */
 function addOne(product: tt_product): Promise<tt_product> {
+  product.LOCATION = {type: 'Point', coordinates: [Number(product.LONGITUDE), Number(product.LATITUDE)]};
   return tt_product.create(product);
 }
 
 /**
- * Update one user.
+ * Update one product
  */
 async function updateOne(user: tt_user, product: tt_product): Promise<tt_product> {
   const persists = await tt_product.findAll({where: {PRODUCT_ID: product.PRODUCT_ID}});

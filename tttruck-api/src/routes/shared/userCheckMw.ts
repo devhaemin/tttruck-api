@@ -107,7 +107,7 @@ export async function normalUserMw(
   if (
     clientData && clientData.length > 0 &&
     (clientData[0].GROUP >= tt_user_group.NORMAL) &&
-    clientData[0].PHONE_AUTH_TF === 'T'
+    clientData[0].PHONE_AUTH_TF
   ) {
     res.locals.user = clientData;
     return next();

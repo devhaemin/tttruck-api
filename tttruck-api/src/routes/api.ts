@@ -72,7 +72,7 @@ productRouter.get(productRoutes.paths.getById, productRoutes.getById);
 // Add a product
 productRouter.post(
   productRoutes.paths.add,
-  validate(['product', typeof tt_product]),
+  //validate(['product', typeof tt_product]),
   normalUserMw,
   productRoutes.add,
 );

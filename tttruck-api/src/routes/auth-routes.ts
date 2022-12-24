@@ -172,7 +172,7 @@ async function signup(req: IReq<ISignUpReq>, res: IRes) {
  *
  * @apiParamExample {json} Request-Example:
  *     {
- *       "PHONE_AUTH_CODE" : "726819"
+ *       "phone" : "01098810664"
  *     }
  *
  * @apiSuccessExample {json} Success-Response:

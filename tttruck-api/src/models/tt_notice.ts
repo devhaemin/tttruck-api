@@ -127,7 +127,7 @@ export class tt_notice extends Model<tt_noticeAttributes, tt_noticeCreationAttri
     DISPLAY_END_TIME: {
       type: DataTypes.DATE,
       allowNull: true,
-      defaultValue: "0000-00-00 00:00:00",
+      defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
       comment: "게시 종료일"
     },
     POST_USER_ID: {

@@ -2,7 +2,10 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 
 import noticeService from '@src/services/notice-service';
 import {IReq, IRes} from './shared/types';
-import {tt_notice} from '@src/models/init-models';
+import {
+  tt_notice,
+  tt_notice_master,
+} from '@src/models/init-models';
 import logger from "jet-logger";
 import {getClientIP} from "@src/util/ip-util";
 import {S3File} from "@src/routes/shared/awsMultipart";
@@ -15,6 +18,7 @@ import {tt_noticeId} from "@src/models/tt_notice";
 const paths = {
   basePath: '/notices',
   getAll: '/all',
+  getCategories: '/category',
   getByCategory: '/category/:id',
   getById: '/:id',
   add: '/add',
@@ -37,10 +41,49 @@ const paths = {
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
+ * [
  *     {
- *     //todo: 추가하기
- *     ]
- * }
+ *         "NOTICE_MASTER_ID": 1,
+ *         "NOTICE_ID": 1,
+ *         "SUBJECT": "TEST SUBJECT",
+ *         "HTML_TF": false,
+ *         "CONTENTS": "TEST CONTENTS",
+ *         "DISPLAY_TF": true,
+ *         "DISPLAY_START_TIME": "2022-12-24T07:42:53.000Z",
+ *         "DISPLAY_END_TIME": "2022-12-24T07:42:53.000Z",
+ *         "POST_USER_ID": 4,
+ *         "POST_TIME": "2022-12-24T07:42:53.000Z",
+ *         "POST_IPv4": 0,
+ *         "POST_IPv6": null,
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_TIME": "2022-12-24T07:42:53.000Z",
+ *         "UPDATE_IPv4": 0,
+ *         "UPDATE_IPv6": null,
+ *         "CONTENT_ID": null,
+ *         "TOP_FIX_TF": false
+ *     },
+ *     {
+ *         "NOTICE_MASTER_ID": 1,
+ *         "NOTICE_ID": 2,
+ *         "SUBJECT": "TEST SUBJECT",
+ *         "HTML_TF": false,
+ *         "CONTENTS": "TEST CONTENTS",
+ *         "DISPLAY_TF": true,
+ *         "DISPLAY_START_TIME": "2022-12-24T07:43:38.000Z",
+ *         "DISPLAY_END_TIME": "2022-12-24T07:43:38.000Z",
+ *         "POST_USER_ID": 4,
+ *         "POST_TIME": "2022-12-24T07:43:38.000Z",
+ *         "POST_IPv4": 0,
+ *         "POST_IPv6": null,
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_TIME": "2022-12-24T07:43:38.000Z",
+ *         "UPDATE_IPv4": 0,
+ *         "UPDATE_IPv6": null,
+ *         "CONTENT_ID": null,
+ *         "TOP_FIX_TF": false
+ *     }
+ * ]
+ *
  *
  * @apiError ProductNotFound The id of the User was not found.
  *
@@ -53,7 +96,8 @@ const paths = {
 async function getAll(req: IReq, res: IRes) {
   const notices = await noticeService.getAll();
   logger.info(notices);
-  return res.status(HttpStatusCodes.OK).json({products: notices});
+  //todo 이미지 Array 추가되게끔 하기.
+  return res.status(HttpStatusCodes.OK).json(notices);
 }
 
 /**
@@ -83,7 +127,7 @@ async function getByCategory(req: IReq, res: IRes) {
   const id = +req.params.id;
   const notices = await noticeService.getByCategory(id);
   logger.info(notices);
-  return res.status(HttpStatusCodes.OK).json({products: notices});
+  return res.status(HttpStatusCodes.OK).json(notices);
 }
 
 /**
@@ -113,7 +157,7 @@ async function getById(req: IReq, res: IRes) {
   const id = +req.params.id;
   const notice = await noticeService.getById(id);
   logger.info(notice);
-  return res.status(HttpStatusCodes.OK).json({product: notice});
+  return res.status(HttpStatusCodes.OK).json(notice);
 }
 
 
@@ -122,17 +166,47 @@ async function getById(req: IReq, res: IRes) {
  * @apiName AddNotice
  * @apiGroup Notice
  *
- * @apiPermission normalUser
- *
+ * @apiPermission adminUser
  * @apiParamExample {json} Request-Example:
  * {
- *
- *   }
+ *     "notice":{
+ *         "NOTICE_MASTER_ID":1,
+ *         "SUBJECT":"TEST SUBJECT",
+ *         "CONTENTS":"TEST CONTENTS"
+ *     }
  * }
  *
- * @apiSuccessExample Success-Response:
- *     HTTP/1.1 201 OK
- *     {}
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ * {
+ *     "HTML_TF": false,
+ *     "DISPLAY_TF": true,
+ *     "DISPLAY_START_TIME": {
+ *         "fn": "current_timestamp",
+ *         "args": []
+ *     },
+ *     "DISPLAY_END_TIME": {
+ *         "fn": "current_timestamp",
+ *         "args": []
+ *     },
+ *     "POST_TIME": {
+ *         "fn": "current_timestamp",
+ *         "args": []
+ *     },
+ *     "UPDATE_TIME": {
+ *         "fn": "current_timestamp",
+ *         "args": []
+ *     },
+ *     "TOP_FIX_TF": false,
+ *     "NOTICE_ID": 2,
+ *     "NOTICE_MASTER_ID": 1,
+ *     "SUBJECT": "TEST SUBJECT",
+ *     "CONTENTS": "TEST CONTENTS",
+ *     "UPDATE_IPv4": null,
+ *     "POST_IPv4": null,
+ *     "POST_USER_ID": 4,
+ *     "UPDATE_USER_ID": 4
+ * }
  *
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 404 Not Found
@@ -143,12 +217,13 @@ async function getById(req: IReq, res: IRes) {
 
 async function add(req: IReq<{ notice: tt_notice }>, res: IRes) {
   const {notice} = req.body;
+  const user = res.locals.user;
   notice.UPDATE_IPv4 = getClientIP(req);
   notice.POST_IPv4 = getClientIP(req);
-  notice.POST_USER_ID = res.locals.user.USER_ID;
-  notice.UPDATE_USER_ID = res.locals.user.USER_ID;
-  await noticeService.addOne(notice);
-  return res.status(HttpStatusCodes.CREATED).end();
+  notice.POST_USER_ID = user.USER_ID;
+  notice.UPDATE_USER_ID = user.USER_ID;
+  const result = await noticeService.addOne(notice);
+  return res.status(HttpStatusCodes.CREATED).json(result).end();
 }
 
 /**
@@ -158,8 +233,8 @@ async function add(req: IReq<{ notice: tt_notice }>, res: IRes) {
  *
  * @apiPermission normalUser
  *
- * @apiBody Number noticeId 소식 ID 값
- * @apiBody File file 소식에 추가할 이미지
+ * @apiBody {Number} noticeId 소식 ID 값
+ * @apiBody {File} file 소식에 추가할 이미지
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -171,11 +246,10 @@ async function add(req: IReq<{ notice: tt_notice }>, res: IRes) {
  *       "error": "NoticeNotFound"
  *     }
  */
-async function imageUpload(req: IReq<{noticeId: tt_noticeId }>, res: IRes) {
+async function imageUpload(req: IReq<{noticeId: number }>, res: IRes) {
   const {noticeId} = req.body;
   const file = req.file as S3File;
-  const notice = await tt_notice.findByPk(noticeId);
-  await noticeService.uploadImage(notice,file,res.locals.user,getClientIP(req));
+  await noticeService.uploadImage(noticeId,file,res.locals.user,getClientIP(req));
   return res.status(HttpStatusCodes.CREATED).end();
 }
 
@@ -239,6 +313,106 @@ async function _delete(req: IReq, res: IRes) {
   await noticeService.delete(res.locals.user, id);
   return res.status(HttpStatusCodes.OK).end();
 }
+/**
+ * @api {get} /notices/category Sub Description
+ * @apiName GetNoticeCategories
+ * @apiGroup Notice
+ * @apiPermission none
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *     }
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *     {
+ *         "NOTICE_MASTER_ID": 1,
+ *         "TITLE": "이벤트",
+ *         "COMMENT_TF": true,
+ *         "SECRET_TF": false,
+ *         "ATTACH_TF": true,
+ *         "DISPLAY_TF": false,
+ *         "DIV_CODE": null,
+ *         "CREATE_USER_ID": 1,
+ *         "CREATE_TIME": "2022-12-24T07:17:28.000Z",
+ *         "REG_IPv4": null,
+ *         "REG_IPv6": null,
+ *         "UPDATE_USER_ID": null,
+ *         "UPDATE_TIME": "2022-12-24T07:17:28.000Z",
+ *         "UPDATE_IPv4": null,
+ *         "UPDATE_IPv6": null,
+ *         "EXTRA_FIELD_FIRST_LABEL": null,
+ *         "EXTRA_FIELD_FIRST_CODE": null,
+ *         "DELETE_TF": false
+ *     },
+ *     {
+ *         "NOTICE_MASTER_ID": 2,
+ *         "TITLE": "공지사항",
+ *         "COMMENT_TF": true,
+ *         "SECRET_TF": false,
+ *         "ATTACH_TF": true,
+ *         "DISPLAY_TF": false,
+ *         "DIV_CODE": null,
+ *         "CREATE_USER_ID": 1,
+ *         "CREATE_TIME": "2022-12-24T07:17:28.000Z",
+ *         "REG_IPv4": null,
+ *         "REG_IPv6": null,
+ *         "UPDATE_USER_ID": null,
+ *         "UPDATE_TIME": "2022-12-24T07:17:28.000Z",
+ *         "UPDATE_IPv4": null,
+ *         "UPDATE_IPv6": null,
+ *         "EXTRA_FIELD_FIRST_LABEL": null,
+ *         "EXTRA_FIELD_FIRST_CODE": null,
+ *         "DELETE_TF": false
+ *     },
+ *     {
+ *         "NOTICE_MASTER_ID": 3,
+ *         "TITLE": "뉴스",
+ *         "COMMENT_TF": true,
+ *         "SECRET_TF": false,
+ *         "ATTACH_TF": true,
+ *         "DISPLAY_TF": false,
+ *         "DIV_CODE": null,
+ *         "CREATE_USER_ID": 1,
+ *         "CREATE_TIME": "2022-12-24T07:17:28.000Z",
+ *         "REG_IPv4": null,
+ *         "REG_IPv6": null,
+ *         "UPDATE_USER_ID": null,
+ *         "UPDATE_TIME": "2022-12-24T07:17:28.000Z",
+ *         "UPDATE_IPv4": null,
+ *         "UPDATE_IPv6": null,
+ *         "EXTRA_FIELD_FIRST_LABEL": null,
+ *         "EXTRA_FIELD_FIRST_CODE": null,
+ *         "DELETE_TF": false
+ *     },
+ *     {
+ *         "NOTICE_MASTER_ID": 4,
+ *         "TITLE": "팁",
+ *         "COMMENT_TF": true,
+ *         "SECRET_TF": false,
+ *         "ATTACH_TF": true,
+ *         "DISPLAY_TF": false,
+ *         "DIV_CODE": null,
+ *         "CREATE_USER_ID": 1,
+ *         "CREATE_TIME": "2022-12-24T07:17:28.000Z",
+ *         "REG_IPv4": null,
+ *         "REG_IPv6": null,
+ *         "UPDATE_USER_ID": null,
+ *         "UPDATE_TIME": "2022-12-24T07:17:28.000Z",
+ *         "UPDATE_IPv4": null,
+ *         "UPDATE_IPv6": null,
+ *         "EXTRA_FIELD_FIRST_LABEL": null,
+ *         "EXTRA_FIELD_FIRST_CODE": null,
+ *         "DELETE_TF": false
+ *     }
+ * ]
+ *
+ */
+async function getCategories(req:IReq, res:IRes){
+  logger.info("TEST");
+  const categories = await tt_notice_master.findAll();
+  return res.status(HttpStatusCodes.OK).json(categories).end();
+}
 
 
 // **** Export default **** //
@@ -252,4 +426,5 @@ export default {
   imageUpload,
   update,
   delete: _delete,
+  getCategories,
 } as const;

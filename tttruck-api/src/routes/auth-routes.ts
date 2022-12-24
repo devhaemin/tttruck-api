@@ -132,7 +132,7 @@ function tokenLogin(req: IReq, res: IRes) {
  * }
  *
  */
-async function login(req: IReq<ILoginReq>, res: IRes) {
+async function login(req: IReq<{phone:string, password:string}>, res: IRes) {
   const {phone, password} = req.body;
   // Add jwt to cookie
   const jwtUser = await authService.getJwtUser(phone, password);

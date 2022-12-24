@@ -26,7 +26,6 @@ authRouter.get(
 // Login user
 authRouter.post(
   authRoutes.paths.login,
-  validate('phone', 'password'),
   authRoutes.login,
 );
 authRouter.post(
@@ -101,6 +100,9 @@ apiRouter.use(productRoutes.paths.basePath, productRouter);
 const noticeRouter = Router();
 const noticeImageMulter = getS3Multer('notice/image');
 
+// Get notice categories
+noticeRouter.get(noticeRoutes.paths.getCategories, noticeRoutes.getCategories);
+
 // Get all products
 noticeRouter.get(noticeRoutes.paths.getAll, noticeRoutes.getAll);
 
@@ -113,7 +115,6 @@ noticeRouter.get(noticeRoutes.paths.getById, noticeRoutes.getById);
 // Add a product
 noticeRouter.post(
   noticeRoutes.paths.add,
-  validate(['notice', typeof tt_notice]),
   adminMw,
   noticeRoutes.add,
 );

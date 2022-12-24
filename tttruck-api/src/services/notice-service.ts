@@ -94,11 +94,12 @@ async function updateOne(user: tt_user, notice: tt_notice): Promise<tt_notice> {
   return notice;
 }
 
-async function uploadImage(notice: tt_notice | null, file: S3File | null, user: tt_user, ip: number) {
+async function uploadImage(noticeId:number, file: S3File | null, user: tt_user, ip: number) {
+  const notice = await tt_notice.findByPk(noticeId);
   if (!notice) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
-      "", //todo: prodNotFound 추가
+      noticeNotFoundErr, //todo: prodNotFound 추가
     );
   }
   if (!file) {

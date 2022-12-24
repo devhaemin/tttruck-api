@@ -178,7 +178,7 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
       allowNull: false
     },
     LOCATION: {
-      type: GEOMETRY("POINT"),
+      type: GEOMETRY('POINT'),
       allowNull: false
     },
     UPDATE_USER_ID: {

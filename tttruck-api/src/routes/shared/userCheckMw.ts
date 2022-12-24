@@ -43,18 +43,20 @@ export async function adminMw(
   next: NextFunction,
 ) {
 
-  const userToken = req.headers['authorization'];
+  let userToken = req.headers['authorization'];
   if (!userToken) {
     return res
       .status(HttpStatusCodes.UNAUTHORIZED)
       .json({error: jwtNotPresentErr});
   }
+  userToken = userToken.split(" ")[1];
   const clientData = await tt_user.findAll({where : {ACCESSTOKEN : userToken}});
   if (
     clientData &&
+    clientData.length > 0 &&
     clientData[0].GROUP === tt_user_group.ADMIN
   ) {
-    res.locals.sessionUser = clientData;
+    res.locals.user = clientData[0];
     return next();
     // Return an unauth error if user is not an admin
   } else {
@@ -78,6 +80,7 @@ export async function noPhoneUserMw(
   const clientData = await tt_user.findAll({where : {ACCESSTOKEN : userToken}});
   if (
     clientData &&
+    clientData.length > 0 &&
     (clientData[0].GROUP >= tt_user_group.NORMAL)
   ) {
     res.locals.user = clientData[0];

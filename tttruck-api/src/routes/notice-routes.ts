@@ -255,8 +255,8 @@ async function imageUpload(req: IReq<{noticeId: number }>, res: IRes) {
 
 
 /**
- * @api {update} /notices/update Add notice
- * @apiName AddNotice
+ * @api {put} /notices/update Update notice
+ * @apiName UpdateNotice
  * @apiGroup Notice
  *
  *
@@ -264,14 +264,22 @@ async function imageUpload(req: IReq<{noticeId: number }>, res: IRes) {
  *
  * @apiParamExample {json} Request-Example:
  * {
- *   notice:{
- *
- *   }
+ *     "notice":{
+ *         "NOTICE_ID":1,
+ *         "NOTICE_MASTER_ID":1,
+ *         "SUBJECT":"TEST SUBJECT 2",
+ *         "CONTENTS":"TEST CONTENTS 2"
+ *     }
  * }
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
- *     {}
+ * {
+ *     "NOTICE_ID": 1,
+ *     "NOTICE_MASTER_ID": 1,
+ *     "SUBJECT": "TEST SUBJECT 2",
+ *     "CONTENTS": "TEST CONTENTS 2"
+ * }
  *
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 404 Not Found
@@ -282,8 +290,8 @@ async function imageUpload(req: IReq<{noticeId: number }>, res: IRes) {
 
 async function update(req: IReq<{  notice: tt_notice }>, res: IRes) {
   const {notice} = req.body;
-  await noticeService.updateOne(res.locals.user, notice);
-  return res.status(HttpStatusCodes.OK).end();
+  const result = await noticeService.updateOne(res.locals.user, notice);
+  return res.status(HttpStatusCodes.OK).json(result).end();
 }
 
 /**
@@ -314,7 +322,7 @@ async function _delete(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.OK).end();
 }
 /**
- * @api {get} /notices/category Sub Description
+ * @api {get} /notices/category Get All Categories
  * @apiName GetNoticeCategories
  * @apiGroup Notice
  * @apiPermission none

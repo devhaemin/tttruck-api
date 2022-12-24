@@ -121,10 +121,9 @@ noticeRouter.post(
 
 // Update a product
 noticeRouter.put(
-  productRoutes.paths.update,
-  validate(['notice', typeof tt_notice]),
+  noticeRoutes.paths.update,
   adminMw,
-  productRoutes.update,
+  noticeRoutes.update,
 );
 
 noticeRouter.post(

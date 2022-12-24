@@ -18,7 +18,11 @@ export const noticeAuthorityErr = 'Can not modify Notice with your authority';
  * Get all notices
  */
 async function getAll(): Promise<tt_notice[]> {
-  const persists = await tt_notice.findAll();
+  const persists = await tt_notice.findAll(
+    {
+      include:
+        [{model: tt_notice_image, as: "tt_notice_images"}],
+    });
   if (!persists) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
@@ -34,6 +38,8 @@ async function getAll(): Promise<tt_notice[]> {
 async function getByCategory(id: number): Promise<tt_notice[]> {
   const persists = await tt_notice.findAll({
     where: {$NOTICE_MASTER_ID$: id},
+    include:
+      [{model: tt_notice_image, as: "tt_notice_images"}],
   });
   if (!persists) {
     throw new RouteError(
@@ -48,7 +54,10 @@ async function getByCategory(id: number): Promise<tt_notice[]> {
  * Get Notice by ID
  */
 async function getById(id: number): Promise<tt_notice> {
-  const persists = await tt_notice.findByPk(id);
+  const persists = await tt_notice.findByPk(id,{
+    include:
+      [{model: tt_notice_image, as: "tt_notice_images"}],
+  });
   if (!persists) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
@@ -69,13 +78,13 @@ function addOne(notice: tt_notice): Promise<tt_notice> {
  * Update one Notice
  */
 async function updateOne(user: tt_user, notice: tt_notice): Promise<tt_notice> {
-  if(!notice){
+  if (!notice) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
       noticeNotFoundErr,
     );
   }
-  const persists = await tt_notice.findAll({where:{NOTICE_ID:notice.NOTICE_ID}});
+  const persists = await tt_notice.findAll({where: {NOTICE_ID: notice.NOTICE_ID}});
   if (!persists) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
@@ -89,12 +98,12 @@ async function updateOne(user: tt_user, notice: tt_notice): Promise<tt_notice> {
     );
   }
   // Return user
-  const affectedCount = await notice.update(notice);
+  const affectedCount = await tt_notice.update(notice,{where: {NOTICE_ID : notice.NOTICE_ID}});
   logger.info(affectedCount);
   return notice;
 }
 
-async function uploadImage(noticeId:number, file: S3File | null, user: tt_user, ip: number) {
+async function uploadImage(noticeId: number, file: S3File | null, user: tt_user, ip: number) {
   const notice = await tt_notice.findByPk(noticeId);
   if (!notice) {
     throw new RouteError(

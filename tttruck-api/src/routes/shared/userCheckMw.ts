@@ -80,7 +80,7 @@ export async function noPhoneUserMw(
     clientData &&
     (clientData[0].GROUP >= tt_user_group.NORMAL)
   ) {
-    res.locals.user = clientData;
+    res.locals.user = clientData[0];
     return next();
     // Return an unauth error if user is not an admin
   } else {
@@ -109,7 +109,7 @@ export async function normalUserMw(
     (clientData[0].GROUP >= tt_user_group.NORMAL) &&
     clientData[0].PHONE_AUTH_TF
   ) {
-    res.locals.user = clientData;
+    res.locals.user = clientData[0];
     return next();
     // Return an unauth error if user is not an admin
   } else {

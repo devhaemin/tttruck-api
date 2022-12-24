@@ -31,13 +31,6 @@ authRouter.post(
 );
 authRouter.post(
   authRoutes.paths.signup,
-  validate("PHONE",
-    "PASSWORD",
-    "NICKNAME",
-    "NAME",
-    "INTERIOR_COMPANY_TF",
-    "BIRTHDAY",
-    "GENDER"),
   authRoutes.signup,
 );
 authRouter.post(

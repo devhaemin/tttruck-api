@@ -6,7 +6,6 @@ import {tick} from '@src/declarations/functions';
 import {tt_user} from "@src/models/tt_user";
 import {tt_phone_auth} from "@src/models/tt_phone_auth";
 import {sendPhoneAuthSMS} from "@src/util/sms-util";
-import logger from "jet-logger";
 
 
 // **** Variables **** //
@@ -22,8 +21,27 @@ export const errors = {
 
 // **** Functions **** //
 async function setPhoneAuth(code:string, phone:string): Promise<tt_phone_auth>{
+  const persists = await tt_user.findAll({where:{PHONE : phone}});
+  if(persists && persists.length !== 0){
+    throw new RouteError(
+      HttpStatusCodes.ALREADY_REPORTED,
+      "이미 가입된 번호입니다.",
+    );
+  }
   const sendSMS = await sendPhoneAuthSMS(code, phone);
-  logger.info(sendSMS);
+  const nCloudRes = sendSMS.parsedBody;
+  if(!nCloudRes ){
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      "NaverCloud API return nothing.",
+    );
+  }
+  if(nCloudRes.error){
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      nCloudRes.error.message + " / " + nCloudRes.error.details ,
+    );
+  }
   return tt_phone_auth.create({PHONE_AUTH_CODE : code, PHONE : phone});
 }
 
@@ -53,6 +71,7 @@ async function addNormalUser(user:tt_user): Promise<tt_user>{
   }
   user.PHONE_AUTH_TF = Number(true);
   user.GROUP = 0;
+  user.PASSWORD = await pwdUtil.getHash(user.PASSWORD);
   user.ACCESSTOKEN = await jwtUtil.sign({
     phone: user.PHONE,
     password: user.PASSWORD,

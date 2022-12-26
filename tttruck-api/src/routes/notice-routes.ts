@@ -162,7 +162,7 @@ async function getById(req: IReq, res: IRes) {
 
 
 /**
- * @api {post} /notices/add Add product
+ * @api {post} /notices/add Add Notice
  * @apiName AddNotice
  * @apiGroup Notice
  *

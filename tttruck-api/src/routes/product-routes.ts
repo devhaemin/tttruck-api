@@ -265,12 +265,13 @@ async function getById(req: IReq, res: IRes) {
 
 async function add(req: IReq<{ product: tt_product }>, res: IRes) {
   const {product} = req.body;
+  const user = res.locals.user;
   product.UPDATE_USER_IPv4 = getClientIP(req);
   product.SELLER_USER_IPv4 = getClientIP(req);
-  product.SELLER_USER_ID = res.locals.user.USER_ID;
-  product.UPDATE_USER_ID = res.locals.user.USER_ID;
-  await productService.addOne(product);
-  return res.status(HttpStatusCodes.CREATED).end();
+  product.SELLER_USER_ID = user.USER_ID;
+  product.UPDATE_USER_ID = user.USER_ID;
+  const result = await productService.addOne(product);
+  return res.status(HttpStatusCodes.CREATED).json(result).end();
 }
 
 /**

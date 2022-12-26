@@ -51,6 +51,7 @@ export async function adminMw(
   }
   userToken = userToken.split(" ")[1];
   const clientData = await tt_user.findAll({where : {ACCESSTOKEN : userToken}});
+  logger.info(JSON.stringify(clientData));
   if (
     clientData &&
     clientData.length > 0 &&

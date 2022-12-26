@@ -5,12 +5,15 @@ import EnvVars from '@src/declarations/major/EnvVars';
 import codeUtil from "@src/util/code-util";
 import {IReq, IRes} from './shared/types';
 import {tt_user} from "@src/models/init-models";
+import {getRandomNicknames} from "@src/util/nick-gen-util";
+import logger from "jet-logger";
 
 // **** Variables **** //
 
 // Paths
 const paths = {
   basePath: '/auth',
+  generateNickname: '/nickname/generate',
   login: '/login',
   tokenLogin: '/tokenLogin',
   logout: '/logout',
@@ -84,6 +87,35 @@ interface IPhoneAuthReq {
  */
 function tokenLogin(req: IReq, res: IRes) {
   return res.status(200).json(res.locals.user).end();
+}
+
+/**
+ * @api {get} /nickname/generate Sub Description
+ * @apiName getRandomNickname
+ * @apiGroup Auth
+ * @apiPermission none
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *     }
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *     "NICKNAME": "동그란사막여우7096"
+ *     }
+ *
+ */
+async function generateNickname(req:IReq, res:IRes){
+  const nicknames = getRandomNicknames();
+  let nickname = "";
+  for(let i = 0; i < 10; ++i){
+    const result = await tt_user.findAll({where:{NICKNAME:nicknames[i]}});
+    if(!result || result.length === 0 ) {
+      nickname = nicknames[i];
+      logger.info(nickname);
+      break;
+    }
+  }
+  return res.status(200).json({NICKNAME:nickname}).end();
 }
 
 /**
@@ -240,6 +272,7 @@ export default {
   tokenLogin,
   login,
   logout,
+  generateNickname,
   phoneRequestAuth,
   signup,
 } as const;

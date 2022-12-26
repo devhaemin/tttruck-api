@@ -19,6 +19,11 @@ const apiRouter = Router(),
 const authRouter = Router();
 
 authRouter.get(
+  authRoutes.paths.generateNickname,
+  authRoutes.generateNickname
+)
+
+authRouter.get(
   authRoutes.paths.tokenLogin,
   normalUserMw,
   authRoutes.tokenLogin,

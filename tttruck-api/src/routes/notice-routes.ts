@@ -9,7 +9,6 @@ import {
 import logger from "jet-logger";
 import {getClientIP} from "@src/util/ip-util";
 import {S3File} from "@src/routes/shared/awsMultipart";
-import {tt_noticeId} from "@src/models/tt_notice";
 
 
 // **** Variables **** //
@@ -101,7 +100,7 @@ async function getAll(req: IReq, res: IRes) {
 }
 
 /**
- * @api {get} /notices/category/:id Get Noticess by Category
+ * @api {get} /notices/category/:id Get Notices by Category
  * @apiName GetNoticesByCategory
  * @apiGroup Notice
  *
@@ -238,7 +237,26 @@ async function add(req: IReq<{ notice: tt_notice }>, res: IRes) {
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
- *     {}
+ *{
+ *     "NOTICE_MASTER_ID": 1,
+ *     "NOTICE_ID": 1,
+ *     "SUBJECT": "TEST SUBJECT 2",
+ *     "HTML_TF": false,
+ *     "CONTENTS": "TEST CONTENTS 2",
+ *     "DISPLAY_TF": true,
+ *     "DISPLAY_START_TIME": "2022-12-24T07:42:53.000Z",
+ *     "DISPLAY_END_TIME": "2022-12-24T07:42:53.000Z",
+ *     "POST_USER_ID": 4,
+ *     "POST_TIME": "2022-12-24T07:42:53.000Z",
+ *     "POST_IPv4": 0,
+ *     "POST_IPv6": null,
+ *     "UPDATE_USER_ID": 4,
+ *     "UPDATE_TIME": "2022-12-24T16:45:58.000Z",
+ *     "UPDATE_IPv4": null,
+ *     "UPDATE_IPv6": null,
+ *     "CONTENT_ID": null,
+ *     "TOP_FIX_TF": false
+ * }
  *
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 404 Not Found
@@ -249,8 +267,8 @@ async function add(req: IReq<{ notice: tt_notice }>, res: IRes) {
 async function imageUpload(req: IReq<{noticeId: number }>, res: IRes) {
   const {noticeId} = req.body;
   const file = req.file as S3File;
-  await noticeService.uploadImage(noticeId,file,res.locals.user,getClientIP(req));
-  return res.status(HttpStatusCodes.CREATED).end();
+  const result = await noticeService.uploadImage(noticeId,file,res.locals.user,getClientIP(req));
+  return res.status(HttpStatusCodes.CREATED).json(result).end();
 }
 
 

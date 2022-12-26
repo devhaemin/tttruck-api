@@ -4,6 +4,7 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import logger from "jet-logger";
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
 import {S3File} from "@src/routes/shared/awsMultipart";
+import {noticeNotFoundErr} from "@src/services/notice-service";
 
 
 // **** Variables **** //
@@ -18,7 +19,11 @@ export const prodAuthorityErr = 'Can not modify Product with your authority';
  * Get all products
  */
 async function getAll(): Promise<tt_product[]> {
-  const persists = await tt_product.findAll();
+  const persists = await tt_product.findAll(
+    {
+      include:
+        [{model: tt_product_image, as: "tt_product_images"}],
+    });
   if (!persists) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
@@ -34,6 +39,8 @@ async function getAll(): Promise<tt_product[]> {
 async function getByCategory(id: number): Promise<tt_product[]> {
   const persists = await tt_product.findAll({
     where: {$PRODUCT_CATEGORY_ID$: id},
+    include:
+      [{model: tt_product_image, as: "tt_product_images"}],
   });
   if (!persists) {
     throw new RouteError(
@@ -48,8 +55,9 @@ async function getByCategory(id: number): Promise<tt_product[]> {
  * Get product by ID
  */
 async function getById(id: number): Promise<tt_product> {
-  const persists = await tt_product.findOne({
-    where: {$PRODUCT_ID$: id},
+  const persists = await tt_product.findByPk(id, {
+    include:
+      [{model: tt_product_image, as: "tt_product_images"}],
   });
   if (!persists) {
     throw new RouteError(
@@ -64,7 +72,10 @@ async function getById(id: number): Promise<tt_product> {
  * Add one product
  */
 function addOne(product: tt_product): Promise<tt_product> {
-  product.LOCATION = {type: 'Point', coordinates: [Number(product.LONGITUDE), Number(product.LATITUDE)]};
+  product.LOCATION = {
+    type: 'Point',
+    coordinates: [Number(product.LONGITUDE), Number(product.LATITUDE)],
+  };
   return tt_product.create(product);
 }
 
@@ -72,6 +83,12 @@ function addOne(product: tt_product): Promise<tt_product> {
  * Update one product
  */
 async function updateOne(user: tt_user, product: tt_product): Promise<tt_product> {
+  if(!product){
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      noticeNotFoundErr,
+    )
+  }
   const persists = await tt_product.findAll({where: {PRODUCT_ID: product.PRODUCT_ID}});
   if (!persists) {
     throw new RouteError(
@@ -91,27 +108,28 @@ async function updateOne(user: tt_user, product: tt_product): Promise<tt_product
   return product;
 }
 
-async function uploadImage(product:tt_product|null, file:S3File|null,user:tt_user, ip:number){
-  if(!product) {
+async function uploadImage(productId: number, file: S3File | null, user: tt_user, ip: number) {
+  const product = await tt_product.findByPk(productId);
+  if (!product) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
-      "", //todo: prodNotFound 추가
+      prodNotFoundErr,
     );
   }
-  if(!file) {
+  if (!file) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
-      "AWS API Connection error.", //todo: prodNotFound 추가
+      "AWS API Connection error.",
     );
   }
   product.UPDATE_USER_IPv4 = ip;
   product.UPDATE_USER_ID = user.USER_ID;
   tt_product_image.create({
     PRODUCT_ID: product.PRODUCT_ID,
-    FILE_NAME : file.key,
-    FILE_PATH : file.path,
-    FILE_URL : file.location,
-    FILE_SIZE : file.size,
+    FILE_NAME: file.key,
+    FILE_PATH: file.path,
+    FILE_URL: file.location,
+    FILE_SIZE: file.size,
   });
   return await product.update(product);
 }
@@ -136,7 +154,6 @@ async function _delete(user: tt_user, id: number): Promise<void> {
   // Delete user
   await tt_product.destroy({where: {PRODUCT_ID: id}});
 }
-
 
 
 // **** Export default **** //

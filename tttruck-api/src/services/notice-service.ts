@@ -114,7 +114,7 @@ async function uploadImage(noticeId: number, file: S3File | null, user: tt_user,
   if (!file) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
-      "AWS API Connection error.", //todo: prodNotFound 추가
+      "AWS API Connection error.",
     );
   }
   notice.UPDATE_IPv4 = ip;

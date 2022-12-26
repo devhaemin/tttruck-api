@@ -60,6 +60,8 @@ const productImageMulter = getS3Multer('product/image');
 // Get all products
 productRouter.get(productRoutes.paths.getAll, productRoutes.getAll);
 
+productRouter.get(productRoutes.paths.getCategories, productRoutes.getCategories);
+
 // Get products by category
 productRouter.get(productRoutes.paths.getByCategory, productRoutes.getByCategory);
 
@@ -77,7 +79,6 @@ productRouter.post(
 // Update a product
 productRouter.put(
   productRoutes.paths.update,
-  validate(['product', typeof tt_product]),
   normalUserMw,
   productRoutes.update,
 );

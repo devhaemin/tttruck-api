@@ -5,13 +5,13 @@ import helmet from 'helmet';
 import express, {NextFunction, Request, Response} from 'express';
 
 import 'express-async-errors';
-
 import v1BaseRouter from './routes/api';
 import logger from 'jet-logger';
 import EnvVars from '@src/declarations/major/EnvVars';
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import {NodeEnvs} from '@src/declarations/enums';
 import {RouteError} from '@src/declarations/classes';
+import cors from 'cors';
 
 // **** Init express **** //
 
@@ -20,10 +20,10 @@ const app = express();
 
 // **** Set basic express settings **** //
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser(EnvVars.cookieProps.secret));
-
 // Show routes called in console during development
 if (EnvVars.nodeEnv === NodeEnvs.Dev) {
   app.use(morgan('dev'));

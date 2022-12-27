@@ -2,6 +2,7 @@ import * as e from 'express';
 import {Query} from 'express-serve-static-core';
 
 import {tt_user} from "@src/models/tt_user";
+import {UserLocation} from "@src/routes/shared/locationCheck";
 
 
 // **** Express **** //
@@ -18,6 +19,7 @@ export interface IReqQuery<T extends Query, U = void> extends e.Request {
 export interface IRes extends e.Response {
   locals: {
     user: tt_user;
+    location: UserLocation;
   };
 }
 

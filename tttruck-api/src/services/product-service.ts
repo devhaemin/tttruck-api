@@ -5,6 +5,7 @@ import logger from "jet-logger";
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
 import {S3File} from "@src/routes/shared/awsMultipart";
 import {noticeNotFoundErr} from "@src/services/notice-service";
+import {fn, Op, Sequelize} from "sequelize";
 
 
 // **** Variables **** //
@@ -18,11 +19,25 @@ export const prodAuthorityErr = 'Can not modify Product with your authority';
 /**
  * Get all products
  */
-async function getAll(): Promise<tt_product[]> {
+async function getAll(longitude:string, latitude:string): Promise<tt_product[]> {
   const persists = await tt_product.findAll(
     {
+      attributes: {
+        include: [
+          [
+            Sequelize.fn(
+              'ST_Distance',
+              Sequelize.col('LOCATION'),
+              Sequelize.fn('POINT', longitude, latitude),
+            ),
+            'DISTANCE',
+          ],
+        ],
+      },
       include:
-        [{model: tt_product_image, as: "tt_product_images"}],
+        [{model: tt_product_image, as: "tt_product_images"},
+          {model: tt_user, as:"SELLER_USER", attributes:["NICKNAME","PROFILE_IMAGE","USER_ID"]}],
+      order: Sequelize.literal('DISTANCE ASC'),
     });
   if (!persists) {
     throw new RouteError(
@@ -36,11 +51,25 @@ async function getAll(): Promise<tt_product[]> {
 /**
  * Get products by category
  */
-async function getByCategory(id: number): Promise<tt_product[]> {
+async function getByCategory(longitude:string, latitude:string, id: number): Promise<tt_product[]> {
   const persists = await tt_product.findAll({
+    attributes: {
+      include: [
+        [
+          Sequelize.fn(
+            'ST_Distance',
+            Sequelize.col('LOCATION'),
+            Sequelize.fn('POINT', longitude, latitude),
+          ),
+          'DISTANCE',
+        ],
+      ],
+    },
     where: {$PRODUCT_CATEGORY_ID$: id},
     include:
-      [{model: tt_product_image, as: "tt_product_images"}],
+      [{model: tt_product_image, as: "tt_product_images"},
+        {model: tt_user, as:"SELLER_USER", attributes:["NICKNAME","PROFILE_IMAGE","USER_ID"]}],
+    order: Sequelize.literal('DISTANCE ASC'),
   });
   if (!persists) {
     throw new RouteError(
@@ -52,12 +81,46 @@ async function getByCategory(id: number): Promise<tt_product[]> {
 }
 
 /**
+ *
+ * Get products by categories
+ */
+async function getByCategories(longitude:string, latitude:string, categories: [number]):
+  Promise<tt_product[]> {
+  const persists = await tt_product.findAll({
+    attributes: {
+      include: [
+        [
+          Sequelize.fn(
+            'ST_Distance_Sphere',
+            Sequelize.col('LOCATION'),
+            Sequelize.fn('POINT', longitude, latitude),
+          ),
+          'DISTANCE',
+        ],
+      ],
+    },
+    where: {$PRODUCT_CATEGORY_ID$:{ [Op.in] : categories }},
+    include:
+      [{model: tt_product_image, as: "tt_product_images"},
+        {model: tt_user, as:"SELLER_USER", attributes:["NICKNAME","PROFILE_IMAGE","USER_ID"]}],
+    order: Sequelize.literal('DISTANCE ASC'),
+  });
+  if (!persists) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      prodNotFoundErr,
+    );
+  }
+  return persists;
+}
+/**
  * Get product by ID
  */
 async function getById(id: number): Promise<tt_product> {
   const persists = await tt_product.findByPk(id, {
     include:
-      [{model: tt_product_image, as: "tt_product_images"}],
+      [{model: tt_product_image, as: "tt_product_images"},
+        {model: tt_user, as:"SELLER_USER", attributes:["NICKNAME","PROFILE_IMAGE","USER_ID"]}],
   });
   if (!persists) {
     throw new RouteError(
@@ -163,6 +226,7 @@ async function _delete(user: tt_user, id: number): Promise<void> {
 export default {
   getAll,
   getByCategory,
+  getByCategories,
   getById,
   addOne,
   updateOne,

@@ -1,5 +1,5 @@
 import * as Sequelize from 'sequelize';
-import {DataTypes, GEOMETRY, Model, Optional} from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
 import type { tt_product_image, tt_product_imageId } from './tt_product_image';
 import type { tt_trade, tt_tradeCreationAttributes, tt_tradeId } from './tt_trade';
@@ -180,7 +180,7 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
       defaultValue: "126.986"
     },
     LOCATION: {
-      type: GEOMETRY('POINT'),
+      type: DataTypes.GEOMETRY,
       allowNull: false,
       defaultValue: "point(37.541,126.986)"
     },

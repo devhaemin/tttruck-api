@@ -2,10 +2,7 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 
 import productService from '@src/services/product-service';
 import {IReq, IRes} from './shared/types';
-import {
-  tt_product,
-  tt_product_category,
-} from '@src/models/init-models';
+import {tt_product, tt_product_category} from '@src/models/init-models';
 import logger from "jet-logger";
 import {getClientIP} from "@src/util/ip-util";
 import {S3File} from "@src/routes/shared/awsMultipart";
@@ -18,6 +15,7 @@ const paths = {
   basePath: '/products',
   getAll: '/all',
   getCategories: '/category',
+  getByCategories: '/categories',
   getByCategory: '/category/:id',
   getById: '/:id',
   add: '/add',
@@ -38,71 +36,87 @@ const paths = {
  *
  * @apiSuccess {String} Nothing
  *
+ * @apiParamExample {json} Request-Example:
+ * {
+ *     "latitude": "37.56211",
+ *     "longitude": "126.941069"
+ * }
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  * [
  *     {
- *         "PRODUCT_ID": 6,
- *         "SUBJECT": "Test1",
- *         "PRIORITY": 999,
+ *         "PRODUCT_ID": 8,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
  *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 3000,
- *         "PRODUCT_SIZE": "1000x1000",
- *         "PRODUCT_WEIGHT": 200,
- *         "CONTENTS": "TEST CONTENTS",
- *         "SELLER_USER_ID": null,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
  *         "SELLER_USER_IPv4": 0,
  *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-23T11:46:34.000Z",
- *         "TAG": null,
- *         "ADDRESS": null,
- *         "LATITUDE": "",
- *         "LONGITUDE": "",
+ *         "UPLOAD_TIME": "2022-12-26T08:19:55.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
  *         "LOCATION": {
  *             "type": "Point",
  *             "coordinates": [
- *                 37.56211,
- *                 126.941069
+ *                 127.074697,
+ *                 37.626356
  *             ]
  *         },
- *         "UPDATE_USER_ID": null,
+ *         "UPDATE_USER_ID": 4,
  *         "UPDATE_USER_IPv4": 0,
  *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-23T11:46:34.000Z",
- *         "tt_product_images": []
+ *         "UPDATE_DATE": "2022-12-26T08:19:55.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": [],
+ *         "SELLER_USER": {
+ *             "NICKNAME": "꼬리무123",
+ *             "PROFILE_IMAGE": null,
+ *             "USER_ID": 4
+ *         }
  *     },
  *     {
- *         "PRODUCT_ID": 7,
- *         "SUBJECT": "Test1",
- *         "PRIORITY": 999,
+ *         "PRODUCT_ID": 9,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
  *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 3000,
- *         "PRODUCT_SIZE": "1000x1000",
- *         "PRODUCT_WEIGHT": 200,
- *         "CONTENTS": "TEST CONTENTS",
- *         "SELLER_USER_ID": null,
- *         "SELLER_USER_IPv4": 0,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 1794396811,
  *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-23T11:51:20.000Z",
- *         "TAG": null,
- *         "ADDRESS": null,
- *         "LATITUDE": "37.213141",
- *         "LONGITUDE": "127.123112",
+ *         "UPLOAD_TIME": "2022-12-27T05:33:48.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
  *         "LOCATION": {
  *             "type": "Point",
  *             "coordinates": [
- *                 127.123112,
- *                 37.213141
+ *                 127.074697,
+ *                 37.626356
  *             ]
  *         },
- *         "UPDATE_USER_ID": null,
- *         "UPDATE_USER_IPv4": 0,
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 1794396811,
  *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-23T11:51:20.000Z",
- *         "tt_product_images": []
+ *         "UPDATE_DATE": "2022-12-27T05:33:48.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": [],
+ *         "SELLER_USER": {
+ *             "NICKNAME": "꼬리무123",
+ *             "PROFILE_IMAGE": null,
+ *             "USER_ID": 4
+ *         }
  *     }
  * ]
- *
  * @apiError ProductNotFound The id of the User was not found.
  *
  * @apiErrorExample Error-Response:
@@ -112,10 +126,12 @@ const paths = {
  *     }
  */
 async function getAll(req: IReq, res: IRes) {
-  const products = await productService.getAll();
+  const {longitude, latitude} = res.locals.location.location;
+  const products = await productService.getAll(longitude, latitude);
   logger.info(products);
   return res.status(HttpStatusCodes.OK).json(products);
 }
+
 
 /**
  * @api {get} /products/category/:id Get Products by Category
@@ -125,68 +141,87 @@ async function getAll(req: IReq, res: IRes) {
  * @apiPermission none
  * @apiParam {Number} id
  *
+ * @apiParamExample {json} Request-Example:
+ * {
+ * "location":{
+ *         "latitude": "37.56211",
+ *         "longitude": "126.941069"
+ *     }
+ * }
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  * [
  *     {
- *         "PRODUCT_ID": 6,
- *         "SUBJECT": "Test1",
- *         "PRIORITY": 999,
+ *         "PRODUCT_ID": 8,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
  *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 3000,
- *         "PRODUCT_SIZE": "1000x1000",
- *         "PRODUCT_WEIGHT": 200,
- *         "CONTENTS": "TEST CONTENTS",
- *         "SELLER_USER_ID": null,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
  *         "SELLER_USER_IPv4": 0,
  *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-23T11:46:34.000Z",
- *         "TAG": null,
- *         "ADDRESS": null,
- *         "LATITUDE": "",
- *         "LONGITUDE": "",
+ *         "UPLOAD_TIME": "2022-12-26T08:19:55.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
  *         "LOCATION": {
  *             "type": "Point",
  *             "coordinates": [
- *                 37.56211,
- *                 126.941069
+ *                 127.074697,
+ *                 37.626356
  *             ]
  *         },
- *         "UPDATE_USER_ID": null,
+ *         "UPDATE_USER_ID": 4,
  *         "UPDATE_USER_IPv4": 0,
  *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-23T11:46:34.000Z",
- *         "tt_product_images": []
+ *         "UPDATE_DATE": "2022-12-26T08:19:55.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": [],
+ *         "SELLER_USER": {
+ *             "NICKNAME": "꼬리무123",
+ *             "PROFILE_IMAGE": null,
+ *             "USER_ID": 4
+ *         }
  *     },
  *     {
- *         "PRODUCT_ID": 7,
- *         "SUBJECT": "Test1",
- *         "PRIORITY": 999,
+ *         "PRODUCT_ID": 9,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
  *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 3000,
- *         "PRODUCT_SIZE": "1000x1000",
- *         "PRODUCT_WEIGHT": 200,
- *         "CONTENTS": "TEST CONTENTS",
- *         "SELLER_USER_ID": null,
- *         "SELLER_USER_IPv4": 0,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 1794396811,
  *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-23T11:51:20.000Z",
- *         "TAG": null,
- *         "ADDRESS": null,
- *         "LATITUDE": "37.213141",
- *         "LONGITUDE": "127.123112",
+ *         "UPLOAD_TIME": "2022-12-27T05:33:48.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
  *         "LOCATION": {
  *             "type": "Point",
  *             "coordinates": [
- *                 127.123112,
- *                 37.213141
+ *                 127.074697,
+ *                 37.626356
  *             ]
  *         },
- *         "UPDATE_USER_ID": null,
- *         "UPDATE_USER_IPv4": 0,
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 1794396811,
  *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-23T11:51:20.000Z",
- *         "tt_product_images": []
+ *         "UPDATE_DATE": "2022-12-27T05:33:48.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": [],
+ *         "SELLER_USER": {
+ *             "NICKNAME": "꼬리무123",
+ *             "PROFILE_IMAGE": null,
+ *             "USER_ID": 4
+ *         }
  *     }
  * ]
  *
@@ -200,7 +235,465 @@ async function getAll(req: IReq, res: IRes) {
  */
 async function getByCategory(req: IReq, res: IRes) {
   const id = +req.params.id;
-  const products = await productService.getByCategory(id);
+  const {longitude, latitude} = res.locals.location.location;
+  const products = await productService.getByCategory(longitude, latitude, id);
+  logger.info(products);
+  return res.status(HttpStatusCodes.OK).json(products);
+}
+
+/**
+ * @api {get} /products/categories Get Products by Category
+ * @apiName GetProductByCategory
+ * @apiGroup Product
+ *
+ * @apiPermission none
+ * @apiParamExample {json} Request-Example:
+ * {
+ *     "location":{
+ *         "latitude": "37.56211",
+ *         "longitude": "126.941069"
+ *     },
+ *     "categories":[
+ *         1,2,3
+ *       ]
+ * }
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ * [
+ *     {
+ *         "PRODUCT_ID": 6,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 3,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": null,
+ *         "SELLER_USER_IPv4": 0,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-23T11:46:34.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 127.074697,
+ *                 37.626356
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": null,
+ *         "UPDATE_USER_IPv4": 0,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-27T16:46:37.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": [
+ *             {
+ *                 "PRODUCT_IMAGE_ID": 1,
+ *                 "PRODUCT_ID": 6,
+ *                 "FILE_NAME": "product/image/1672043380525_img-ObBaphDQMth1gVfJIwiS0HUh.png",
+ *                 "FILE_PATH": null,
+ *                 "FILE_SIZE": 3147977,
+ *                 "ORG_FILE_SEQ": null,
+ *                 "FILE_URL": "https://tttruck-1.s3.ap-northeast-2.amazonaws.com/product/image/1672043380525_img-ObBaphDQMth1gVfJIwiS0HUh.png",
+ *                 "THUMB_PATH": null,
+ *                 "FILE_ID": null,
+ *                 "CONTENT_ID": null,
+ *                 "TIME": "2022-12-26T08:29:46.000Z"
+ *             }
+ *         ]
+ *     },
+ *     {
+ *         "PRODUCT_ID": 7,
+ *         "SUBJECT": "Test1",
+ *         "PRIORITY": 999,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 3000,
+ *         "PRODUCT_SIZE": "1000x1000",
+ *         "PRODUCT_WEIGHT": 200,
+ *         "CONTENTS": "TEST CONTENTS",
+ *         "SELLER_USER_ID": null,
+ *         "SELLER_USER_IPv4": 0,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-23T11:51:20.000Z",
+ *         "TAG": null,
+ *         "ADDRESS": null,
+ *         "LATITUDE": "37.213141",
+ *         "LONGITUDE": "127.123112",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 127.123112,
+ *                 37.213141
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": null,
+ *         "UPDATE_USER_IPv4": 0,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-23T11:51:20.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": []
+ *     },
+ *     {
+ *         "PRODUCT_ID": 8,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 0,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-26T08:19:55.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 127.074697,
+ *                 37.626356
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 0,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-26T08:19:55.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": []
+ *     },
+ *     {
+ *         "PRODUCT_ID": 9,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 1794396811,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-27T05:33:48.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 127.074697,
+ *                 37.626356
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 1794396811,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-27T05:33:48.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": []
+ *     },
+ *     {
+ *         "PRODUCT_ID": 10,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 1794396811,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-27T05:35:41.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 127.074697,
+ *                 37.626356
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 1794396811,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-27T05:35:41.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": []
+ *     },
+ *     {
+ *         "PRODUCT_ID": 11,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 1794396811,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-27T05:36:15.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 127.074697,
+ *                 37.626356
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 1794396811,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-27T05:36:15.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": []
+ *     },
+ *     {
+ *         "PRODUCT_ID": 12,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 0,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-27T05:40:02.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 127.074697,
+ *                 37.626356
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 0,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-27T05:40:02.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": []
+ *     },
+ *     {
+ *         "PRODUCT_ID": 13,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 0,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-27T05:43:11.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 127.074697,
+ *                 37.626356
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 0,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-27T05:43:11.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": []
+ *     },
+ *     {
+ *         "PRODUCT_ID": 14,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 1794396811,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-27T05:44:06.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 127.074697,
+ *                 37.626356
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 1794396811,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-27T05:44:06.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": []
+ *     },
+ *     {
+ *         "PRODUCT_ID": 15,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 0,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-27T05:47:54.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 127.074697,
+ *                 37.626356
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 0,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-27T05:47:54.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": []
+ *     },
+ *     {
+ *         "PRODUCT_ID": 16,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 0,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-27T05:47:59.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.541",
+ *         "LONGITUDE": "126.986",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 126.986,
+ *                 37.541
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 0,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-27T05:47:59.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": []
+ *     },
+ *     {
+ *         "PRODUCT_ID": 20,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 0,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-27T13:10:00.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.541",
+ *         "LONGITUDE": "126.986",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 126.986,
+ *                 37.541
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 0,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-27T13:10:00.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": []
+ *     },
+ *     {
+ *         "PRODUCT_ID": 22,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 0,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-27T13:20:08.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "10",
+ *         "LONGITUDE": "120",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 120,
+ *                 10
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 0,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-27T13:20:08.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": []
+ *     }
+ * ]
+ *
+ * @apiError ProductNotFound The id of the User was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "ProductNotFound"
+ *     }
+ */
+async function getByCategories(
+  req: IReq<{categories: [number] }>,
+  res: IRes) {
+  const {categories} = req.body;
+  const {longitude, latitude} = res.locals.location.location;
+  const products = await productService.getByCategories(longitude, latitude, categories);
   logger.info(products);
   return res.status(HttpStatusCodes.OK).json(products);
 }
@@ -213,38 +706,45 @@ async function getByCategory(req: IReq, res: IRes) {
  * @apiPermission none
  *
  * @apiParam {Number} id
+ * @apiParam {Number} longitude
+ * @apiParam {Number} latitude
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  * {
- *     "PRODUCT_ID": 6,
- *     "SUBJECT": "Test1",
- *     "PRIORITY": 999,
+ *     "PRODUCT_ID": 16,
+ *     "SUBJECT": "SUBJECT 1",
+ *     "PRIORITY": 1,
  *     "PRODUCT_CATEGORY_ID": 1,
- *     "PRODUCT_PRICE": 3000,
- *     "PRODUCT_SIZE": "1000x1000",
- *     "PRODUCT_WEIGHT": 200,
- *     "CONTENTS": "TEST CONTENTS",
- *     "SELLER_USER_ID": null,
+ *     "PRODUCT_PRICE": 30000,
+ *     "PRODUCT_SIZE": "1024x1024",
+ *     "PRODUCT_WEIGHT": 500,
+ *     "CONTENTS": "CONTENTS 1",
+ *     "SELLER_USER_ID": 4,
  *     "SELLER_USER_IPv4": 0,
  *     "SELLER_USER_IPv6": null,
- *     "UPLOAD_TIME": "2022-12-23T11:46:34.000Z",
- *     "TAG": null,
- *     "ADDRESS": null,
- *     "LATITUDE": "",
- *     "LONGITUDE": "",
+ *     "UPLOAD_TIME": "2022-12-27T05:47:59.000Z",
+ *     "TAG": "TAG 1",
+ *     "ADDRESS": "ADDRESS 1",
+ *     "LATITUDE": "37.541",
+ *     "LONGITUDE": "126.986",
  *     "LOCATION": {
  *         "type": "Point",
  *         "coordinates": [
- *             37.56211,
- *             126.941069
+ *             126.986,
+ *             37.541
  *         ]
  *     },
- *     "UPDATE_USER_ID": null,
+ *     "UPDATE_USER_ID": 4,
  *     "UPDATE_USER_IPv4": 0,
  *     "UPDATE_USER_IPv6": null,
- *     "UPDATE_DATE": "2022-12-23T11:46:34.000Z",
- *     "tt_product_images": []
+ *     "UPDATE_DATE": "2022-12-27T05:47:59.000Z",
+ *     "tt_product_images": [],
+ *     "SELLER_USER": {
+ *         "NICKNAME": "꼬리무123",
+ *         "PROFILE_IMAGE": null,
+ *         "USER_ID": 4
+ *     }
  * }
  *
  *
@@ -681,7 +1181,7 @@ async function _delete(req: IReq, res: IRes) {
  * ]
  *
  */
-async function getCategories(req:IReq, res:IRes){
+async function getCategories(req: IReq, res: IRes) {
   logger.info("TEST");
   const categories = await tt_product_category.findAll();
   return res.status(HttpStatusCodes.OK).json(categories).end();
@@ -693,11 +1193,12 @@ async function getCategories(req:IReq, res:IRes){
 export default {
   paths,
   getAll,
+  getCategories,
   getByCategory,
   getById,
   add,
   imageUpload,
   update,
   delete: _delete,
-  getCategories,
+  getByCategories,
 } as const;

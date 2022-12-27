@@ -8,6 +8,7 @@ import authRoutes from "@src/routes/auth-routes";
 import noticeRoutes from "@src/routes/notice-routes";
 import {getS3Multer} from "@src/routes/shared/awsMultipart";
 import tradeRoutes from "@src/routes/trade-routes";
+import {locationCheck} from "@src/routes/shared/locationCheck";
 // **** Init **** //
 
 const apiRouter = Router(),
@@ -58,12 +59,14 @@ const productRouter = Router();
 const productImageMulter = getS3Multer('product/image');
 
 // Get all products
-productRouter.get(productRoutes.paths.getAll, productRoutes.getAll);
+productRouter.get(productRoutes.paths.getAll, locationCheck, productRoutes.getAll);
+
+productRouter.get(productRoutes.paths.getByCategories,locationCheck, productRoutes.getByCategories);
 
 productRouter.get(productRoutes.paths.getCategories, productRoutes.getCategories);
 
 // Get products by category
-productRouter.get(productRoutes.paths.getByCategory, productRoutes.getByCategory);
+productRouter.get(productRoutes.paths.getByCategory,locationCheck,  productRoutes.getByCategory);
 
 // Get product by ID
 productRouter.get(productRoutes.paths.getById, productRoutes.getById);

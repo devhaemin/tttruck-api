@@ -1,6 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
-import type { tt_trade, tt_tradeId } from './tt_trade';
+import type { tt_product, tt_productId } from './tt_product';
 
 export interface tt_trade_reviewAttributes {
   TRADE_REVIEW_ID: number;
@@ -8,7 +8,7 @@ export interface tt_trade_reviewAttributes {
   TRADE_REVIEW_TYPE?: number;
   USER_ID?: number;
   RATINGS: number;
-  SUBJECT?: number;
+  SUBJECT?: string;
   CONTENTS?: string;
   IPv4?: number;
   IPv6?: any;
@@ -28,7 +28,7 @@ export class tt_trade_review extends Model<tt_trade_reviewAttributes, tt_trade_r
   TRADE_REVIEW_TYPE?: number;
   USER_ID?: number;
   RATINGS!: number;
-  SUBJECT?: number;
+  SUBJECT?: string;
   CONTENTS?: string;
   IPv4?: number;
   IPv6?: any;
@@ -36,11 +36,11 @@ export class tt_trade_review extends Model<tt_trade_reviewAttributes, tt_trade_r
   UPDATE_TIME?: Date;
   DELETE_TF?: number;
 
-  // tt_trade_review belongsTo tt_trade via PRODUCT_ID
-  PRODUCT!: tt_trade;
-  getPRODUCT!: Sequelize.BelongsToGetAssociationMixin<tt_trade>;
-  setPRODUCT!: Sequelize.BelongsToSetAssociationMixin<tt_trade, tt_tradeId>;
-  createPRODUCT!: Sequelize.BelongsToCreateAssociationMixin<tt_trade>;
+  // tt_trade_review belongsTo tt_product via PRODUCT_ID
+  PRODUCT!: tt_product;
+  getPRODUCT!: Sequelize.BelongsToGetAssociationMixin<tt_product>;
+  setPRODUCT!: Sequelize.BelongsToSetAssociationMixin<tt_product, tt_productId>;
+  createPRODUCT!: Sequelize.BelongsToCreateAssociationMixin<tt_product>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_trade_review {
     return tt_trade_review.init({
@@ -54,7 +54,7 @@ export class tt_trade_review extends Model<tt_trade_reviewAttributes, tt_trade_r
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: true,
       references: {
-        model: 'tt_trade',
+        model: 'tt_product',
         key: 'PRODUCT_ID'
       }
     },
@@ -72,7 +72,7 @@ export class tt_trade_review extends Model<tt_trade_reviewAttributes, tt_trade_r
       defaultValue: 0
     },
     SUBJECT: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.TEXT,
       allowNull: true
     },
     CONTENTS: {

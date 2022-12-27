@@ -25,8 +25,6 @@ import { tt_product_image as _tt_product_image } from "./tt_product_image";
 import type { tt_product_imageAttributes, tt_product_imageCreationAttributes } from "./tt_product_image";
 import { tt_sns_auth as _tt_sns_auth } from "./tt_sns_auth";
 import type { tt_sns_authAttributes, tt_sns_authCreationAttributes } from "./tt_sns_auth";
-import { tt_trade as _tt_trade } from "./tt_trade";
-import type { tt_tradeAttributes, tt_tradeCreationAttributes } from "./tt_trade";
 import { tt_trade_review as _tt_trade_review } from "./tt_trade_review";
 import type { tt_trade_reviewAttributes, tt_trade_reviewCreationAttributes } from "./tt_trade_review";
 import { tt_user as _tt_user } from "./tt_user";
@@ -48,7 +46,6 @@ export {
   _tt_product_category as tt_product_category,
   _tt_product_image as tt_product_image,
   _tt_sns_auth as tt_sns_auth,
-  _tt_trade as tt_trade,
   _tt_trade_review as tt_trade_review,
   _tt_user as tt_user,
   _tt_view_log as tt_view_log,
@@ -81,8 +78,6 @@ export type {
   tt_product_imageCreationAttributes,
   tt_sns_authAttributes,
   tt_sns_authCreationAttributes,
-  tt_tradeAttributes,
-  tt_tradeCreationAttributes,
   tt_trade_reviewAttributes,
   tt_trade_reviewCreationAttributes,
   tt_userAttributes,
@@ -105,7 +100,6 @@ export function initModels(sequelize: Sequelize) {
   const tt_product_category = _tt_product_category.initModel(sequelize);
   const tt_product_image = _tt_product_image.initModel(sequelize);
   const tt_sns_auth = _tt_sns_auth.initModel(sequelize);
-  const tt_trade = _tt_trade.initModel(sequelize);
   const tt_trade_review = _tt_trade_review.initModel(sequelize);
   const tt_user = _tt_user.initModel(sequelize);
   const tt_view_log = _tt_view_log.initModel(sequelize);
@@ -116,12 +110,10 @@ export function initModels(sequelize: Sequelize) {
   tt_notice_master.hasMany(tt_notice, { as: "tt_notices", foreignKey: "NOTICE_MASTER_ID"});
   tt_product_image.belongsTo(tt_product, { as: "PRODUCT", foreignKey: "PRODUCT_ID"});
   tt_product.hasMany(tt_product_image, { as: "tt_product_images", foreignKey: "PRODUCT_ID"});
-  tt_trade.belongsTo(tt_product, { as: "PRODUCT", foreignKey: "PRODUCT_ID"});
-  tt_product.hasOne(tt_trade, { as: "tt_trade", foreignKey: "PRODUCT_ID"});
+  tt_trade_review.belongsTo(tt_product, { as: "PRODUCT", foreignKey: "PRODUCT_ID"});
+  tt_product.hasMany(tt_trade_review, { as: "tt_trade_reviews", foreignKey: "PRODUCT_ID"});
   tt_product.belongsTo(tt_product_category, { as: "PRODUCT_CATEGORY", foreignKey: "PRODUCT_CATEGORY_ID"});
   tt_product_category.hasMany(tt_product, { as: "tt_products", foreignKey: "PRODUCT_CATEGORY_ID"});
-  tt_trade_review.belongsTo(tt_trade, { as: "PRODUCT", foreignKey: "PRODUCT_ID"});
-  tt_trade.hasMany(tt_trade_review, { as: "tt_trade_reviews", foreignKey: "PRODUCT_ID"});
   tt_access_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasMany(tt_access_log, { as: "tt_access_logs", foreignKey: "USER_ID"});
   tt_login_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
@@ -138,16 +130,14 @@ export function initModels(sequelize: Sequelize) {
   tt_user.hasMany(tt_notice_master, { as: "UPDATE_USER_tt_notice_masters", foreignKey: "UPDATE_USER_ID"});
   tt_product.belongsTo(tt_user, { as: "SELLER_USER", foreignKey: "SELLER_USER_ID"});
   tt_user.hasMany(tt_product, { as: "tt_products", foreignKey: "SELLER_USER_ID"});
+  tt_product.belongsTo(tt_user, { as: "BUYER_USER", foreignKey: "BUYER_USER_ID"});
+  tt_user.hasMany(tt_product, { as: "BUYER_USER_tt_products", foreignKey: "BUYER_USER_ID"});
   tt_product_category.belongsTo(tt_user, { as: "UPDATE_USER", foreignKey: "UPDATE_USER_ID"});
   tt_user.hasMany(tt_product_category, { as: "tt_product_categories", foreignKey: "UPDATE_USER_ID"});
   tt_product_category.belongsTo(tt_user, { as: "CREATE_USER", foreignKey: "CREATE_USER_ID"});
   tt_user.hasMany(tt_product_category, { as: "CREATE_USER_tt_product_categories", foreignKey: "CREATE_USER_ID"});
   tt_sns_auth.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasMany(tt_sns_auth, { as: "tt_sns_auths", foreignKey: "USER_ID"});
-  tt_trade.belongsTo(tt_user, { as: "SELLER_USER", foreignKey: "SELLER_USER_ID"});
-  tt_user.hasMany(tt_trade, { as: "tt_trades", foreignKey: "SELLER_USER_ID"});
-  tt_trade.belongsTo(tt_user, { as: "BUYER_USER", foreignKey: "BUYER_USER_ID"});
-  tt_user.hasMany(tt_trade, { as: "BUYER_USER_tt_trades", foreignKey: "BUYER_USER_ID"});
   tt_user.belongsTo(tt_user, { as: "JOIN_PERMIT_USER", foreignKey: "JOIN_PERMIT_USER_ID"});
   tt_user.hasMany(tt_user, { as: "tt_users", foreignKey: "JOIN_PERMIT_USER_ID"});
   tt_view_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
@@ -167,7 +157,6 @@ export function initModels(sequelize: Sequelize) {
     tt_product_category: tt_product_category,
     tt_product_image: tt_product_image,
     tt_sns_auth: tt_sns_auth,
-    tt_trade: tt_trade,
     tt_trade_review: tt_trade_review,
     tt_user: tt_user,
     tt_view_log: tt_view_log,

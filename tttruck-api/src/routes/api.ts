@@ -3,12 +3,12 @@ import jetValidator from 'jet-validator';
 
 import {adminMw, normalUserMw} from '@src/routes/shared/userCheckMw';
 import productRoutes from '@src/routes/product-routes';
-import {tt_notice, tt_product} from "@src/models/init-models";
 import authRoutes from "@src/routes/auth-routes";
 import noticeRoutes from "@src/routes/notice-routes";
 import {getS3Multer} from "@src/routes/shared/awsMultipart";
 import tradeRoutes from "@src/routes/trade-routes";
 import {locationCheck} from "@src/routes/shared/locationCheck";
+import tradeReviewRoutes from "@src/routes/trade-review-routes";
 // **** Init **** //
 
 const apiRouter = Router(),
@@ -88,13 +88,12 @@ productRouter.put(
 
 productRouter.post(
   productRoutes.paths.imageUpload,
-  //validate(["productId","number","body"]),
   normalUserMw,
   productImageMulter.single('file'),
   productRoutes.imageUpload,
 );
 
-// Delete one user
+// Delete one product
 productRouter.delete(
   productRoutes.paths.delete,
   validate(['id', 'number', 'params']),
@@ -112,23 +111,23 @@ const noticeImageMulter = getS3Multer('notice/image');
 // Get notice categories
 noticeRouter.get(noticeRoutes.paths.getCategories, noticeRoutes.getCategories);
 
-// Get all products
+// Get all notices
 noticeRouter.get(noticeRoutes.paths.getAll, noticeRoutes.getAll);
 
-// Get products by category
+// Get notices by category
 noticeRouter.get(noticeRoutes.paths.getByCategory, noticeRoutes.getByCategory);
 
-// Get product by ID
+// Get notice by ID
 noticeRouter.get(noticeRoutes.paths.getById, noticeRoutes.getById);
 
-// Add a product
+// Add a notice
 noticeRouter.post(
   noticeRoutes.paths.add,
   adminMw,
   noticeRoutes.add,
 );
 
-// Update a product
+// Update a notice
 noticeRouter.put(
   noticeRoutes.paths.update,
   adminMw,
@@ -143,7 +142,7 @@ noticeRouter.post(
   noticeRoutes.imageUpload,
 );
 
-// Delete one user
+// Delete one notice
 noticeRouter.delete(
   noticeRoutes.paths.delete,
   validate(['id', 'number', 'params']),
@@ -172,7 +171,48 @@ tradeRouter.post(
   normalUserMw,
   tradeRoutes.doTrade);
 
+apiRouter.use(tradeRoutes.paths.basePath, tradeRouter);
 // **** Setup Trade routes **** //
+
+// **** Setup Trade review Routes **** //
+const tradeReviewRouter = Router();
+
+// Get trade review by product_id
+tradeReviewRouter.get(tradeReviewRoutes.paths.getByProduct,
+  normalUserMw,
+  tradeReviewRoutes.getByProduct);
+
+// Add a seller review on product
+tradeReviewRouter.post(
+  tradeReviewRoutes.paths.postSeller,
+  normalUserMw,
+  tradeReviewRoutes.postSeller,
+);
+
+// Add a buyer review on product
+tradeReviewRouter.post(
+  tradeReviewRoutes.paths.postBuyer,
+  normalUserMw,
+  tradeReviewRoutes.postBuyer,
+);
+
+// Update a review
+tradeReviewRouter.put(
+  tradeReviewRoutes.paths.update,
+  normalUserMw,
+  tradeReviewRoutes.update,
+);
+
+// Delete one user
+noticeRouter.delete(
+  tradeReviewRoutes.paths.delete,
+  validate(['id', 'number', 'params']),
+  adminMw,
+  tradeReviewRoutes.delete,
+);
+apiRouter.use(tradeReviewRoutes.paths.basePath, tradeReviewRouter);
+
+// **** Setup Trade review Routes **** //
 // **** Export default **** //
 
 // Add userRouter

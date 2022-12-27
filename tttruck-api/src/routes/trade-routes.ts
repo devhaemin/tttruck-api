@@ -2,7 +2,6 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import {IReq, IRes} from "@src/routes/shared/types";
 import tradeService from "@src/services/trade-service";
 import logger from "jet-logger";
-import {tt_trade} from "@src/models/init-models";
 
 
 
@@ -88,7 +87,8 @@ async function getUserSold(req: IReq, res: IRes) {
  *
  * @apiPermission normalUser
  *
- * @apiParam {number} id productId
+ * @apiParam {number} productId
+ * @apiParam {number} buyerId
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -101,9 +101,9 @@ async function getUserSold(req: IReq, res: IRes) {
  *     }
  */
 
-async function doTrade(req: IReq, res: IRes) {
-  const {id} = req.params;
-  const result = await tradeService.doTrade(res.locals.user, Number(id));
+async function doTrade(req: IReq<{productId:number, buyerId:number}>, res: IRes) {
+  const {productId, buyerId} = req.body;
+  const result = await tradeService.doTrade(res.locals.user, buyerId, productId);
   return res.status(HttpStatusCodes.OK).json(result);
 }
 

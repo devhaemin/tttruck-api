@@ -8,7 +8,6 @@ import type { tt_notice_master, tt_notice_masterId } from './tt_notice_master';
 import type { tt_product, tt_productId } from './tt_product';
 import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
 import type { tt_sns_auth, tt_sns_authId } from './tt_sns_auth';
-import type { tt_trade, tt_tradeId } from './tt_trade';
 import type { tt_view_log, tt_view_logId } from './tt_view_log';
 
 export interface tt_userAttributes {
@@ -173,6 +172,18 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   hasTt_product!: Sequelize.HasManyHasAssociationMixin<tt_product, tt_productId>;
   hasTt_products!: Sequelize.HasManyHasAssociationsMixin<tt_product, tt_productId>;
   countTt_products!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_product via BUYER_USER_ID
+  BUYER_USER_tt_products!: tt_product[];
+  getBUYER_USER_tt_products!: Sequelize.HasManyGetAssociationsMixin<tt_product>;
+  setBUYER_USER_tt_products!: Sequelize.HasManySetAssociationsMixin<tt_product, tt_productId>;
+  addBUYER_USER_tt_product!: Sequelize.HasManyAddAssociationMixin<tt_product, tt_productId>;
+  addBUYER_USER_tt_products!: Sequelize.HasManyAddAssociationsMixin<tt_product, tt_productId>;
+  createBUYER_USER_tt_product!: Sequelize.HasManyCreateAssociationMixin<tt_product>;
+  removeBUYER_USER_tt_product!: Sequelize.HasManyRemoveAssociationMixin<tt_product, tt_productId>;
+  removeBUYER_USER_tt_products!: Sequelize.HasManyRemoveAssociationsMixin<tt_product, tt_productId>;
+  hasBUYER_USER_tt_product!: Sequelize.HasManyHasAssociationMixin<tt_product, tt_productId>;
+  hasBUYER_USER_tt_products!: Sequelize.HasManyHasAssociationsMixin<tt_product, tt_productId>;
+  countBUYER_USER_tt_products!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user hasMany tt_product_category via UPDATE_USER_ID
   tt_product_categories!: tt_product_category[];
   getTt_product_categories!: Sequelize.HasManyGetAssociationsMixin<tt_product_category>;
@@ -209,30 +220,6 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   hasTt_sns_auth!: Sequelize.HasManyHasAssociationMixin<tt_sns_auth, tt_sns_authId>;
   hasTt_sns_auths!: Sequelize.HasManyHasAssociationsMixin<tt_sns_auth, tt_sns_authId>;
   countTt_sns_auths!: Sequelize.HasManyCountAssociationsMixin;
-  // tt_user hasMany tt_trade via SELLER_USER_ID
-  tt_trades!: tt_trade[];
-  getTt_trades!: Sequelize.HasManyGetAssociationsMixin<tt_trade>;
-  setTt_trades!: Sequelize.HasManySetAssociationsMixin<tt_trade, tt_tradeId>;
-  addTt_trade!: Sequelize.HasManyAddAssociationMixin<tt_trade, tt_tradeId>;
-  addTt_trades!: Sequelize.HasManyAddAssociationsMixin<tt_trade, tt_tradeId>;
-  createTt_trade!: Sequelize.HasManyCreateAssociationMixin<tt_trade>;
-  removeTt_trade!: Sequelize.HasManyRemoveAssociationMixin<tt_trade, tt_tradeId>;
-  removeTt_trades!: Sequelize.HasManyRemoveAssociationsMixin<tt_trade, tt_tradeId>;
-  hasTt_trade!: Sequelize.HasManyHasAssociationMixin<tt_trade, tt_tradeId>;
-  hasTt_trades!: Sequelize.HasManyHasAssociationsMixin<tt_trade, tt_tradeId>;
-  countTt_trades!: Sequelize.HasManyCountAssociationsMixin;
-  // tt_user hasMany tt_trade via BUYER_USER_ID
-  BUYER_USER_tt_trades!: tt_trade[];
-  getBUYER_USER_tt_trades!: Sequelize.HasManyGetAssociationsMixin<tt_trade>;
-  setBUYER_USER_tt_trades!: Sequelize.HasManySetAssociationsMixin<tt_trade, tt_tradeId>;
-  addBUYER_USER_tt_trade!: Sequelize.HasManyAddAssociationMixin<tt_trade, tt_tradeId>;
-  addBUYER_USER_tt_trades!: Sequelize.HasManyAddAssociationsMixin<tt_trade, tt_tradeId>;
-  createBUYER_USER_tt_trade!: Sequelize.HasManyCreateAssociationMixin<tt_trade>;
-  removeBUYER_USER_tt_trade!: Sequelize.HasManyRemoveAssociationMixin<tt_trade, tt_tradeId>;
-  removeBUYER_USER_tt_trades!: Sequelize.HasManyRemoveAssociationsMixin<tt_trade, tt_tradeId>;
-  hasBUYER_USER_tt_trade!: Sequelize.HasManyHasAssociationMixin<tt_trade, tt_tradeId>;
-  hasBUYER_USER_tt_trades!: Sequelize.HasManyHasAssociationsMixin<tt_trade, tt_tradeId>;
-  countBUYER_USER_tt_trades!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user belongsTo tt_user via JOIN_PERMIT_USER_ID
   JOIN_PERMIT_USER!: tt_user;
   getJOIN_PERMIT_USER!: Sequelize.BelongsToGetAssociationMixin<tt_user>;

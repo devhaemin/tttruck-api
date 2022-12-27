@@ -1,4 +1,4 @@
-import {tt_trade, tt_user} from '@src/models/init-models';
+import {tt_product, tt_user} from '@src/models/init-models';
 import {RouteError} from '@src/declarations/classes';
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import logger from "jet-logger";
@@ -11,14 +11,14 @@ export const prodNotFoundErr = 'Product not found';
 export const tradeNotFoundErr = 'Trade Log not found';
 export const tradeAuthorityErr = 'Can not modify trade with your authority';
 
-
 // **** Functions **** //
+
 
 /**
  * Get all trades
  */
-async function getAll(): Promise<tt_trade[]> {
-  const persists = await tt_trade.findAll();
+async function getAll(): Promise<tt_product[]> {
+  const persists = await tt_product.findAll();
   if (!persists) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
@@ -31,8 +31,8 @@ async function getAll(): Promise<tt_trade[]> {
 /**
  * Get trade user bought
  */
-async function getUserBought(user: tt_user): Promise<tt_trade[]> {
-  const persists = await tt_trade.findAll({where:{BUYER_USER_ID:user.USER_ID}});
+async function getUserBought(user: tt_user): Promise<tt_product[]> {
+  const persists = await tt_product.findAll({where: {BUYER_USER_ID: user.USER_ID}});
   if (!persists) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
@@ -45,8 +45,8 @@ async function getUserBought(user: tt_user): Promise<tt_trade[]> {
 /**
  * Get trade user is selling
  */
-async function getUserSold(user: tt_user): Promise<tt_trade[]> {
-  const persists = await tt_trade.findAll({where:{SELLER_USER_ID:user.USER_ID}});
+async function getUserSold(user: tt_user): Promise<tt_product[]> {
+  const persists = await tt_product.findAll({where: {SELLER_USER_ID: user.USER_ID}});
   if (!persists) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
@@ -59,12 +59,19 @@ async function getUserSold(user: tt_user): Promise<tt_trade[]> {
 /**
  * Update one trade
  */
-async function doTrade(user: tt_user, tradeId:number): Promise<tt_trade> {
-  const trade = await tt_trade.findByPk(tradeId);
-  if(!trade){
+async function doTrade(user: tt_user, buyerId: number, productId: number): Promise<tt_product> {
+  const trade = await tt_product.findByPk(productId);
+  const buyer = await tt_user.findByPk(buyerId);
+  if (!trade) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
       tradeNotFoundErr,
+    );
+  }
+  if (!buyer) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      "Can not find user",
     );
   }
   if (trade.SELLER_USER_ID !== user.USER_ID && user.GROUP !== tt_user_group.ADMIN) {
@@ -74,10 +81,9 @@ async function doTrade(user: tt_user, tradeId:number): Promise<tt_trade> {
     );
   }
   // Return user
-  trade.set("TRADE_STATUS",tt_trade_status.SOLD);
-  const affectedCount = await trade.save();
-  logger.info(affectedCount);
-  return trade;
+  trade.set("TRADE_STATUS", tt_trade_status.SOLD);
+  const productResult = await trade.save();
+  return productResult;
 }
 
 // **** Export default **** //

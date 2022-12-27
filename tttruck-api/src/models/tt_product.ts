@@ -2,7 +2,7 @@ import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
 import type { tt_product_image, tt_product_imageId } from './tt_product_image';
-import type { tt_trade, tt_tradeCreationAttributes, tt_tradeId } from './tt_trade';
+import type { tt_trade_review, tt_trade_reviewId } from './tt_trade_review';
 import type { tt_user, tt_userId } from './tt_user';
 
 export interface tt_productAttributes {
@@ -27,11 +27,17 @@ export interface tt_productAttributes {
   UPDATE_USER_IPv4?: number;
   UPDATE_USER_IPv6?: any;
   UPDATE_DATE?: Date;
+  TRADE_STATUS?: number;
+  TRADE_TIME?: Date;
+  BUYER_USER_ID?: number;
+  BUYER_USER_IPv4?: number;
+  BUYER_USER_IPv6?: any;
+  DELETE_TF?: number;
 }
 
 export type tt_productPk = "PRODUCT_ID";
 export type tt_productId = tt_product[tt_productPk];
-export type tt_productOptionalAttributes = "PRODUCT_ID" | "PRIORITY" | "SELLER_USER_ID" | "SELLER_USER_IPv4" | "SELLER_USER_IPv6" | "UPLOAD_TIME" | "TAG" | "ADDRESS" | "LATITUDE" | "LONGITUDE" | "LOCATION" | "UPDATE_USER_ID" | "UPDATE_USER_IPv4" | "UPDATE_USER_IPv6" | "UPDATE_DATE";
+export type tt_productOptionalAttributes = "PRODUCT_ID" | "PRIORITY" | "SELLER_USER_ID" | "SELLER_USER_IPv4" | "SELLER_USER_IPv6" | "UPLOAD_TIME" | "TAG" | "ADDRESS" | "LATITUDE" | "LONGITUDE" | "LOCATION" | "UPDATE_USER_ID" | "UPDATE_USER_IPv4" | "UPDATE_USER_IPv6" | "UPDATE_DATE" | "TRADE_STATUS" | "TRADE_TIME" | "BUYER_USER_ID" | "BUYER_USER_IPv4" | "BUYER_USER_IPv6" | "DELETE_TF";
 export type tt_productCreationAttributes = Optional<tt_productAttributes, tt_productOptionalAttributes>;
 
 export class tt_product extends Model<tt_productAttributes, tt_productCreationAttributes> implements tt_productAttributes {
@@ -56,6 +62,12 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
   UPDATE_USER_IPv4?: number;
   UPDATE_USER_IPv6?: any;
   UPDATE_DATE?: Date;
+  TRADE_STATUS?: number;
+  TRADE_TIME?: Date;
+  BUYER_USER_ID?: number;
+  BUYER_USER_IPv4?: number;
+  BUYER_USER_IPv6?: any;
+  DELETE_TF?: number;
 
   // tt_product hasMany tt_product_image via PRODUCT_ID
   tt_product_images!: tt_product_image[];
@@ -69,11 +81,18 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
   hasTt_product_image!: Sequelize.HasManyHasAssociationMixin<tt_product_image, tt_product_imageId>;
   hasTt_product_images!: Sequelize.HasManyHasAssociationsMixin<tt_product_image, tt_product_imageId>;
   countTt_product_images!: Sequelize.HasManyCountAssociationsMixin;
-  // tt_product hasOne tt_trade via PRODUCT_ID
-  tt_trade!: tt_trade;
-  getTt_trade!: Sequelize.HasOneGetAssociationMixin<tt_trade>;
-  setTt_trade!: Sequelize.HasOneSetAssociationMixin<tt_trade, tt_tradeId>;
-  createTt_trade!: Sequelize.HasOneCreateAssociationMixin<tt_trade>;
+  // tt_product hasMany tt_trade_review via PRODUCT_ID
+  tt_trade_reviews!: tt_trade_review[];
+  getTt_trade_reviews!: Sequelize.HasManyGetAssociationsMixin<tt_trade_review>;
+  setTt_trade_reviews!: Sequelize.HasManySetAssociationsMixin<tt_trade_review, tt_trade_reviewId>;
+  addTt_trade_review!: Sequelize.HasManyAddAssociationMixin<tt_trade_review, tt_trade_reviewId>;
+  addTt_trade_reviews!: Sequelize.HasManyAddAssociationsMixin<tt_trade_review, tt_trade_reviewId>;
+  createTt_trade_review!: Sequelize.HasManyCreateAssociationMixin<tt_trade_review>;
+  removeTt_trade_review!: Sequelize.HasManyRemoveAssociationMixin<tt_trade_review, tt_trade_reviewId>;
+  removeTt_trade_reviews!: Sequelize.HasManyRemoveAssociationsMixin<tt_trade_review, tt_trade_reviewId>;
+  hasTt_trade_review!: Sequelize.HasManyHasAssociationMixin<tt_trade_review, tt_trade_reviewId>;
+  hasTt_trade_reviews!: Sequelize.HasManyHasAssociationsMixin<tt_trade_review, tt_trade_reviewId>;
+  countTt_trade_reviews!: Sequelize.HasManyCountAssociationsMixin;
   // tt_product belongsTo tt_product_category via PRODUCT_CATEGORY_ID
   PRODUCT_CATEGORY!: tt_product_category;
   getPRODUCT_CATEGORY!: Sequelize.BelongsToGetAssociationMixin<tt_product_category>;
@@ -84,6 +103,11 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
   getSELLER_USER!: Sequelize.BelongsToGetAssociationMixin<tt_user>;
   setSELLER_USER!: Sequelize.BelongsToSetAssociationMixin<tt_user, tt_userId>;
   createSELLER_USER!: Sequelize.BelongsToCreateAssociationMixin<tt_user>;
+  // tt_product belongsTo tt_user via BUYER_USER_ID
+  BUYER_USER!: tt_user;
+  getBUYER_USER!: Sequelize.BelongsToGetAssociationMixin<tt_user>;
+  setBUYER_USER!: Sequelize.BelongsToSetAssociationMixin<tt_user, tt_userId>;
+  createBUYER_USER!: Sequelize.BelongsToCreateAssociationMixin<tt_user>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_product {
     return tt_product.init({
@@ -204,11 +228,41 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
       allowNull: true,
       defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
       comment: "수정일"
+    },
+    TRADE_STATUS: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0
+    },
+    TRADE_TIME: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: Sequelize.Sequelize.fn('current_timestamp')
+    },
+    BUYER_USER_ID: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: true,
+      references: {
+        model: 'tt_user',
+        key: 'USER_ID'
+      }
+    },
+    BUYER_USER_IPv4: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true
+    },
+    BUYER_USER_IPv6: {
+      type: DataTypes.BLOB,
+      allowNull: true
+    },
+    DELETE_TF: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: 0
     }
   }, {
     sequelize,
     tableName: 'tt_product',
-    hasTrigger: true,
     timestamps: false,
     indexes: [
       {
@@ -231,6 +285,13 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
         using: "BTREE",
         fields: [
           { name: "PRODUCT_CATEGORY_ID" },
+        ]
+      },
+      {
+        name: "tt_product_tt_user_USER_ID_fk",
+        using: "BTREE",
+        fields: [
+          { name: "BUYER_USER_ID" },
         ]
       },
     ]

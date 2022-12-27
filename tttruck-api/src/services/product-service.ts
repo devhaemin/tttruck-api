@@ -72,6 +72,8 @@ async function getById(id: number): Promise<tt_product> {
  * Add one product
  */
 function addOne(product: tt_product): Promise<tt_product> {
+  product.LATITUDE = product.LATITUDE? product.LATITUDE : "37.541";
+  product.LONGITUDE = product.LONGITUDE? product.LONGITUDE : "126.986";
   product.LOCATION = {
     type: 'Point',
     coordinates: [Number(product.LONGITUDE), Number(product.LATITUDE)],

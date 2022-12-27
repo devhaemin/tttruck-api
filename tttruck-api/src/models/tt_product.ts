@@ -31,7 +31,7 @@ export interface tt_productAttributes {
 
 export type tt_productPk = "PRODUCT_ID";
 export type tt_productId = tt_product[tt_productPk];
-export type tt_productOptionalAttributes = "PRODUCT_ID" | "PRIORITY" | "SELLER_USER_ID" | "SELLER_USER_IPv4" | "SELLER_USER_IPv6" | "UPLOAD_TIME" | "TAG" | "ADDRESS" | "UPDATE_USER_ID" | "UPDATE_USER_IPv4" | "UPDATE_USER_IPv6" | "UPDATE_DATE";
+export type tt_productOptionalAttributes = "PRODUCT_ID" | "PRIORITY" | "SELLER_USER_ID" | "SELLER_USER_IPv4" | "SELLER_USER_IPv6" | "UPLOAD_TIME" | "TAG" | "ADDRESS" | "LATITUDE" | "LONGITUDE" | "LOCATION" | "UPDATE_USER_ID" | "UPDATE_USER_IPv4" | "UPDATE_USER_IPv6" | "UPDATE_DATE";
 export type tt_productCreationAttributes = Optional<tt_productAttributes, tt_productOptionalAttributes>;
 
 export class tt_product extends Model<tt_productAttributes, tt_productCreationAttributes> implements tt_productAttributes {
@@ -171,15 +171,18 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
     },
     LATITUDE: {
       type: DataTypes.STRING(15),
-      allowNull: false
+      allowNull: false,
+      defaultValue: "37.541"
     },
     LONGITUDE: {
       type: DataTypes.STRING(15),
-      allowNull: false
+      allowNull: false,
+      defaultValue: "126.986"
     },
     LOCATION: {
       type: GEOMETRY('POINT'),
-      allowNull: false
+      allowNull: false,
+      defaultValue: "point(37.541,126.986)"
     },
     UPDATE_USER_ID: {
       type: DataTypes.BIGINT.UNSIGNED,

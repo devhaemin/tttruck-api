@@ -45,6 +45,10 @@ authRouter.post(
   authRoutes.phoneRequestAuth,
 );
 authRouter.post(
+  authRoutes.paths.phoneCheckAuth,
+  authRoutes.phoneCheckAuth,
+);
+authRouter.post(
   authRoutes.paths.profileImageUpload,
   normalUserMw,
   profileImageMulter.single('file'),

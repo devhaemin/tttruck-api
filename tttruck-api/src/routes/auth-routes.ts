@@ -4,7 +4,7 @@ import authService from '@src/services/auth-service';
 import EnvVars from '@src/declarations/major/EnvVars';
 import codeUtil from "@src/util/code-util";
 import {IReq, IRes} from './shared/types';
-import {tt_user} from "@src/models/init-models";
+import {tt_phone_auth, tt_user} from "@src/models/init-models";
 import {getRandomNicknames} from "@src/util/nick-gen-util";
 import logger from "jet-logger";
 import {S3File} from "@src/routes/shared/awsMultipart";
@@ -18,6 +18,7 @@ const paths = {
   basePath: '/auth',
   generateNickname: '/nickname/generate',
   login: '/login',
+  phoneCheckAuth:'/phone/checkAuth',
   tokenLogin: '/tokenLogin',
   logout: '/logout',
   signup: '/signup',
@@ -237,6 +238,30 @@ async function signup(req: IReq<ISignUpReq>, res: IRes) {
 }
 
 /**
+ * @api {post} /auth/phone/checkAuth Check PhoneAuth SMS
+ * @apiName PhoneAuthCheck
+ * @apiGroup Auth
+ * @apiPermission none
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "PHONE" : "01098810664",
+ *       "PHONE_AUTH_CODE" : "123456",
+ *     }
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {}
+ *
+ */
+
+async function phoneCheckAuth(req: IReq<{PHONE:string,PHONE_AUTH_CODE:string}>, res: IRes) {
+  const {PHONE,PHONE_AUTH_CODE} = req.body;
+  const phoneAuth = await authService.checkPhoneAuth(PHONE,PHONE_AUTH_CODE);
+  return res.status(HttpStatusCodes.OK).json(phoneAuth).end();
+}
+
+/**
  * @api {post} /auth/phone/requestAuth Request PhoneAuth SMS
  * @apiName PhoneAuthCheck
  * @apiGroup Auth
@@ -303,6 +328,7 @@ export default {
   login,
   logout,
   generateNickname,
+  phoneCheckAuth,
   phoneRequestAuth,
   profileImageUpload,
   signup,

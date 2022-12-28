@@ -7,8 +7,6 @@ import {tt_user} from "@src/models/tt_user";
 import {tt_phone_auth} from "@src/models/tt_phone_auth";
 import {sendPhoneAuthSMS} from "@src/util/sms-util";
 import {S3File} from "@src/routes/shared/awsMultipart";
-import {tt_product, tt_product_image} from "@src/models/init-models";
-import {prodNotFoundErr} from "@src/services/product-service";
 
 
 // **** Variables **** //
@@ -33,12 +31,12 @@ async function uploadProfileImage(file: S3File | null, user: tt_user) {
     );
   }
   user.PROFILE_IMAGE = file.key;
-  return await tt_user.update(user,{where:{USER_ID:user.USER_ID}});
+  return await tt_user.update(user, {where: {USER_ID: user.USER_ID}});
 }
 
-async function setPhoneAuth(code:string, phone:string): Promise<tt_phone_auth>{
-  const persists = await tt_user.findAll({where:{PHONE : phone}});
-  if(persists && persists.length !== 0){
+async function setPhoneAuth(code: string, phone: string): Promise<tt_phone_auth> {
+  const persists = await tt_user.findAll({where: {PHONE: phone}});
+  if (persists && persists.length !== 0) {
     throw new RouteError(
       HttpStatusCodes.ALREADY_REPORTED,
       "이미 가입된 번호입니다.",
@@ -46,45 +44,51 @@ async function setPhoneAuth(code:string, phone:string): Promise<tt_phone_auth>{
   }
   const sendSMS = await sendPhoneAuthSMS(code, phone);
   const nCloudRes = sendSMS.parsedBody;
-  if(!nCloudRes ){
+  if (!nCloudRes) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
       "NaverCloud API return nothing.",
     );
   }
-  if(nCloudRes.error){
+  if (nCloudRes.error) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
-      nCloudRes.error.message + " / " + nCloudRes.error.details ,
+      nCloudRes.error.message + " / " + nCloudRes.error.details,
     );
   }
-  return tt_phone_auth.create({PHONE_AUTH_CODE : code, PHONE : phone});
+  return tt_phone_auth.create({PHONE_AUTH_CODE: code, PHONE: phone});
 }
 
-async function addNormalUser(user:tt_user): Promise<tt_user>{
+async function checkPhoneAuth(PHONE: string, PHONE_AUTH_CODE: string): Promise<tt_phone_auth> {
   const phoneAuth = await tt_phone_auth.findOne({
-    where:{$PHONE$:user.PHONE},
-    order:[['AUTH_ID','DESC']],
+    where: {$PHONE$: PHONE},
+    order: [['AUTH_ID', 'DESC']],
   });
-  if(!user.PHONE_AUTH_CODE){
+  if (!PHONE_AUTH_CODE) {
     throw new RouteError(
       HttpStatusCodes.BAD_REQUEST,
       "code required not found",
     );
   }
-  if(!phoneAuth || phoneAuth.EXPIRED_TIME < new Date()){
+  if (!phoneAuth || phoneAuth.EXPIRED_TIME < new Date()) {
     throw new RouteError(
       HttpStatusCodes.UNAUTHORIZED,
       "인증 코드가 만료되었습니다.",
-    )
-  }
-  if(
-    user.PHONE_AUTH_CODE !== phoneAuth.PHONE_AUTH_CODE){
-    throw new RouteError(
-      HttpStatusCodes.UNAUTHORIZED,
-      errors.notCorrectCode(user.PHONE_AUTH_CODE),
     );
   }
+  if (
+    PHONE_AUTH_CODE !== phoneAuth.PHONE_AUTH_CODE) {
+    throw new RouteError(
+      HttpStatusCodes.UNAUTHORIZED,
+      errors.notCorrectCode(PHONE_AUTH_CODE),
+    );
+  }
+  return phoneAuth;
+}
+
+async function addNormalUser(user: tt_user): Promise<tt_user> {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const phoneAuth = await checkPhoneAuth(user.PHONE, user.PHONE_AUTH_CODE!);
   user.PHONE_AUTH_TF = Number(true);
   user.GROUP = 0;
   user.PASSWORD = await pwdUtil.getHash(user.PASSWORD);
@@ -92,9 +96,10 @@ async function addNormalUser(user:tt_user): Promise<tt_user>{
     phone: user.PHONE,
     password: user.PASSWORD,
   });
-  phoneAuth.update({PHONE_AUTH_TF : Number(true)});
+  phoneAuth.update({PHONE_AUTH_TF: Number(true)});
   return tt_user.create(user);
 }
+
 /**
  * Login a user.
  * @apiBody Number [field=defaultValue] [description
@@ -102,7 +107,7 @@ async function addNormalUser(user:tt_user): Promise<tt_user>{
  */
 async function getJwtUser(phone: string, password: string): Promise<tt_user> {
   // Fetch user
-  const user = await tt_user.findOne({where:{$PHONE$:phone}});
+  const user = await tt_user.findOne({where: {$PHONE$: phone}});
   if (!user) {
     throw new RouteError(
       HttpStatusCodes.UNAUTHORIZED,
@@ -136,4 +141,5 @@ export default {
   setPhoneAuth,
   getJwtUser,
   uploadProfileImage,
+  checkPhoneAuth,
 } as const;

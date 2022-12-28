@@ -226,7 +226,7 @@ async function add(req: IReq<{ notice: tt_notice }>, res: IRes) {
 }
 
 /**
- * @api {post} /notices/image Add Notice image file
+ * @api {post} /notices/image/upload Add Notice image file
  * @apiName AddNoticeImage
  * @apiGroup Notice
  *

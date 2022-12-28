@@ -773,6 +773,24 @@ async function getById(req: IReq, res: IRes) {
  *
  * @apiParamExample {json} Request-Example:
  * {
+ *   "product" : {
+ *     "SUBJECT": "SUBJECT 1",
+ *     "PRIORITY": 1,
+ *     "PRODUCT_CATEGORY_ID": 1,
+ *     "PRODUCT_PRICE": 30000,
+ *     "PRODUCT_SIZE": "1024x1024",
+ *     "PRODUCT_WEIGHT": 500,
+ *     "CONTENTS": "CONTENTS 1",
+ *     "PRODUCT_STATUS": 1,
+ *     "TAG": "TAG 1",
+ *     "ADDRESS": "ADDRESS 1",
+ *     "LATITUDE": "10",
+ *     "LONGITUDE":"120"
+ *   }
+ * }
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 201 OK
+ * {
  *     "UPLOAD_TIME": {
  *         "fn": "current_timestamp",
  *         "args": []
@@ -805,9 +823,6 @@ async function getById(req: IReq, res: IRes) {
  *         ]
  *     }
  * }
- * @apiSuccessExample Success-Response:
- *     HTTP/1.1 201 OK
- *     {}
  *
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 404 Not Found
@@ -828,7 +843,7 @@ async function add(req: IReq<{ product: tt_product }>, res: IRes) {
 }
 
 /**
- * @api {post} /products/image Add product image file
+ * @api {post} /products/image/upload Add product image file
  * @apiName AddProductImage
  * @apiGroup Product
  *

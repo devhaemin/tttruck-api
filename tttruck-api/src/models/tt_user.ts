@@ -15,7 +15,7 @@ export interface tt_userAttributes {
   PHONE: string;
   PASSWORD: string;
   NICKNAME?: string;
-  NAME: string;
+  NAME?: string;
   ACCESSTOKEN: string;
   WASTE_SAVINGS: number;
   GROUP: number;
@@ -43,7 +43,7 @@ export interface tt_userAttributes {
 
 export type tt_userPk = "USER_ID";
 export type tt_userId = tt_user[tt_userPk];
-export type tt_userOptionalAttributes = "USER_ID" | "NICKNAME" | "WASTE_SAVINGS" | "PROFILE_IMAGE" | "INTERIOR_COMPANY_TF" | "INTERIOR_COMPANY_NAME" | "BIRTHDAY" | "GENDER" | "ZIP_CODE" | "ADDRESS" | "DETAIL_ADDRESS" | "JOIN_STATE" | "RESTING_TF" | "LEAVE_TF" | "PHONE_AUTH_CODE" | "PHONE_AUTH_DATE" | "PHONE_AUTH_SUCCEED_DATE" | "PHONE_AUTH_TF" | "REG_TIME" | "UPD_TIME" | "JOIN_TIME" | "JOIN_PERMIT_USER_ID" | "JOIN_AGREE";
+export type tt_userOptionalAttributes = "USER_ID" | "NICKNAME" | "NAME" | "WASTE_SAVINGS" | "PROFILE_IMAGE" | "INTERIOR_COMPANY_TF" | "INTERIOR_COMPANY_NAME" | "BIRTHDAY" | "GENDER" | "ZIP_CODE" | "ADDRESS" | "DETAIL_ADDRESS" | "JOIN_STATE" | "RESTING_TF" | "LEAVE_TF" | "PHONE_AUTH_CODE" | "PHONE_AUTH_DATE" | "PHONE_AUTH_SUCCEED_DATE" | "PHONE_AUTH_TF" | "REG_TIME" | "UPD_TIME" | "JOIN_TIME" | "JOIN_PERMIT_USER_ID" | "JOIN_AGREE";
 export type tt_userCreationAttributes = Optional<tt_userAttributes, tt_userOptionalAttributes>;
 
 export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes> implements tt_userAttributes {
@@ -51,7 +51,7 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   PHONE!: string;
   PASSWORD!: string;
   NICKNAME?: string;
-  NAME!: string;
+  NAME?: string;
   ACCESSTOKEN!: string;
   WASTE_SAVINGS!: number;
   GROUP!: number;
@@ -265,7 +265,7 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
     },
     NAME: {
       type: DataTypes.STRING(300),
-      allowNull: false,
+      allowNull: true,
       comment: "이름"
     },
     ACCESSTOKEN: {

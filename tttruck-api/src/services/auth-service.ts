@@ -6,6 +6,9 @@ import {tick} from '@src/declarations/functions';
 import {tt_user} from "@src/models/tt_user";
 import {tt_phone_auth} from "@src/models/tt_phone_auth";
 import {sendPhoneAuthSMS} from "@src/util/sms-util";
+import {S3File} from "@src/routes/shared/awsMultipart";
+import {tt_product, tt_product_image} from "@src/models/init-models";
+import {prodNotFoundErr} from "@src/services/product-service";
 
 
 // **** Variables **** //
@@ -20,6 +23,19 @@ export const errors = {
 
 
 // **** Functions **** //
+
+async function uploadProfileImage(file: S3File | null, user: tt_user) {
+
+  if (!file) {
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      "AWS API Connection error.",
+    );
+  }
+  user.PROFILE_IMAGE = file.key;
+  return await tt_user.update(user,{where:{USER_ID:user.USER_ID}});
+}
+
 async function setPhoneAuth(code:string, phone:string): Promise<tt_phone_auth>{
   const persists = await tt_user.findAll({where:{PHONE : phone}});
   if(persists && persists.length !== 0){
@@ -119,4 +135,5 @@ export default {
   addNormalUser,
   setPhoneAuth,
   getJwtUser,
+  uploadProfileImage,
 } as const;

@@ -7,6 +7,9 @@ import {IReq, IRes} from './shared/types';
 import {tt_user} from "@src/models/init-models";
 import {getRandomNicknames} from "@src/util/nick-gen-util";
 import logger from "jet-logger";
+import {S3File} from "@src/routes/shared/awsMultipart";
+import productService from "@src/services/product-service";
+import {getClientIP} from "@src/util/ip-util";
 
 // **** Variables **** //
 
@@ -18,6 +21,7 @@ const paths = {
   tokenLogin: '/tokenLogin',
   logout: '/logout',
   signup: '/signup',
+  profileImageUpload: '/profile/image',
   phoneRequestAuth: '/phone/requestAuth',
 } as const;
 
@@ -45,7 +49,7 @@ interface IPhoneAuthReq {
 }
 
 // **** Functions **** //
-/** /**
+/**
  * @api {get} /auth/tokenLogin 토큰 로그인
  * @apiName tokenLogin
  * @apiGroup Auth
@@ -90,7 +94,7 @@ function tokenLogin(req: IReq, res: IRes) {
 }
 
 /**
- * @api {get} /nickname/generate Sub Description
+ * @api {get} /auth/nickname/generate Sub Description
  * @apiName getRandomNickname
  * @apiGroup Auth
  * @apiPermission none
@@ -250,10 +254,36 @@ async function signup(req: IReq<ISignUpReq>, res: IRes) {
  */
 
 async function phoneRequestAuth(req: IReq<IPhoneAuthReq>, res: IRes) {
-  const authCode = codeUtil.randomDigits(7);
+  const authCode = codeUtil.randomDigits(6);
   await authService.setPhoneAuth(authCode, req.body.phone);
   return res.status(HttpStatusCodes.OK).end();
 }
+/**
+ * @api {post} /auth/image/profile Set Profile Image
+ * @apiName SetProfileImage
+ * @apiGroup Auth
+ *
+ * @apiPermission normalUser
+ *
+ * @apiBody File file 상품에 추가할 이미지
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "UserNotFound"
+ *     }
+ */
+async function profileImageUpload(req: IReq<{ productId: number }>, res: IRes) {
+  const file = req.file as S3File;
+  const result =
+    await authService.uploadProfileImage(file, res.locals.user);
+  return res.status(HttpStatusCodes.CREATED).json(result).end();
+}
+
 
 /**
  * Logout the user.
@@ -274,5 +304,6 @@ export default {
   logout,
   generateNickname,
   phoneRequestAuth,
+  profileImageUpload,
   signup,
 } as const;

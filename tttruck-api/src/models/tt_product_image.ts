@@ -14,11 +14,12 @@ export interface tt_product_imageAttributes {
   FILE_ID?: number;
   CONTENT_ID?: number;
   TIME?: Date;
+  PRIORITY: number;
 }
 
 export type tt_product_imagePk = "PRODUCT_IMAGE_ID";
 export type tt_product_imageId = tt_product_image[tt_product_imagePk];
-export type tt_product_imageOptionalAttributes = "PRODUCT_IMAGE_ID" | "FILE_NAME" | "FILE_PATH" | "FILE_SIZE" | "ORG_FILE_SEQ" | "FILE_URL" | "THUMB_PATH" | "FILE_ID" | "CONTENT_ID" | "TIME";
+export type tt_product_imageOptionalAttributes = "PRODUCT_IMAGE_ID" | "FILE_NAME" | "FILE_PATH" | "FILE_SIZE" | "ORG_FILE_SEQ" | "FILE_URL" | "THUMB_PATH" | "FILE_ID" | "CONTENT_ID" | "TIME" | "PRIORITY";
 export type tt_product_imageCreationAttributes = Optional<tt_product_imageAttributes, tt_product_imageOptionalAttributes>;
 
 export class tt_product_image extends Model<tt_product_imageAttributes, tt_product_imageCreationAttributes> implements tt_product_imageAttributes {
@@ -33,6 +34,7 @@ export class tt_product_image extends Model<tt_product_imageAttributes, tt_produ
   FILE_ID?: number;
   CONTENT_ID?: number;
   TIME?: Date;
+  PRIORITY!: number;
 
   // tt_product_image belongsTo tt_product via PRODUCT_ID
   PRODUCT!: tt_product;
@@ -102,6 +104,11 @@ export class tt_product_image extends Model<tt_product_imageAttributes, tt_produ
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: Sequelize.Sequelize.fn('current_timestamp')
+    },
+    PRIORITY: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     sequelize,

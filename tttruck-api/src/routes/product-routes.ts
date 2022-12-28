@@ -19,7 +19,9 @@ const paths = {
   getByCategory: '/category/:id',
   getById: '/:id',
   add: '/add',
+  setImageOrder: '/image/order',
   imageUpload: '/image/upload',
+  _imageDelete: 'image/delete/:id',
   update: '/update',
   delete: '/delete/:id',
 } as const;
@@ -689,7 +691,7 @@ async function getByCategory(req: IReq, res: IRes) {
  *     }
  */
 async function getByCategories(
-  req: IReq<{categories: [number] }>,
+  req: IReq<{ categories: [number] }>,
   res: IRes) {
   const {categories} = req.body;
   const {longitude, latitude} = res.locals.location.location;
@@ -763,6 +765,7 @@ async function getById(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.OK).json(product);
 }
 
+//사진 삭제 API / productImageId -> PRIORITY
 
 /**
  * @api {post} /products/add Add product
@@ -893,11 +896,38 @@ async function add(req: IReq<{ product: tt_product }>, res: IRes) {
 async function imageUpload(req: IReq<{ productId: number }>, res: IRes) {
   const {productId} = req.body;
   const file = req.file as S3File;
-  const product = await tt_product.findByPk(productId);
-  const result = await productService.uploadImage(productId, file, res.locals.user, getClientIP(req));
+  const result =
+    await productService.uploadImage(productId, file, res.locals.user, getClientIP(req));
   return res.status(HttpStatusCodes.CREATED).json(result).end();
 }
 
+/**
+ * @api {post} /products/image/order Set Image order
+ * @apiName AddProductImage
+ * @apiGroup Product
+ *
+ * @apiPermission normalUser
+ *
+ *
+ * @apiParamExample {json} Request-Example:
+ * [{ PRODUCT_IMAGE_ID: number, PRIORITY: number },
+ * { PRODUCT_IMAGE_ID: number, PRIORITY: number }
+ * ]
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "ProductNotFound"
+ *     }
+ */
+async function setImageOrder(req: IReq<[{ PRODUCT_IMAGE_ID: number, PRIORITY: number }]>, res: IRes)
+{
+  const priorities = req.body;
+  await productService.setImageOrder(priorities);
+  return res.status(HttpStatusCodes.CREATED).end();
+}
 
 /**
  * @api {put} /products/update Add product
@@ -984,6 +1014,35 @@ async function _delete(req: IReq, res: IRes) {
   await productService.delete(res.locals.user, id);
   return res.status(HttpStatusCodes.OK).end();
 }
+
+/**
+ * @api {delete} /products/image/delete/:id delete product
+ * @apiName DeleteProductImage
+ * @apiGroup Product
+ *
+ * @apiPermission normalUser
+ *
+ * @apiParam {Number} id
+ *
+ * @apiParamExample {json} Request-Example:
+ * {}
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {}
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "ImageNotFound"
+ *     }
+ */
+async function _imageDelete(req: IReq, res: IRes) {
+  const id = +req.params.id;
+  await productService.deleteImage(res.locals.user, id);
+  return res.status(HttpStatusCodes.OK).end();
+}
+
 
 /**
  * @api {get} /products/category Get All Categories
@@ -1212,7 +1271,9 @@ export default {
   getByCategory,
   getById,
   add,
+  setImageOrder,
   imageUpload,
+  _imageDelete,
   update,
   delete: _delete,
   getByCategories,

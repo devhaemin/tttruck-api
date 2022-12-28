@@ -4,8 +4,7 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import logger from "jet-logger";
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
 import {S3File} from "@src/routes/shared/awsMultipart";
-import {noticeNotFoundErr} from "@src/services/notice-service";
-import {fn, Op, Sequelize} from "sequelize";
+import {Op, Sequelize} from "sequelize";
 
 
 // **** Variables **** //
@@ -19,7 +18,7 @@ export const prodAuthorityErr = 'Can not modify Product with your authority';
 /**
  * Get all products
  */
-async function getAll(longitude:string, latitude:string): Promise<tt_product[]> {
+async function getAll(longitude: string, latitude: string): Promise<tt_product[]> {
   const persists = await tt_product.findAll(
     {
       attributes: {
@@ -36,7 +35,11 @@ async function getAll(longitude:string, latitude:string): Promise<tt_product[]> 
       },
       include:
         [{model: tt_product_image, as: "tt_product_images"},
-          {model: tt_user, as:"SELLER_USER", attributes:["NICKNAME","PROFILE_IMAGE","USER_ID"]}],
+          {
+            model: tt_user,
+            as: "SELLER_USER",
+            attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
+          }],
       order: Sequelize.literal('DISTANCE ASC'),
     });
   if (!persists) {
@@ -51,7 +54,7 @@ async function getAll(longitude:string, latitude:string): Promise<tt_product[]> 
 /**
  * Get products by category
  */
-async function getByCategory(longitude:string, latitude:string, id: number): Promise<tt_product[]> {
+async function getByCategory(longitude: string, latitude: string, id: number): Promise<tt_product[]> {
   const persists = await tt_product.findAll({
     attributes: {
       include: [
@@ -68,7 +71,11 @@ async function getByCategory(longitude:string, latitude:string, id: number): Pro
     where: {$PRODUCT_CATEGORY_ID$: id},
     include:
       [{model: tt_product_image, as: "tt_product_images"},
-        {model: tt_user, as:"SELLER_USER", attributes:["NICKNAME","PROFILE_IMAGE","USER_ID"]}],
+        {
+          model: tt_user,
+          as: "SELLER_USER",
+          attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
+        }],
     order: Sequelize.literal('DISTANCE ASC'),
   });
   if (!persists) {
@@ -84,7 +91,7 @@ async function getByCategory(longitude:string, latitude:string, id: number): Pro
  *
  * Get products by categories
  */
-async function getByCategories(longitude:string, latitude:string, categories: [number]):
+async function getByCategories(longitude: string, latitude: string, categories: [number]):
   Promise<tt_product[]> {
   const persists = await tt_product.findAll({
     attributes: {
@@ -99,10 +106,14 @@ async function getByCategories(longitude:string, latitude:string, categories: [n
         ],
       ],
     },
-    where: {$PRODUCT_CATEGORY_ID$:{ [Op.in] : categories }},
+    where: {$PRODUCT_CATEGORY_ID$: {[Op.in]: categories}},
     include:
       [{model: tt_product_image, as: "tt_product_images"},
-        {model: tt_user, as:"SELLER_USER", attributes:["NICKNAME","PROFILE_IMAGE","USER_ID"]}],
+        {
+          model: tt_user,
+          as: "SELLER_USER",
+          attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
+        }],
     order: Sequelize.literal('DISTANCE ASC'),
   });
   if (!persists) {
@@ -113,6 +124,7 @@ async function getByCategories(longitude:string, latitude:string, categories: [n
   }
   return persists;
 }
+
 /**
  * Get product by ID
  */
@@ -120,7 +132,11 @@ async function getById(id: number): Promise<tt_product> {
   const persists = await tt_product.findByPk(id, {
     include:
       [{model: tt_product_image, as: "tt_product_images"},
-        {model: tt_user, as:"SELLER_USER", attributes:["NICKNAME","PROFILE_IMAGE","USER_ID"]}],
+        {
+          model: tt_user,
+          as: "SELLER_USER",
+          attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
+        }],
   });
   if (!persists) {
     throw new RouteError(
@@ -135,8 +151,8 @@ async function getById(id: number): Promise<tt_product> {
  * Add one product
  */
 function addOne(product: tt_product): Promise<tt_product> {
-  product.LATITUDE = product.LATITUDE? product.LATITUDE : "37.541";
-  product.LONGITUDE = product.LONGITUDE? product.LONGITUDE : "126.986";
+  product.LATITUDE = product.LATITUDE ? product.LATITUDE : "37.541";
+  product.LONGITUDE = product.LONGITUDE ? product.LONGITUDE : "126.986";
   product.LOCATION = {
     type: 'Point',
     coordinates: [Number(product.LONGITUDE), Number(product.LATITUDE)],
@@ -148,11 +164,11 @@ function addOne(product: tt_product): Promise<tt_product> {
  * Update one product
  */
 async function updateOne(user: tt_user, product: tt_product): Promise<tt_product> {
-  if(!product){
+  if (!product) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
-      noticeNotFoundErr,
-    )
+      prodNotFoundErr,
+    );
   }
   const persists = await tt_product.findAll({where: {PRODUCT_ID: product.PRODUCT_ID}});
   if (!persists) {
@@ -171,6 +187,24 @@ async function updateOne(user: tt_user, product: tt_product): Promise<tt_product
   const affectedCount = await tt_product.update(product, {where: {PRODUCT_ID: product.PRODUCT_ID}});
   logger.info(affectedCount);
   return product;
+}
+
+/**
+ * setImageOrder
+ */
+async function setImageOrder(priorities: [{ PRODUCT_IMAGE_ID: number, PRIORITY: number }]) {
+  for (const priority of priorities) {
+    const productImage = await tt_product_image.findByPk(priority.PRODUCT_IMAGE_ID);
+    if (!productImage) {
+      throw new RouteError(
+        HttpStatusCodes.NOT_FOUND,
+        "상품 이미지를 찾을 수 없습니다.",
+      );
+    }
+    productImage.PRIORITY = priority.PRIORITY;
+    await tt_product_image.update(
+      {PRIORITY: priority.PRIORITY}, {where: {PRODUCT_IMAGE_ID: priority.PRODUCT_IMAGE_ID}});
+  }
 }
 
 async function uploadImage(productId: number, file: S3File | null, user: tt_user, ip: number) {
@@ -197,6 +231,28 @@ async function uploadImage(productId: number, file: S3File | null, user: tt_user
     FILE_SIZE: file.size,
   });
   return await product.update(product);
+}
+
+async function deleteImage(user: tt_user, id: number): Promise<void> {
+  const persists = await tt_product_image.findAll({
+    where: {PRODUCT_IMAGE_ID: id},
+    include:
+      [{model: tt_product, as: "PRODUCT"}],
+  });
+  if (!persists) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      prodNotFoundErr,
+    );
+  }
+  if (persists[0].PRODUCT.SELLER_USER_ID !== user.USER_ID && user.GROUP !== tt_user_group.ADMIN) {
+    throw new RouteError(
+      HttpStatusCodes.FORBIDDEN,
+      prodAuthorityErr,
+    );
+  }
+  // Delete user
+  await tt_product_image.destroy({where: {PRODUCT_IMAGE_ID: id}});
 }
 
 /**
@@ -229,7 +285,9 @@ export default {
   getByCategories,
   getById,
   addOne,
+  setImageOrder,
   updateOne,
   uploadImage,
   delete: _delete,
+  deleteImage,
 } as const;

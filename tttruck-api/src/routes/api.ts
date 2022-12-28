@@ -18,6 +18,7 @@ const apiRouter = Router(),
 // **** Setup auth routes **** //
 
 const authRouter = Router();
+const profileImageMulter = getS3Multer('profile');
 
 authRouter.get(
   authRoutes.paths.generateNickname,
@@ -42,6 +43,12 @@ authRouter.post(
   authRoutes.paths.phoneRequestAuth,
   validate('phone'),
   authRoutes.phoneRequestAuth,
+);
+authRouter.post(
+  authRoutes.paths.profileImageUpload,
+  normalUserMw,
+  profileImageMulter.single('file'),
+  authRoutes.profileImageUpload,
 );
 
 // Logout user
@@ -93,12 +100,24 @@ productRouter.post(
   productRoutes.imageUpload,
 );
 
+productRouter.post(
+  productRoutes.paths.setImageOrder,
+  normalUserMw,
+  productRoutes.setImageOrder,
+);
+
 // Delete one product
 productRouter.delete(
   productRoutes.paths.delete,
   validate(['id', 'number', 'params']),
   normalUserMw,
   productRoutes.delete,
+);
+productRouter.delete(
+  productRoutes.paths._imageDelete,
+  validate(['id', 'number', 'params']),
+  normalUserMw,
+  productRoutes._imageDelete,
 );
 apiRouter.use(productRoutes.paths.basePath, productRouter);
 // **** Setup Product routes **** //

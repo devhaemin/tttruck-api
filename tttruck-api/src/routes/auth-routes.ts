@@ -10,6 +10,7 @@ import logger from "jet-logger";
 import {S3File} from "@src/routes/shared/awsMultipart";
 import productService from "@src/services/product-service";
 import {getClientIP} from "@src/util/ip-util";
+import chatService from "@src/chats/chat-service";
 
 // **** Variables **** //
 
@@ -59,12 +60,12 @@ interface IPhoneAuthReq {
  * @apiSuccessExample {json} Success-Response:
  *  HTTP/1.1 200 OK
  * {
- *     "USER_ID": 4,
- *     "PHONE": "01098810664",
- *     "PASSWORD": "$2b$12$8fxYmHk8Q9VhJX7wygLrt.0FQfmwSC7G8IA4gXATFlj5yXNl4b7jG",
+ *     "USER_ID": 20,
+ *     "PHONE": "01000000000",
+ *     "PASSWORD": "$2b$12$OK.94bmsk.KcJzlvbJ6u7eG9bz3C0zIvVFYq7LfjudDfKhw6MnCVe",
  *     "NICKNAME": "꼬리무123",
  *     "NAME": "정해민",
- *     "ACCESSTOKEN": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZSI6IjAxMDk4ODEwNjY0IiwicGFzc3dvcmQiOiIkMmIkMTIkOGZ4WW1IazhROVZoSlg3d3lnTHJ0LjBGUWZtd1NDN0c4SUE0Z1hBVEZsajV5WE5sNGI3akciLCJpYXQiOjE2NzE4NjMxNDYsImV4cCI6MTY3MjEyMjM0Nn0.C3uWMghrAIehH-T8pLbGHhReqnmm-mWfIJ2xuQ_BoUo",
+ *     "ACCESSTOKEN": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZSI6IjAxMDAwMDAwMDAwIiwicGFzc3dvcmQiOiIkMmIkMTIkT0suOTRibXNrLktjSnpsdmJKNnU3ZUc5YnozQzB6SXZWRllxN0xmanVkRGZLaHc2TW5DVmUiLCJpYXQiOjE2NzIyOTk4ODEsImV4cCI6MTY3MjU1OTA4MX0.VWNLercbutOKO-WVtHXQDC2Mrw4VboG2RA0GeJY5b-0",
  *     "WASTE_SAVINGS": 0,
  *     "GROUP": 0,
  *     "PROFILE_IMAGE": null,
@@ -78,20 +79,29 @@ interface IPhoneAuthReq {
  *     "JOIN_STATE": null,
  *     "RESTING_TF": false,
  *     "LEAVE_TF": false,
- *     "PHONE_AUTH_CODE": "3911945",
+ *     "PHONE_AUTH_CODE": "554914",
  *     "PHONE_AUTH_DATE": null,
  *     "PHONE_AUTH_SUCCEED_DATE": null,
  *     "PHONE_AUTH_TF": true,
- *     "REG_TIME": "2022-12-24T06:25:46.000Z",
- *     "UPD_TIME": "2022-12-24T06:25:46.000Z",
- *     "JOIN_TIME": "2022-12-24T06:25:46.000Z",
+ *     "REG_TIME": "2022-12-29T07:34:47.000Z",
+ *     "UPD_TIME": "2022-12-29T07:44:41.000Z",
+ *     "JOIN_TIME": "2022-12-29T07:34:47.000Z",
  *     "JOIN_PERMIT_USER_ID": null,
- *     "JOIN_AGREE": null
+ *     "JOIN_AGREE": null,
+ *     "tt_user_talkplu": {
+ *         "USER_ID": 20,
+ *         "TALKPLUS_ID": "tttruck20",
+ *         "TALKPLUS_PASSWORD": "$2b$12$OK.94bmsk.KcJzlvbJ6u7eG9bz3C0zIvVFYq7LfjudDfKhw6MnCVe",
+ *         "TALKPLUS_USERNAME": "꼬리무123",
+ *         "TALKPLUS_PROFILE_IMAGE_URL": "https://cdn.tttruck.co.kr/profile/1672301492476_img-ObBaphDQMth1gVfJIwiS0HUh.png",
+ *         "TALKPLUS_LOGIN_TOKEN": "$2a$06$Ume.e8dNF7ELlDdbIDUT9eO5zKXhynSriqXToYmLncLg7zvK9NvyC"
+ *     }
  * }
  *
  */
-function tokenLogin(req: IReq, res: IRes) {
-  return res.status(200).json(res.locals.user).end();
+async function tokenLogin(req: IReq, res: IRes) {
+  const retUser = await authService.getUserWithTalkplus(res.locals.user.USER_ID);
+  return res.status(200).json(retUser).end();
 }
 
 /**
@@ -138,34 +148,42 @@ async function generateNickname(req:IReq, res:IRes){
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *     "USER_ID": 1,
- *     "PHONE": "01098810664",
- *     "PASSWORD": "$2b$12$RskaEs2W46U8y.xLOdE3x.46wK7NuXa764P/3Q8VxwkExy4ZNB8fS",
- *     "NICKNAME": "haemin",
- *     "NAME": "haemin",
- *     "ACCESSTOKEN": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZSI6IjAxMDk4ODEwNjY0IiwicGFzc3dvcmQiOiIkMmIkMTIkUnNrYUVzMlc0NlU4eS54TE9kRTN4LjQ2d0s3TnVYYTc2NFAvM1E4Vnh3a0V4eTRaTkI4ZlMiLCJpYXQiOjE2NzE2MDk2NjksImV4cCI6MTY3MTg2ODg2OX0.Clj7asgtctwcNN9_qiV1gPRePqAzOVO-n30ju5lpP4U",
+ *     "USER_ID": 20,
+ *     "PHONE": "01000000000",
+ *     "PASSWORD": "$2b$12$OK.94bmsk.KcJzlvbJ6u7eG9bz3C0zIvVFYq7LfjudDfKhw6MnCVe",
+ *     "NICKNAME": "꼬리무123",
+ *     "NAME": "정해민",
+ *     "ACCESSTOKEN": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZSI6IjAxMDAwMDAwMDAwIiwicGFzc3dvcmQiOiIkMmIkMTIkT0suOTRibXNrLktjSnpsdmJKNnU3ZUc5YnozQzB6SXZWRllxN0xmanVkRGZLaHc2TW5DVmUiLCJpYXQiOjE2NzIyOTk4ODEsImV4cCI6MTY3MjU1OTA4MX0.VWNLercbutOKO-WVtHXQDC2Mrw4VboG2RA0GeJY5b-0",
  *     "WASTE_SAVINGS": 0,
  *     "GROUP": 0,
  *     "PROFILE_IMAGE": null,
- *     "INTERIOR_COMPANY_TF": "F",
- *     "INTERIOR_COMPANY_NAME": null,
- *     "BIRTHDAY": null,
- *     "GENDER": null,
- *     "ZIP_CODE": null,
+ *     "INTERIOR_COMPANY_TF": false,
+ *     "INTERIOR_COMPANY_NAME": "",
+ *     "BIRTHDAY": "20001212",
+ *     "GENDER": 0,
+ *     "ZIP_CODE": "01256",
  *     "ADDRESS": null,
  *     "DETAIL_ADDRESS": null,
  *     "JOIN_STATE": null,
- *     "RESTING_TF": "F",
- *     "LEAVE_TF": "F",
- *     "PHONE_AUTH_CODE": null,
+ *     "RESTING_TF": false,
+ *     "LEAVE_TF": false,
+ *     "PHONE_AUTH_CODE": "554914",
  *     "PHONE_AUTH_DATE": null,
  *     "PHONE_AUTH_SUCCEED_DATE": null,
- *     "PHONE_AUTH_TF": "F",
- *     "REG_TIME": "2022-12-17T14:30:04.000Z",
- *     "UPD_TIME": "2022-12-21T08:01:02.000Z",
- *     "JOIN_TIME": null,
+ *     "PHONE_AUTH_TF": true,
+ *     "REG_TIME": "2022-12-29T07:34:47.000Z",
+ *     "UPD_TIME": "2022-12-29T07:44:41.000Z",
+ *     "JOIN_TIME": "2022-12-29T07:34:47.000Z",
  *     "JOIN_PERMIT_USER_ID": null,
- *     "JOIN_AGREE": null
+ *     "JOIN_AGREE": null,
+ *     "tt_user_talkplu": {
+ *         "USER_ID": 20,
+ *         "TALKPLUS_ID": "tttruck20",
+ *         "TALKPLUS_PASSWORD": "$2b$12$OK.94bmsk.KcJzlvbJ6u7eG9bz3C0zIvVFYq7LfjudDfKhw6MnCVe",
+ *         "TALKPLUS_USERNAME": "꼬리무123",
+ *         "TALKPLUS_PROFILE_IMAGE_URL": "https://cdn.tttruck.co.kr/profile/1672301492476_img-ObBaphDQMth1gVfJIwiS0HUh.png",
+ *         "TALKPLUS_LOGIN_TOKEN": "$2a$06$Ume.e8dNF7ELlDdbIDUT9eO5zKXhynSriqXToYmLncLg7zvK9NvyC"
+ *     }
  * }
  *
  */
@@ -173,8 +191,10 @@ async function login(req: IReq<{phone:string, password:string}>, res: IRes) {
   const {phone, password} = req.body;
   // Add jwt to cookie
   const jwtUser = await authService.getJwtUser(phone, password);
+  const chatUser = await chatService.loginTalkplus(jwtUser.USER_ID);
+  const retUser = await authService.getUserWithTalkplus(chatUser.USER_ID);
   // Return
-  return res.status(HttpStatusCodes.OK).json(jwtUser).end();
+  return res.status(HttpStatusCodes.OK).json(retUser).end();
 }
 
 /**
@@ -200,41 +220,50 @@ async function login(req: IReq<{phone:string, password:string}>, res: IRes) {
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  * {
- *     "WASTE_SAVINGS": 0,
- *     "RESTING_TF": false,
- *     "LEAVE_TF": false,
- *     "REG_TIME": {
- *         "fn": "current_timestamp",
- *         "args": []
- *     },
- *     "UPD_TIME": {
- *         "fn": "current_timestamp",
- *         "args": []
- *     },
- *     "JOIN_TIME": {
- *         "fn": "current_timestamp",
- *         "args": []
- *     },
- *     "USER_ID": 4,
- *     "NAME": "정해민",
- *     "PHONE": "01098810664",
- *     "PASSWORD": "$2b$12$8fxYmHk8Q9VhJX7wygLrt.0FQfmwSC7G8IA4gXATFlj5yXNl4b7jG",
+ *     "USER_ID": 20,
+ *     "PHONE": "01000000000",
+ *     "PASSWORD": "$2b$12$OK.94bmsk.KcJzlvbJ6u7eG9bz3C0zIvVFYq7LfjudDfKhw6MnCVe",
  *     "NICKNAME": "꼬리무123",
+ *     "NAME": "정해민",
+ *     "ACCESSTOKEN": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZSI6IjAxMDAwMDAwMDAwIiwicGFzc3dvcmQiOiIkMmIkMTIkT0suOTRibXNrLktjSnpsdmJKNnU3ZUc5YnozQzB6SXZWRllxN0xmanVkRGZLaHc2TW5DVmUiLCJpYXQiOjE2NzIyOTkyODcsImV4cCI6MTY3MjU1ODQ4N30.VxEqGJt6OkRR0xnXQRA_VsFqCr8LjhdFWFlVyD-xsa8",
+ *     "WASTE_SAVINGS": 0,
+ *     "GROUP": 0,
+ *     "PROFILE_IMAGE": null,
  *     "INTERIOR_COMPANY_TF": false,
  *     "INTERIOR_COMPANY_NAME": "",
  *     "BIRTHDAY": "20001212",
  *     "GENDER": 0,
  *     "ZIP_CODE": "01256",
- *     "PHONE_AUTH_CODE": "3911945",
+ *     "ADDRESS": null,
+ *     "DETAIL_ADDRESS": null,
+ *     "JOIN_STATE": null,
+ *     "RESTING_TF": false,
+ *     "LEAVE_TF": false,
+ *     "PHONE_AUTH_CODE": "554914",
+ *     "PHONE_AUTH_DATE": null,
+ *     "PHONE_AUTH_SUCCEED_DATE": null,
  *     "PHONE_AUTH_TF": true,
- *     "GROUP": 0,
- *     "ACCESSTOKEN": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZSI6IjAxMDk4ODEwNjY0IiwicGFzc3dvcmQiOiIkMmIkMTIkOGZ4WW1IazhROVZoSlg3d3lnTHJ0LjBGUWZtd1NDN0c4SUE0Z1hBVEZsajV5WE5sNGI3akciLCJpYXQiOjE2NzE4NjMxNDYsImV4cCI6MTY3MjEyMjM0Nn0.C3uWMghrAIehH-T8pLbGHhReqnmm-mWfIJ2xuQ_BoUo"
+ *     "REG_TIME": "2022-12-29T07:34:47.000Z",
+ *     "UPD_TIME": "2022-12-29T07:34:47.000Z",
+ *     "JOIN_TIME": "2022-12-29T07:34:47.000Z",
+ *     "JOIN_PERMIT_USER_ID": null,
+ *     "JOIN_AGREE": null,
+ *     "tt_user_talkplu": {
+ *         "USER_ID": 20,
+ *         "TALKPLUS_ID": "tttruck20",
+ *         "TALKPLUS_PASSWORD": "$2b$12$OK.94bmsk.KcJzlvbJ6u7eG9bz3C0zIvVFYq7LfjudDfKhw6MnCVe",
+ *         "TALKPLUS_USERNAME": "꼬리무123",
+ *         "TALKPLUS_PROFILE_IMAGE_URL": "https://cdn.tttruck.co.kr/profile/1672301492476_img-ObBaphDQMth1gVfJIwiS0HUh.png",
+ *         "TALKPLUS_LOGIN_TOKEN": "$2a$06$JJ3bGayY/7wxAHThi2lMLufbw9vn1MfCeTl.xQ28NMvFa436365re"
+ *     }
  * }
  *
  */
 async function signup(req: IReq<ISignUpReq>, res: IRes) {
   const user = await authService.addNormalUser(req.body);
-  return res.status(HttpStatusCodes.OK).json(user).end();
+  const talkUser = await chatService.createChatUser(user);
+  const retUser = await authService.getUserWithTalkplus(user.USER_ID);
+  return res.status(HttpStatusCodes.OK).json(retUser).end();
 }
 
 /**
@@ -283,6 +312,7 @@ async function phoneRequestAuth(req: IReq<IPhoneAuthReq>, res: IRes) {
   await authService.setPhoneAuth(authCode, req.body.phone);
   return res.status(HttpStatusCodes.OK).end();
 }
+
 /**
  * @api {post} /auth/image/profile Set Profile Image
  * @apiName SetProfileImage
@@ -302,11 +332,14 @@ async function phoneRequestAuth(req: IReq<IPhoneAuthReq>, res: IRes) {
  *       "error": "UserNotFound"
  *     }
  */
-async function profileImageUpload(req: IReq<{ productId: number }>, res: IRes) {
+async function profileImageUpload(req: IReq, res: IRes) {
   const file = req.file as S3File;
   const result =
     await authService.uploadProfileImage(file, res.locals.user);
-  return res.status(HttpStatusCodes.CREATED).json(result).end();
+  const talkplusUser = await authService.getUserWithTalkplus(res.locals.user.USER_ID);
+  const talkplus =
+    await chatService.updateUserProfile(talkplusUser);
+  return res.status(HttpStatusCodes.CREATED).json(talkplus).end();
 }
 
 

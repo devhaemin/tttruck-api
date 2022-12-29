@@ -7,6 +7,9 @@ import {tt_user} from "@src/models/tt_user";
 import {tt_phone_auth} from "@src/models/tt_phone_auth";
 import {sendPhoneAuthSMS} from "@src/util/sms-util";
 import {S3File} from "@src/routes/shared/awsMultipart";
+import logger from "jet-logger";
+import {tt_user_talkplus} from "@src/models/init-models";
+import {userNotFoundErr} from "@src/services/user-service";
 
 
 // **** Variables **** //
@@ -21,17 +24,28 @@ export const errors = {
 
 
 // **** Functions **** //
-
+async function getUserWithTalkplus(userId:number):Promise<tt_user>{
+  const user = await tt_user.findByPk(userId,{
+    include:[{model:tt_user_talkplus,as:"tt_user_talkplu"}],
+  });
+  if(!user){
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      userNotFoundErr,
+    );
+  }
+  return user;
+}
 async function uploadProfileImage(file: S3File | null, user: tt_user) {
-
   if (!file) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
       "AWS API Connection error.",
     );
   }
+  logger.info(JSON.stringify(file));
   user.PROFILE_IMAGE = file.key;
-  return await tt_user.update(user, {where: {USER_ID: user.USER_ID}});
+  return await tt_user.update({PROFILE_IMAGE:file.key}, {where: {USER_ID: user.USER_ID}});
 }
 
 async function setPhoneAuth(code: string, phone: string): Promise<tt_phone_auth> {
@@ -71,6 +85,7 @@ async function checkPhoneAuth(PHONE: string, PHONE_AUTH_CODE: string): Promise<t
     );
   }
   if (!phoneAuth || phoneAuth.EXPIRED_TIME < new Date()) {
+    logger.info(phoneAuth?.PHONE_AUTH_CODE)
     throw new RouteError(
       HttpStatusCodes.UNAUTHORIZED,
       "인증 코드가 만료되었습니다.",
@@ -140,6 +155,7 @@ export default {
   addNormalUser,
   setPhoneAuth,
   getJwtUser,
+  getUserWithTalkplus,
   uploadProfileImage,
   checkPhoneAuth,
 } as const;

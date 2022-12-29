@@ -21,7 +21,7 @@ const paths = {
   add: '/add',
   setImageOrder: '/image/order',
   imageUpload: '/image/upload',
-  _imageDelete: 'image/delete/:id',
+  _imageDelete: '/image/delete/:id',
   update: '/update',
   delete: '/delete/:id',
 } as const;
@@ -788,7 +788,8 @@ async function getById(req: IReq, res: IRes) {
  *     "TAG": "TAG 1",
  *     "ADDRESS": "ADDRESS 1",
  *     "LATITUDE": "10",
- *     "LONGITUDE":"120"
+ *     "LONGITUDE":"120",
+ *     "QUANTITY":""
  *   }
  * }
  * @apiSuccessExample Success-Response:
@@ -824,7 +825,8 @@ async function getById(req: IReq, res: IRes) {
  *             127.074697,
  *             37.626356
  *         ]
- *     }
+ *     },
+ *     "QUANTITY":""
  * }
  *
  * @apiErrorExample Error-Response:

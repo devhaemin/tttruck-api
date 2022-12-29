@@ -29,6 +29,8 @@ import { tt_trade_review as _tt_trade_review } from "./tt_trade_review";
 import type { tt_trade_reviewAttributes, tt_trade_reviewCreationAttributes } from "./tt_trade_review";
 import { tt_user as _tt_user } from "./tt_user";
 import type { tt_userAttributes, tt_userCreationAttributes } from "./tt_user";
+import { tt_user_talkplus as _tt_user_talkplus } from "./tt_user_talkplus";
+import type { tt_user_talkplusAttributes, tt_user_talkplusCreationAttributes } from "./tt_user_talkplus";
 import { tt_view_log as _tt_view_log } from "./tt_view_log";
 import type { tt_view_logAttributes, tt_view_logCreationAttributes } from "./tt_view_log";
 
@@ -48,6 +50,7 @@ export {
   _tt_sns_auth as tt_sns_auth,
   _tt_trade_review as tt_trade_review,
   _tt_user as tt_user,
+  _tt_user_talkplus as tt_user_talkplus,
   _tt_view_log as tt_view_log,
 };
 
@@ -82,6 +85,8 @@ export type {
   tt_trade_reviewCreationAttributes,
   tt_userAttributes,
   tt_userCreationAttributes,
+  tt_user_talkplusAttributes,
+  tt_user_talkplusCreationAttributes,
   tt_view_logAttributes,
   tt_view_logCreationAttributes,
 };
@@ -102,6 +107,7 @@ export function initModels(sequelize: Sequelize) {
   const tt_sns_auth = _tt_sns_auth.initModel(sequelize);
   const tt_trade_review = _tt_trade_review.initModel(sequelize);
   const tt_user = _tt_user.initModel(sequelize);
+  const tt_user_talkplus = _tt_user_talkplus.initModel(sequelize);
   const tt_view_log = _tt_view_log.initModel(sequelize);
 
   tt_notice_image.belongsTo(tt_notice, { as: "NOTICE", foreignKey: "NOTICE_ID"});
@@ -140,6 +146,8 @@ export function initModels(sequelize: Sequelize) {
   tt_user.hasMany(tt_sns_auth, { as: "tt_sns_auths", foreignKey: "USER_ID"});
   tt_user.belongsTo(tt_user, { as: "JOIN_PERMIT_USER", foreignKey: "JOIN_PERMIT_USER_ID"});
   tt_user.hasMany(tt_user, { as: "tt_users", foreignKey: "JOIN_PERMIT_USER_ID"});
+  tt_user_talkplus.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
+  tt_user.hasOne(tt_user_talkplus, { as: "tt_user_talkplu", foreignKey: "USER_ID"});
   tt_view_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasMany(tt_view_log, { as: "tt_view_logs", foreignKey: "USER_ID"});
 
@@ -159,6 +167,7 @@ export function initModels(sequelize: Sequelize) {
     tt_sns_auth: tt_sns_auth,
     tt_trade_review: tt_trade_review,
     tt_user: tt_user,
+    tt_user_talkplus: tt_user_talkplus,
     tt_view_log: tt_view_log,
   };
 }

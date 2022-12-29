@@ -8,6 +8,7 @@ import type { tt_notice_master, tt_notice_masterId } from './tt_notice_master';
 import type { tt_product, tt_productId } from './tt_product';
 import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
 import type { tt_sns_auth, tt_sns_authId } from './tt_sns_auth';
+import type { tt_user_talkplus, tt_user_talkplusCreationAttributes, tt_user_talkplusId } from './tt_user_talkplus';
 import type { tt_view_log, tt_view_logId } from './tt_view_log';
 
 export interface tt_userAttributes {
@@ -225,6 +226,11 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   getJOIN_PERMIT_USER!: Sequelize.BelongsToGetAssociationMixin<tt_user>;
   setJOIN_PERMIT_USER!: Sequelize.BelongsToSetAssociationMixin<tt_user, tt_userId>;
   createJOIN_PERMIT_USER!: Sequelize.BelongsToCreateAssociationMixin<tt_user>;
+  // tt_user hasOne tt_user_talkplus via USER_ID
+  tt_user_talkplu!: tt_user_talkplus;
+  getTt_user_talkplu!: Sequelize.HasOneGetAssociationMixin<tt_user_talkplus>;
+  setTt_user_talkplu!: Sequelize.HasOneSetAssociationMixin<tt_user_talkplus, tt_user_talkplusId>;
+  createTt_user_talkplu!: Sequelize.HasOneCreateAssociationMixin<tt_user_talkplus>;
   // tt_user hasMany tt_view_log via USER_ID
   tt_view_logs!: tt_view_log[];
   getTt_view_logs!: Sequelize.HasManyGetAssociationsMixin<tt_view_log>;

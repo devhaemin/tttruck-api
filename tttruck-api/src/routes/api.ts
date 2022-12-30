@@ -30,6 +30,11 @@ authRouter.get(
   normalUserMw,
   authRoutes.tokenLogin,
 );
+authRouter.put(
+  authRoutes.paths.updateProfile,
+  normalUserMw,
+  authRoutes.updateProfile
+)
 // Login user
 authRouter.post(
   authRoutes.paths.login,

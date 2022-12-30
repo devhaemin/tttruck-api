@@ -24,6 +24,7 @@ const paths = {
   logout: '/logout',
   signup: '/signup',
   profileImageUpload: '/profile/image',
+  updateProfile:'/profile',
   phoneRequestAuth: '/phone/requestAuth',
 } as const;
 
@@ -312,9 +313,38 @@ async function phoneRequestAuth(req: IReq<IPhoneAuthReq>, res: IRes) {
   await authService.setPhoneAuth(authCode, req.body.phone);
   return res.status(HttpStatusCodes.OK).end();
 }
+/**
+ * @api {put} /auth/profile Update profile
+ * @apiName UpdateProfile
+ * @apiGroup Auth
+ *
+ * @apiPermission normalUser
+ *
+ * @apiBody {string} nickname 닉네임
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "UserNotFound"
+ *     }
+ */
+async function updateProfile(req: IReq<{nickname:string}>, res: IRes) {
+  const {nickname} = req.body;
+  const user = res.locals.user;
+  user.set({"NICKNAME":nickname});
+  const result = await user.save();
+  const talkplusUser = await authService.getUserWithTalkplus(res.locals.user.USER_ID);
+  const talkplus =
+    await chatService.updateUserProfile(talkplusUser);
+  return res.status(HttpStatusCodes.CREATED).json(talkplus).end();
+}
 
 /**
- * @api {post} /auth/image/profile Set Profile Image
+ * @api {post} /auth/profile/image Set Profile Image
  * @apiName SetProfileImage
  * @apiGroup Auth
  *
@@ -363,6 +393,7 @@ export default {
   generateNickname,
   phoneCheckAuth,
   phoneRequestAuth,
+  updateProfile,
   profileImageUpload,
   signup,
 } as const;

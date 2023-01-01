@@ -91,7 +91,7 @@ async function getByCategory(longitude: string, latitude: string, id: number): P
  *
  * Get products by categories
  */
-async function getByCategories(longitude: string, latitude: string, categories: [number]):
+async function getByCategories(longitude: string, latitude: string, categories: number[]):
   Promise<tt_product[]> {
   const persists = await tt_product.findAll({
     attributes: {

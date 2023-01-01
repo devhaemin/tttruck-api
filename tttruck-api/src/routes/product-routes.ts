@@ -1,11 +1,12 @@
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 
 import productService from '@src/services/product-service';
-import {IReq, IRes} from './shared/types';
+import {IReq, IReqQuery, IRes} from './shared/types';
 import {tt_product, tt_product_category} from '@src/models/init-models';
 import logger from "jet-logger";
 import {getClientIP} from "@src/util/ip-util";
 import {S3File} from "@src/routes/shared/awsMultipart";
+import {UserLocation} from "@src/routes/shared/locationCheck";
 
 
 // **** Variables **** //
@@ -128,7 +129,7 @@ const paths = {
  *     }
  */
 async function getAll(req: IReq, res: IRes) {
-  const {longitude, latitude} = res.locals.location.location;
+  const {longitude, latitude} = res.locals.location;
   const products = await productService.getAll(longitude, latitude);
   logger.info(products);
   return res.status(HttpStatusCodes.OK).json(products);
@@ -237,15 +238,15 @@ async function getAll(req: IReq, res: IRes) {
  */
 async function getByCategory(req: IReq, res: IRes) {
   const id = +req.params.id;
-  const {longitude, latitude} = res.locals.location.location;
+  const {longitude, latitude} = res.locals.location;
   const products = await productService.getByCategory(longitude, latitude, id);
   logger.info(products);
   return res.status(HttpStatusCodes.OK).json(products);
 }
 
 /**
- * @api {get} /products/categories Get Products by Category
- * @apiName GetProductByCategoryies
+ * @api {get} /products/categories Get Products by Categories
+ * @apiName GetProductByCategories
  * @apiGroup Product
  *
  * @apiPermission none
@@ -690,12 +691,16 @@ async function getByCategory(req: IReq, res: IRes) {
  *       "error": "ProductNotFound"
  *     }
  */
+
+interface Categories extends UserLocation{
+  categories: string
+}
 async function getByCategories(
-  req: IReq<{ categories: [number] }>,
+  req: IReqQuery<Categories>,
   res: IRes) {
-  const {categories} = req.body;
-  const {longitude, latitude} = res.locals.location.location;
-  const products = await productService.getByCategories(longitude, latitude, categories);
+  const categories = JSON.parse(req.query.categories) as [number] ;
+  const {longitude, latitude} = res.locals.location;
+  const products = await productService.getByCategories(longitude, latitude ,categories);
   logger.info(products);
   return res.status(HttpStatusCodes.OK).json(products);
 }

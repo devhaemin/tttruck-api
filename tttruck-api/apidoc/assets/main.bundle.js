@@ -640,89 +640,7 @@ function print() { __p += __j.call(arguments, '') }
 }`,type:"json"}]},error:{fields:{"Error 4xx":[{group:"Error 4xx",optional:!1,field:"ProductNotFound",description:"<p>The id of the User was not found.</p>"}]},examples:[{title:"Error-Response:",content:`HTTP/1.1 404 Not Found
 {
   "error": "ProductNotFound"
-}`,type:"json"}]},version:"0.0.0",filename:"routes/product-routes.ts",groupTitle:"Product"},{type:"get",url:"/products/category/:id",title:"Get Products by Category",name:"GetProductByCategory",group:"Product",permission:[{name:"none"}],parameter:{fields:{Parameter:[{group:"Parameter",type:"Number",optional:!1,field:"id",description:""}]},examples:[{title:"Request-Example:",content:`{
-"location":{
-        "latitude": "37.56211",
-        "longitude": "126.941069"
-    }
-}`,type:"json"}]},success:{examples:[{title:"Success-Response:",content:`    HTTP/1.1 200 OK
-[
-    {
-        "PRODUCT_ID": 8,
-        "SUBJECT": "SUBJECT 1",
-        "PRIORITY": 1,
-        "PRODUCT_CATEGORY_ID": 1,
-        "PRODUCT_PRICE": 30000,
-        "PRODUCT_SIZE": "1024x1024",
-        "PRODUCT_WEIGHT": 500,
-        "CONTENTS": "CONTENTS 1",
-        "SELLER_USER_ID": 4,
-        "SELLER_USER_IPv4": 0,
-        "SELLER_USER_IPv6": null,
-        "UPLOAD_TIME": "2022-12-26T08:19:55.000Z",
-        "TAG": "TAG 1",
-        "ADDRESS": "ADDRESS 1",
-        "LATITUDE": "37.626356",
-        "LONGITUDE": "127.074697",
-        "LOCATION": {
-            "type": "Point",
-            "coordinates": [
-                127.074697,
-                37.626356
-            ]
-        },
-        "UPDATE_USER_ID": 4,
-        "UPDATE_USER_IPv4": 0,
-        "UPDATE_USER_IPv6": null,
-        "UPDATE_DATE": "2022-12-26T08:19:55.000Z",
-        "DISTANCE": null,
-        "tt_product_images": [],
-        "SELLER_USER": {
-            "NICKNAME": "\uAF2C\uB9AC\uBB34123",
-            "PROFILE_IMAGE": null,
-            "USER_ID": 4
-        }
-    },
-    {
-        "PRODUCT_ID": 9,
-        "SUBJECT": "SUBJECT 1",
-        "PRIORITY": 1,
-        "PRODUCT_CATEGORY_ID": 1,
-        "PRODUCT_PRICE": 30000,
-        "PRODUCT_SIZE": "1024x1024",
-        "PRODUCT_WEIGHT": 500,
-        "CONTENTS": "CONTENTS 1",
-        "SELLER_USER_ID": 4,
-        "SELLER_USER_IPv4": 1794396811,
-        "SELLER_USER_IPv6": null,
-        "UPLOAD_TIME": "2022-12-27T05:33:48.000Z",
-        "TAG": "TAG 1",
-        "ADDRESS": "ADDRESS 1",
-        "LATITUDE": "37.626356",
-        "LONGITUDE": "127.074697",
-        "LOCATION": {
-            "type": "Point",
-            "coordinates": [
-                127.074697,
-                37.626356
-            ]
-        },
-        "UPDATE_USER_ID": 4,
-        "UPDATE_USER_IPv4": 1794396811,
-        "UPDATE_USER_IPv6": null,
-        "UPDATE_DATE": "2022-12-27T05:33:48.000Z",
-        "DISTANCE": null,
-        "tt_product_images": [],
-        "SELLER_USER": {
-            "NICKNAME": "\uAF2C\uB9AC\uBB34123",
-            "PROFILE_IMAGE": null,
-            "USER_ID": 4
-        }
-    }
-]`,type:"json"}]},error:{fields:{"Error 4xx":[{group:"Error 4xx",optional:!1,field:"ProductNotFound",description:"<p>The id of the User was not found.</p>"}]},examples:[{title:"Error-Response:",content:`HTTP/1.1 404 Not Found
-{
-  "error": "ProductNotFound"
-}`,type:"json"}]},version:"0.0.0",filename:"routes/product-routes.ts",groupTitle:"Product"},{type:"get",url:"/products/categories",title:"Get Products by Category",name:"GetProductByCategoryies",group:"Product",permission:[{name:"none"}],parameter:{examples:[{title:"Request-Example:",content:`{
+}`,type:"json"}]},version:"0.0.0",filename:"routes/product-routes.ts",groupTitle:"Product"},{type:"get",url:"/products/categories",title:"Get Products by Categories",name:"GetProductByCategories",group:"Product",permission:[{name:"none"}],parameter:{examples:[{title:"Request-Example:",content:`{
     "location":{
         "latitude": "37.56211",
         "longitude": "126.941069"
@@ -1152,6 +1070,88 @@ function print() { __p += __j.call(arguments, '') }
 ]`,type:"json"}]},error:{fields:{"Error 4xx":[{group:"Error 4xx",optional:!1,field:"ProductNotFound",description:"<p>The id of the User was not found.</p>"}]},examples:[{title:"Error-Response:",content:`HTTP/1.1 404 Not Found
 {
   "error": "ProductNotFound"
+}`,type:"json"}]},version:"0.0.0",filename:"routes/product-routes.ts",groupTitle:"Product"},{type:"get",url:"/products/category/:id",title:"Get Products by Category",name:"GetProductByCategory",group:"Product",permission:[{name:"none"}],parameter:{fields:{Parameter:[{group:"Parameter",type:"Number",optional:!1,field:"id",description:""}]},examples:[{title:"Request-Example:",content:`{
+"location":{
+        "latitude": "37.56211",
+        "longitude": "126.941069"
+    }
+}`,type:"json"}]},success:{examples:[{title:"Success-Response:",content:`    HTTP/1.1 200 OK
+[
+    {
+        "PRODUCT_ID": 8,
+        "SUBJECT": "SUBJECT 1",
+        "PRIORITY": 1,
+        "PRODUCT_CATEGORY_ID": 1,
+        "PRODUCT_PRICE": 30000,
+        "PRODUCT_SIZE": "1024x1024",
+        "PRODUCT_WEIGHT": 500,
+        "CONTENTS": "CONTENTS 1",
+        "SELLER_USER_ID": 4,
+        "SELLER_USER_IPv4": 0,
+        "SELLER_USER_IPv6": null,
+        "UPLOAD_TIME": "2022-12-26T08:19:55.000Z",
+        "TAG": "TAG 1",
+        "ADDRESS": "ADDRESS 1",
+        "LATITUDE": "37.626356",
+        "LONGITUDE": "127.074697",
+        "LOCATION": {
+            "type": "Point",
+            "coordinates": [
+                127.074697,
+                37.626356
+            ]
+        },
+        "UPDATE_USER_ID": 4,
+        "UPDATE_USER_IPv4": 0,
+        "UPDATE_USER_IPv6": null,
+        "UPDATE_DATE": "2022-12-26T08:19:55.000Z",
+        "DISTANCE": null,
+        "tt_product_images": [],
+        "SELLER_USER": {
+            "NICKNAME": "\uAF2C\uB9AC\uBB34123",
+            "PROFILE_IMAGE": null,
+            "USER_ID": 4
+        }
+    },
+    {
+        "PRODUCT_ID": 9,
+        "SUBJECT": "SUBJECT 1",
+        "PRIORITY": 1,
+        "PRODUCT_CATEGORY_ID": 1,
+        "PRODUCT_PRICE": 30000,
+        "PRODUCT_SIZE": "1024x1024",
+        "PRODUCT_WEIGHT": 500,
+        "CONTENTS": "CONTENTS 1",
+        "SELLER_USER_ID": 4,
+        "SELLER_USER_IPv4": 1794396811,
+        "SELLER_USER_IPv6": null,
+        "UPLOAD_TIME": "2022-12-27T05:33:48.000Z",
+        "TAG": "TAG 1",
+        "ADDRESS": "ADDRESS 1",
+        "LATITUDE": "37.626356",
+        "LONGITUDE": "127.074697",
+        "LOCATION": {
+            "type": "Point",
+            "coordinates": [
+                127.074697,
+                37.626356
+            ]
+        },
+        "UPDATE_USER_ID": 4,
+        "UPDATE_USER_IPv4": 1794396811,
+        "UPDATE_USER_IPv6": null,
+        "UPDATE_DATE": "2022-12-27T05:33:48.000Z",
+        "DISTANCE": null,
+        "tt_product_images": [],
+        "SELLER_USER": {
+            "NICKNAME": "\uAF2C\uB9AC\uBB34123",
+            "PROFILE_IMAGE": null,
+            "USER_ID": 4
+        }
+    }
+]`,type:"json"}]},error:{fields:{"Error 4xx":[{group:"Error 4xx",optional:!1,field:"ProductNotFound",description:"<p>The id of the User was not found.</p>"}]},examples:[{title:"Error-Response:",content:`HTTP/1.1 404 Not Found
+{
+  "error": "ProductNotFound"
 }`,type:"json"}]},version:"0.0.0",filename:"routes/product-routes.ts",groupTitle:"Product"},{type:"get",url:"/products/:id",title:"Get Product by ID",name:"GetProductByID",group:"Product",permission:[{name:"none"}],parameter:{fields:{Parameter:[{group:"Parameter",type:"Number",optional:!1,field:"id",description:""},{group:"Parameter",type:"Number",optional:!1,field:"longitude",description:""},{group:"Parameter",type:"Number",optional:!1,field:"latitude",description:""}]}},success:{examples:[{title:"Success-Response:",content:`    HTTP/1.1 200 OK
 {
     "PRODUCT_ID": 16,
@@ -1505,4 +1505,4 @@ function print() { __p += __j.call(arguments, '') }
 {}`,type:"json"}]},error:{examples:[{title:"Error-Response:",content:`HTTP/1.1 404 Not Found
 {
   "error": "TradeReviewNotFound"
-}`,type:"json"}]},version:"0.0.0",filename:"routes/trade-review-routes.ts",groupTitle:"TradeReview"},{type:"get",url:"/trade/reviews/product/:id",title:"\uC0C1\uD488\uBCC4 \uB9AC\uBDF0 \uBAA9\uB85D",name:"GetTradeReviewsByProduct",group:"TradeReview",permission:[{name:"normalUser"}],parameter:{fields:{Parameter:[{group:"Parameter",type:"number",optional:!1,field:"id",description:"<p>productId</p>"}]}},version:"0.0.0",filename:"routes/trade-review-routes.ts",groupTitle:"TradeReview"},{type:"post",url:"/trade/reviews/buyer/add",title:"\uD310\uB9E4\uC790 \uB9AC\uBDF0 \uCD94\uAC00\uD558\uAE30",name:"GetTradeReviewsByProduct",group:"TradeReview",permission:[{name:"normalUser"}],body:[{group:"Body",type:"number",optional:!1,field:"productId",defaultValue:"0",description:"<p>\uC0C1\uD488ID</p>"},{group:"Body",type:"number",optional:!1,field:"rating",defaultValue:"5",description:"<p>\uC810\uC218</p>"},{group:"Body",type:"string",optional:!1,field:"SUBJECT",description:"<p>\uC81C\uBAA9</p>"},{group:"Body",type:"string",optional:!1,field:"CONTENTS",description:"<p>\uB0B4\uC6A9</p>"}],version:"0.0.0",filename:"routes/trade-review-routes.ts",groupTitle:"TradeReview"},{body:[{group:"Body",optional:!1,field:"Number",description:"<p>[field=defaultValue] [description ]</p>"}],type:"",url:"",version:"0.0.0",filename:"services/auth-service.ts",groupTitle:"/Users/haemin/tttruck-api/tttruck-api/services/auth-service.ts",group:"Usershaemintttruck-apitttruck-apiservicesauth-service.ts",name:""}];const ue={name:"tttruck-api",version:"0.1.0",description:"\uB561\uB561 \uD2B8\uB7ED REST API",title:"Custom apiDoc browser title",url:"http://api.tttruck.co.kr/api/v1",sampleUrl:!1,defaultVersion:"0.0.0",apidoc:"0.3.0",generator:{name:"apidoc",time:"Sun Jan 01 2023 15:19:43 GMT+0900 (Korean Standard Time)",url:"https://apidocjs.com",version:"0.53.1"}};$e();const Ce=l().compile(m()("#template-header").html()),ye=l().compile(m()("#template-footer").html()),se=l().compile(m()("#template-article").html()),ve=l().compile(m()("#template-compare-article").html()),Ee=l().compile(m()("#template-generator").html()),_e=l().compile(m()("#template-project").html()),Xe=l().compile(m()("#template-sections").html()),Ze=l().compile(m()("#template-sidenav").html()),je={aloneDisplay:!1,showRequiredLabels:!1,withGenerator:!0,withCompare:!0};ue.template=Object.assign(je,(X=ue.template)!=null?X:{}),ue.template.forceLanguage&&Ue(ue.template.forceLanguage);const De=(0,o.groupBy)(Me,J=>J.group),Ke={};m().each(De,(J,k)=>{Ke[J]=(0,o.groupBy)(k,q=>q.name)});const Qe=[];m().each(Ke,(J,k)=>{let q=[];m().each(k,(ee,ae)=>{const pe=ae[0].title;pe&&q.push(pe.toLowerCase()+"#~#"+ee)}),q.sort(),ue.order&&(q=b(q,ue.order,"#~#")),q.forEach(ee=>{const pe=ee.split("#~#")[1];k[pe].forEach(ge=>{Qe.push(ge)})})}),Me=Qe;let qe={};const Gt={};let Ut={};Ut[ue.version]=1,m().each(Me,(J,k)=>{qe[k.group]=1,Gt[k.group]=k.groupTitle||k.group,Ut[k.version]=1}),qe=Object.keys(qe),qe.sort(),ue.order&&(qe=K(Gt,ue.order)),Ut=Object.keys(Ut),Ut.sort(r().compare),Ut.reverse();const Ct=[];qe.forEach(J=>{Ct.push({group:J,isHeader:!0,title:Gt[J]});let k="";Me.forEach(q=>{q.group===J&&(k!==q.name?Ct.push({title:q.title,group:J,name:q.name,type:q.type,version:q.version,url:q.url}):Ct.push({title:q.title,group:J,hidden:!0,name:q.name,type:q.type,version:q.version,url:q.url}),k=q.name)})});function In(J,k,q){let ee=!1;if(!k)return ee;const ae=k.match(/<h(1|2).*?>(.+?)<\/h(1|2)>/gi);return ae&&ae.forEach(function(pe){const ge=pe.substring(2,3),Se=pe.replace(/<.+?>/g,""),Ie=pe.match(/id="api-([^-]+)(?:-(.+))?"/),Le=Ie?Ie[1]:null,Ve=Ie?Ie[2]:null;ge==="1"&&Se&&Le&&(J.splice(q,0,{group:Le,isHeader:!0,title:Se,isFixed:!0}),q++,ee=!0),ge==="2"&&Se&&Le&&Ve&&(J.splice(q,0,{group:Le,name:Ve,isHeader:!1,title:Se,isFixed:!1,version:"1.0"}),q++)}),ee}let sn;if(ue.header&&(sn=In(Ct,ue.header.content,0),sn||Ct.unshift({group:"_header",isHeader:!0,title:ue.header.title==null?Ae("General"):ue.header.title,isFixed:!0})),ue.footer){const J=Ct.length;sn=In(Ct,ue.footer.content,Ct.length),!sn&&ue.footer.title!=null&&Ct.splice(J,0,{group:"_footer",isHeader:!0,title:ue.footer.title,isFixed:!0})}const kt=ue.title?ue.title:"apiDoc: "+ue.name+" - "+ue.version;m()(document).attr("title",kt),m()("#loader").remove();const dn={nav:Ct};m()("#sidenav").append(Ze(dn)),m()("#generator").append(Ee(ue)),(0,o.extend)(ue,{versions:Ut}),m()("#project").append(_e(ue)),ue.header&&m()("#header").append(Ce(ue.header)),ue.footer&&(m()("#footer").append(ye(ue.footer)),ue.template.aloneDisplay&&document.getElementById("api-_footer").classList.add("hide"));const bt={};let gn="";qe.forEach(function(J){const k=[];let q="",ee={},ae=J,pe="";bt[J]={},Me.forEach(function(ge){J===ge.group&&(q!==ge.name?(Me.forEach(function(Se){J===Se.group&&ge.name===Se.name&&(Object.prototype.hasOwnProperty.call(bt[ge.group],ge.name)||(bt[ge.group][ge.name]=[]),bt[ge.group][ge.name].push(Se.version))}),ee={article:ge,versions:bt[ge.group][ge.name]}):ee={article:ge,hidden:!0,versions:bt[ge.group][ge.name]},ue.sampleUrl&&ue.sampleUrl===!0&&(ue.sampleUrl=window.location.origin),ue.url&&ee.article.url.substr(0,4).toLowerCase()!=="http"&&(ee.article.url=ue.url+ee.article.url),Cn(ee,ge),ge.groupTitle&&(ae=ge.groupTitle),ge.groupDescription&&(pe=ge.groupDescription),k.push({article:se(ee),group:ge.group,name:ge.name,aloneDisplay:ue.template.aloneDisplay}),q=ge.name)}),ee={group:J,title:ae,description:pe,articles:k,aloneDisplay:ue.template.aloneDisplay},gn+=Xe(ee)}),m()("#sections").append(gn),ue.template.aloneDisplay||(document.body.dataset.spy="scroll",m()("body").scrollspy({target:"#scrollingNav"})),m()(".form-control").on("focus change",function(){m()(this).removeClass("border-danger")}),m()(".sidenav").find("a").on("click",function(J){J.preventDefault();const k=this.getAttribute("href");if(ue.template.aloneDisplay){const q=document.querySelector(".sidenav > li.active");q&&q.classList.remove("active"),this.parentNode.classList.add("active")}else{const q=document.querySelector(k);q&&m()("html,body").animate({scrollTop:q.offsetTop},400)}window.location.hash=k});function vt(J){let k=!1;return m().each(J,q=>{k=k||(0,o.some)(J[q],ee=>ee.type)}),k}function Pn(){m()('button[data-toggle="popover"]').popover().click(function(k){k.preventDefault()});const J=m()("#version strong").html();if(m()("#sidenav li").removeClass("is-new"),ue.template.withCompare&&m()("#sidenav li[data-version='"+J+"']").each(function(){const k=m()(this).data("group"),q=m()(this).data("name"),ee=m()("#sidenav li[data-group='"+k+"'][data-name='"+q+"']").length,ae=m()("#sidenav li[data-group='"+k+"'][data-name='"+q+"']").index(m()(this));(ee===1||ae===ee-1)&&m()(this).addClass("is-new")}),m()(".nav-tabs-examples a").click(function(k){k.preventDefault(),m()(this).tab("show")}),m()(".nav-tabs-examples").find("a:first").tab("show"),m()(".sample-request-content-type-switch").change(function(){m()(this).val()==="body-form-data"?(m()("#sample-request-body-json-input-"+m()(this).data("id")).hide(),m()("#sample-request-body-form-input-"+m()(this).data("id")).show()):(m()("#sample-request-body-form-input-"+m()(this).data("id")).hide(),m()("#sample-request-body-json-input-"+m()(this).data("id")).show())}),ue.template.aloneDisplay&&(m()(".show-group").click(function(){const k="."+m()(this).attr("data-group")+"-group",q="."+m()(this).attr("data-group")+"-article";m()(".show-api-group").addClass("hide"),m()(k).removeClass("hide"),m()(".show-api-article").addClass("hide"),m()(q).removeClass("hide")}),m()(".show-api").click(function(){const k=this.getAttribute("href").substring(1),q=document.getElementById("version").textContent.trim(),ee=`.${this.dataset.name}-article`,ae=`[id="${k}-${q}"]`,pe=`.${this.dataset.group}-group`;m()(".show-api-group").addClass("hide"),m()(pe).removeClass("hide"),m()(".show-api-article").addClass("hide");let ge=m()(ee);m()(ae).length&&(ge=m()(ae).parent()),ge.removeClass("hide"),k.match(/_(header|footer)/)&&document.getElementById(k).classList.remove("hide")})),ue.template.aloneDisplay||m()("body").scrollspy("refresh"),ue.template.aloneDisplay){const k=decodeURI(window.location.hash);if(k!=null&&k.length!==0){const q=document.getElementById("version").textContent.trim(),ee=document.querySelector(`li .${k.slice(1)}-init`),ae=document.querySelector(`li[data-version="${q}"] .show-api.${k.slice(1)}-init`);let pe=ee;ae&&(pe=ae),pe.click()}}}function Fn(J){typeof J=="undefined"?J=m()("#version strong").html():m()("#version strong").html(J),m()("article").addClass("hide"),m()("#sidenav li:not(.nav-fixed)").addClass("hide");const k={};document.querySelectorAll("article[data-version]").forEach(q=>{const ee=q.dataset.group,ae=q.dataset.name,pe=q.dataset.version,ge=ee+ae;!k[ge]&&r().lte(pe,J)&&(k[ge]=!0,document.querySelector(`article[data-group="${ee}"][data-name="${ae}"][data-version="${pe}"]`).classList.remove("hide"),document.querySelector(`#sidenav li[data-group="${ee}"][data-name="${ae}"][data-version="${pe}"]`).classList.remove("hide"),document.querySelector(`#sidenav li.nav-header[data-group="${ee}"]`).classList.remove("hide"))}),m()("article[data-version]").each(function(q){const ee=m()(this).data("group");m()("section#api-"+ee).removeClass("hide"),m()("section#api-"+ee+" article:visible").length===0?m()("section#api-"+ee).addClass("hide"):m()("section#api-"+ee).removeClass("hide")})}if(Fn(),m()("#versions li.version a").on("click",function(J){J.preventDefault(),Fn(m()(this).html())}),m()("#compareAllWithPredecessor").on("click",Bn),m()("article .versions li.version a").on("click",fn),m().urlParam=function(J){const k=new RegExp("[\\?&amp;]"+J+"=([^&amp;#]*)").exec(window.location.href);return k&&k[1]?k[1]:null},m().urlParam("compare")&&m()("#compareAllWithPredecessor").trigger("click"),window.location.hash){const J=decodeURI(window.location.hash);m()(J).length>0&&m()("html,body").animate({scrollTop:parseInt(m()(J).offset().top)},0)}m()("#scrollingNav .sidenav-search input.search").focus(),m()('[data-action="filter-search"]').on("keyup",J=>{const k=J.currentTarget.value.toLowerCase();m()(".sidenav").find("a.nav-list-item").each((q,ee)=>{m()(ee).show(),ee.innerText.toLowerCase().includes(k)||m()(ee).hide()})}),m()("span.search-reset").on("click",function(){m()("#scrollingNav .sidenav-search input.search").val("").focus(),m()(".sidenav").find("a.nav-list-item").show()});function fn(J){J.preventDefault();const k=m()(this).parents("article"),q=m()(this).html(),ee=k.find(".version"),ae=ee.find("strong").html();ee.find("strong").html(q);const pe=k.data("group"),ge=k.data("name"),Se=k.data("version"),Ie=k.data("compare-version");if(Ie!==q&&!(!Ie&&Se===q)){if(Ie&&bt[pe][ge][0]===q||Se===q)Zn(pe,ge,Se);else{let Le={},Ve={};m().each(Ke[pe][ge],function(st,Jt){Jt.version===Se&&(Le=Jt),Jt.version===q&&(Ve=Jt)});const me={article:Le,compare:Ve,versions:bt[pe][ge]};me.article.id=me.article.group+"-"+me.article.name+"-"+me.article.version,me.article.id=me.article.id.replace(/\./g,"_"),me.compare.id=me.compare.group+"-"+me.compare.name+"-"+me.compare.version,me.compare.id=me.compare.id.replace(/\./g,"_");let be=Le;be.parameter&&be.parameter.fields&&(me._hasTypeInParameterFields=vt(be.parameter.fields)),be.error&&be.error.fields&&(me._hasTypeInErrorFields=vt(be.error.fields)),be.success&&be.success.fields&&(me._hasTypeInSuccessFields=vt(be.success.fields)),be.info&&be.info.fields&&(me._hasTypeInInfoFields=vt(be.info.fields)),be=Ve,me._hasTypeInParameterFields!==!0&&be.parameter&&be.parameter.fields&&(me._hasTypeInParameterFields=vt(be.parameter.fields)),me._hasTypeInErrorFields!==!0&&be.error&&be.error.fields&&(me._hasTypeInErrorFields=vt(be.error.fields)),me._hasTypeInSuccessFields!==!0&&be.success&&be.success.fields&&(me._hasTypeInSuccessFields=vt(be.success.fields)),me._hasTypeInInfoFields!==!0&&be.info&&be.info.fields&&(me._hasTypeInInfoFields=vt(be.info.fields));const mt=ve(me);k.after(mt),k.next().find(".versions li.version a").on("click",fn),m()("#sidenav li[data-group='"+pe+"'][data-name='"+ge+"'][data-version='"+ae+"']").addClass("has-modifications"),k.remove()}E().highlightAll()}}function Bn(J){J.preventDefault(),m()("article:visible .versions").each(function(){const q=m()(this).parents("article").data("version");let ee=null;m()(this).find("li.version a").each(function(){m()(this).html()<q&&!ee&&(ee=m()(this))}),ee&&ee.trigger("click")})}function Cn(J,k){J.id=J.article.group+"-"+J.article.name+"-"+J.article.version,J.id=J.id.replace(/\./g,"_"),k.header&&k.header.fields&&(J._hasTypeInHeaderFields=vt(k.header.fields)),k.parameter&&k.parameter.fields&&(J._hasTypeInParameterFields=vt(k.parameter.fields)),k.error&&k.error.fields&&(J._hasTypeInErrorFields=vt(k.error.fields)),k.success&&k.success.fields&&(J._hasTypeInSuccessFields=vt(k.success.fields)),k.info&&k.info.fields&&(J._hasTypeInInfoFields=vt(k.info.fields)),J.template=ue.template}function lr(J,k,q){let ee={};m().each(Ke[J][k],function(pe,ge){ge.version===q&&(ee=ge)});const ae={article:ee,versions:bt[J][k]};return Cn(ae,ee),se(ae)}function Zn(J,k,q){const ee=m()("article[data-group='"+J+"'][data-name='"+k+"']:visible"),ae=lr(J,k,q);ee.after(ae),ee.next().find(".versions li.version a").on("click",fn),m()("#sidenav li[data-group='"+J+"'][data-name='"+k+"'][data-version='"+q+"']").removeClass("has-modifications"),ee.remove()}function b(J,k,q){const ee=[];return k.forEach(function(ae){q?J.forEach(function(pe){const ge=pe.split(q);(ge[0]===ae||ge[1]===ae)&&ee.push(pe)}):J.forEach(function(pe){pe===ae&&ee.push(ae)})}),J.forEach(function(ae){ee.indexOf(ae)===-1&&ee.push(ae)}),ee}function K(J,k){const q=[];return k.forEach(ee=>{Object.keys(J).forEach(ae=>{J[ae].replace(/_/g," ")===ee&&q.push(ae)})}),Object.keys(J).forEach(ee=>{q.indexOf(ee)===-1&&q.push(ee)}),q}Pn()}})()})();
+}`,type:"json"}]},version:"0.0.0",filename:"routes/trade-review-routes.ts",groupTitle:"TradeReview"},{type:"get",url:"/trade/reviews/product/:id",title:"\uC0C1\uD488\uBCC4 \uB9AC\uBDF0 \uBAA9\uB85D",name:"GetTradeReviewsByProduct",group:"TradeReview",permission:[{name:"normalUser"}],parameter:{fields:{Parameter:[{group:"Parameter",type:"number",optional:!1,field:"id",description:"<p>productId</p>"}]}},version:"0.0.0",filename:"routes/trade-review-routes.ts",groupTitle:"TradeReview"},{type:"post",url:"/trade/reviews/buyer/add",title:"\uD310\uB9E4\uC790 \uB9AC\uBDF0 \uCD94\uAC00\uD558\uAE30",name:"GetTradeReviewsByProduct",group:"TradeReview",permission:[{name:"normalUser"}],body:[{group:"Body",type:"number",optional:!1,field:"productId",defaultValue:"0",description:"<p>\uC0C1\uD488ID</p>"},{group:"Body",type:"number",optional:!1,field:"rating",defaultValue:"5",description:"<p>\uC810\uC218</p>"},{group:"Body",type:"string",optional:!1,field:"SUBJECT",description:"<p>\uC81C\uBAA9</p>"},{group:"Body",type:"string",optional:!1,field:"CONTENTS",description:"<p>\uB0B4\uC6A9</p>"}],version:"0.0.0",filename:"routes/trade-review-routes.ts",groupTitle:"TradeReview"},{body:[{group:"Body",optional:!1,field:"Number",description:"<p>[field=defaultValue] [description ]</p>"}],type:"",url:"",version:"0.0.0",filename:"services/auth-service.ts",groupTitle:"/Users/haemin/tttruck-api/tttruck-api/services/auth-service.ts",group:"Usershaemintttruck-apitttruck-apiservicesauth-service.ts",name:""}];const ue={name:"tttruck-api",version:"0.1.0",description:"\uB561\uB561 \uD2B8\uB7ED REST API",title:"Custom apiDoc browser title",url:"http://api.tttruck.co.kr/api/v1",sampleUrl:!1,defaultVersion:"0.0.0",apidoc:"0.3.0",generator:{name:"apidoc",time:"Sun Jan 01 2023 20:16:19 GMT+0900 (Korean Standard Time)",url:"https://apidocjs.com",version:"0.53.1"}};$e();const Ce=l().compile(m()("#template-header").html()),ye=l().compile(m()("#template-footer").html()),se=l().compile(m()("#template-article").html()),ve=l().compile(m()("#template-compare-article").html()),Ee=l().compile(m()("#template-generator").html()),_e=l().compile(m()("#template-project").html()),Xe=l().compile(m()("#template-sections").html()),Ze=l().compile(m()("#template-sidenav").html()),je={aloneDisplay:!1,showRequiredLabels:!1,withGenerator:!0,withCompare:!0};ue.template=Object.assign(je,(X=ue.template)!=null?X:{}),ue.template.forceLanguage&&Ue(ue.template.forceLanguage);const De=(0,o.groupBy)(Me,J=>J.group),Ke={};m().each(De,(J,k)=>{Ke[J]=(0,o.groupBy)(k,q=>q.name)});const Qe=[];m().each(Ke,(J,k)=>{let q=[];m().each(k,(ee,ae)=>{const pe=ae[0].title;pe&&q.push(pe.toLowerCase()+"#~#"+ee)}),q.sort(),ue.order&&(q=b(q,ue.order,"#~#")),q.forEach(ee=>{const pe=ee.split("#~#")[1];k[pe].forEach(ge=>{Qe.push(ge)})})}),Me=Qe;let qe={};const Gt={};let Ut={};Ut[ue.version]=1,m().each(Me,(J,k)=>{qe[k.group]=1,Gt[k.group]=k.groupTitle||k.group,Ut[k.version]=1}),qe=Object.keys(qe),qe.sort(),ue.order&&(qe=K(Gt,ue.order)),Ut=Object.keys(Ut),Ut.sort(r().compare),Ut.reverse();const Ct=[];qe.forEach(J=>{Ct.push({group:J,isHeader:!0,title:Gt[J]});let k="";Me.forEach(q=>{q.group===J&&(k!==q.name?Ct.push({title:q.title,group:J,name:q.name,type:q.type,version:q.version,url:q.url}):Ct.push({title:q.title,group:J,hidden:!0,name:q.name,type:q.type,version:q.version,url:q.url}),k=q.name)})});function In(J,k,q){let ee=!1;if(!k)return ee;const ae=k.match(/<h(1|2).*?>(.+?)<\/h(1|2)>/gi);return ae&&ae.forEach(function(pe){const ge=pe.substring(2,3),Se=pe.replace(/<.+?>/g,""),Ie=pe.match(/id="api-([^-]+)(?:-(.+))?"/),Le=Ie?Ie[1]:null,Ve=Ie?Ie[2]:null;ge==="1"&&Se&&Le&&(J.splice(q,0,{group:Le,isHeader:!0,title:Se,isFixed:!0}),q++,ee=!0),ge==="2"&&Se&&Le&&Ve&&(J.splice(q,0,{group:Le,name:Ve,isHeader:!1,title:Se,isFixed:!1,version:"1.0"}),q++)}),ee}let sn;if(ue.header&&(sn=In(Ct,ue.header.content,0),sn||Ct.unshift({group:"_header",isHeader:!0,title:ue.header.title==null?Ae("General"):ue.header.title,isFixed:!0})),ue.footer){const J=Ct.length;sn=In(Ct,ue.footer.content,Ct.length),!sn&&ue.footer.title!=null&&Ct.splice(J,0,{group:"_footer",isHeader:!0,title:ue.footer.title,isFixed:!0})}const kt=ue.title?ue.title:"apiDoc: "+ue.name+" - "+ue.version;m()(document).attr("title",kt),m()("#loader").remove();const dn={nav:Ct};m()("#sidenav").append(Ze(dn)),m()("#generator").append(Ee(ue)),(0,o.extend)(ue,{versions:Ut}),m()("#project").append(_e(ue)),ue.header&&m()("#header").append(Ce(ue.header)),ue.footer&&(m()("#footer").append(ye(ue.footer)),ue.template.aloneDisplay&&document.getElementById("api-_footer").classList.add("hide"));const bt={};let gn="";qe.forEach(function(J){const k=[];let q="",ee={},ae=J,pe="";bt[J]={},Me.forEach(function(ge){J===ge.group&&(q!==ge.name?(Me.forEach(function(Se){J===Se.group&&ge.name===Se.name&&(Object.prototype.hasOwnProperty.call(bt[ge.group],ge.name)||(bt[ge.group][ge.name]=[]),bt[ge.group][ge.name].push(Se.version))}),ee={article:ge,versions:bt[ge.group][ge.name]}):ee={article:ge,hidden:!0,versions:bt[ge.group][ge.name]},ue.sampleUrl&&ue.sampleUrl===!0&&(ue.sampleUrl=window.location.origin),ue.url&&ee.article.url.substr(0,4).toLowerCase()!=="http"&&(ee.article.url=ue.url+ee.article.url),Cn(ee,ge),ge.groupTitle&&(ae=ge.groupTitle),ge.groupDescription&&(pe=ge.groupDescription),k.push({article:se(ee),group:ge.group,name:ge.name,aloneDisplay:ue.template.aloneDisplay}),q=ge.name)}),ee={group:J,title:ae,description:pe,articles:k,aloneDisplay:ue.template.aloneDisplay},gn+=Xe(ee)}),m()("#sections").append(gn),ue.template.aloneDisplay||(document.body.dataset.spy="scroll",m()("body").scrollspy({target:"#scrollingNav"})),m()(".form-control").on("focus change",function(){m()(this).removeClass("border-danger")}),m()(".sidenav").find("a").on("click",function(J){J.preventDefault();const k=this.getAttribute("href");if(ue.template.aloneDisplay){const q=document.querySelector(".sidenav > li.active");q&&q.classList.remove("active"),this.parentNode.classList.add("active")}else{const q=document.querySelector(k);q&&m()("html,body").animate({scrollTop:q.offsetTop},400)}window.location.hash=k});function vt(J){let k=!1;return m().each(J,q=>{k=k||(0,o.some)(J[q],ee=>ee.type)}),k}function Pn(){m()('button[data-toggle="popover"]').popover().click(function(k){k.preventDefault()});const J=m()("#version strong").html();if(m()("#sidenav li").removeClass("is-new"),ue.template.withCompare&&m()("#sidenav li[data-version='"+J+"']").each(function(){const k=m()(this).data("group"),q=m()(this).data("name"),ee=m()("#sidenav li[data-group='"+k+"'][data-name='"+q+"']").length,ae=m()("#sidenav li[data-group='"+k+"'][data-name='"+q+"']").index(m()(this));(ee===1||ae===ee-1)&&m()(this).addClass("is-new")}),m()(".nav-tabs-examples a").click(function(k){k.preventDefault(),m()(this).tab("show")}),m()(".nav-tabs-examples").find("a:first").tab("show"),m()(".sample-request-content-type-switch").change(function(){m()(this).val()==="body-form-data"?(m()("#sample-request-body-json-input-"+m()(this).data("id")).hide(),m()("#sample-request-body-form-input-"+m()(this).data("id")).show()):(m()("#sample-request-body-form-input-"+m()(this).data("id")).hide(),m()("#sample-request-body-json-input-"+m()(this).data("id")).show())}),ue.template.aloneDisplay&&(m()(".show-group").click(function(){const k="."+m()(this).attr("data-group")+"-group",q="."+m()(this).attr("data-group")+"-article";m()(".show-api-group").addClass("hide"),m()(k).removeClass("hide"),m()(".show-api-article").addClass("hide"),m()(q).removeClass("hide")}),m()(".show-api").click(function(){const k=this.getAttribute("href").substring(1),q=document.getElementById("version").textContent.trim(),ee=`.${this.dataset.name}-article`,ae=`[id="${k}-${q}"]`,pe=`.${this.dataset.group}-group`;m()(".show-api-group").addClass("hide"),m()(pe).removeClass("hide"),m()(".show-api-article").addClass("hide");let ge=m()(ee);m()(ae).length&&(ge=m()(ae).parent()),ge.removeClass("hide"),k.match(/_(header|footer)/)&&document.getElementById(k).classList.remove("hide")})),ue.template.aloneDisplay||m()("body").scrollspy("refresh"),ue.template.aloneDisplay){const k=decodeURI(window.location.hash);if(k!=null&&k.length!==0){const q=document.getElementById("version").textContent.trim(),ee=document.querySelector(`li .${k.slice(1)}-init`),ae=document.querySelector(`li[data-version="${q}"] .show-api.${k.slice(1)}-init`);let pe=ee;ae&&(pe=ae),pe.click()}}}function Fn(J){typeof J=="undefined"?J=m()("#version strong").html():m()("#version strong").html(J),m()("article").addClass("hide"),m()("#sidenav li:not(.nav-fixed)").addClass("hide");const k={};document.querySelectorAll("article[data-version]").forEach(q=>{const ee=q.dataset.group,ae=q.dataset.name,pe=q.dataset.version,ge=ee+ae;!k[ge]&&r().lte(pe,J)&&(k[ge]=!0,document.querySelector(`article[data-group="${ee}"][data-name="${ae}"][data-version="${pe}"]`).classList.remove("hide"),document.querySelector(`#sidenav li[data-group="${ee}"][data-name="${ae}"][data-version="${pe}"]`).classList.remove("hide"),document.querySelector(`#sidenav li.nav-header[data-group="${ee}"]`).classList.remove("hide"))}),m()("article[data-version]").each(function(q){const ee=m()(this).data("group");m()("section#api-"+ee).removeClass("hide"),m()("section#api-"+ee+" article:visible").length===0?m()("section#api-"+ee).addClass("hide"):m()("section#api-"+ee).removeClass("hide")})}if(Fn(),m()("#versions li.version a").on("click",function(J){J.preventDefault(),Fn(m()(this).html())}),m()("#compareAllWithPredecessor").on("click",Bn),m()("article .versions li.version a").on("click",fn),m().urlParam=function(J){const k=new RegExp("[\\?&amp;]"+J+"=([^&amp;#]*)").exec(window.location.href);return k&&k[1]?k[1]:null},m().urlParam("compare")&&m()("#compareAllWithPredecessor").trigger("click"),window.location.hash){const J=decodeURI(window.location.hash);m()(J).length>0&&m()("html,body").animate({scrollTop:parseInt(m()(J).offset().top)},0)}m()("#scrollingNav .sidenav-search input.search").focus(),m()('[data-action="filter-search"]').on("keyup",J=>{const k=J.currentTarget.value.toLowerCase();m()(".sidenav").find("a.nav-list-item").each((q,ee)=>{m()(ee).show(),ee.innerText.toLowerCase().includes(k)||m()(ee).hide()})}),m()("span.search-reset").on("click",function(){m()("#scrollingNav .sidenav-search input.search").val("").focus(),m()(".sidenav").find("a.nav-list-item").show()});function fn(J){J.preventDefault();const k=m()(this).parents("article"),q=m()(this).html(),ee=k.find(".version"),ae=ee.find("strong").html();ee.find("strong").html(q);const pe=k.data("group"),ge=k.data("name"),Se=k.data("version"),Ie=k.data("compare-version");if(Ie!==q&&!(!Ie&&Se===q)){if(Ie&&bt[pe][ge][0]===q||Se===q)Zn(pe,ge,Se);else{let Le={},Ve={};m().each(Ke[pe][ge],function(st,Jt){Jt.version===Se&&(Le=Jt),Jt.version===q&&(Ve=Jt)});const me={article:Le,compare:Ve,versions:bt[pe][ge]};me.article.id=me.article.group+"-"+me.article.name+"-"+me.article.version,me.article.id=me.article.id.replace(/\./g,"_"),me.compare.id=me.compare.group+"-"+me.compare.name+"-"+me.compare.version,me.compare.id=me.compare.id.replace(/\./g,"_");let be=Le;be.parameter&&be.parameter.fields&&(me._hasTypeInParameterFields=vt(be.parameter.fields)),be.error&&be.error.fields&&(me._hasTypeInErrorFields=vt(be.error.fields)),be.success&&be.success.fields&&(me._hasTypeInSuccessFields=vt(be.success.fields)),be.info&&be.info.fields&&(me._hasTypeInInfoFields=vt(be.info.fields)),be=Ve,me._hasTypeInParameterFields!==!0&&be.parameter&&be.parameter.fields&&(me._hasTypeInParameterFields=vt(be.parameter.fields)),me._hasTypeInErrorFields!==!0&&be.error&&be.error.fields&&(me._hasTypeInErrorFields=vt(be.error.fields)),me._hasTypeInSuccessFields!==!0&&be.success&&be.success.fields&&(me._hasTypeInSuccessFields=vt(be.success.fields)),me._hasTypeInInfoFields!==!0&&be.info&&be.info.fields&&(me._hasTypeInInfoFields=vt(be.info.fields));const mt=ve(me);k.after(mt),k.next().find(".versions li.version a").on("click",fn),m()("#sidenav li[data-group='"+pe+"'][data-name='"+ge+"'][data-version='"+ae+"']").addClass("has-modifications"),k.remove()}E().highlightAll()}}function Bn(J){J.preventDefault(),m()("article:visible .versions").each(function(){const q=m()(this).parents("article").data("version");let ee=null;m()(this).find("li.version a").each(function(){m()(this).html()<q&&!ee&&(ee=m()(this))}),ee&&ee.trigger("click")})}function Cn(J,k){J.id=J.article.group+"-"+J.article.name+"-"+J.article.version,J.id=J.id.replace(/\./g,"_"),k.header&&k.header.fields&&(J._hasTypeInHeaderFields=vt(k.header.fields)),k.parameter&&k.parameter.fields&&(J._hasTypeInParameterFields=vt(k.parameter.fields)),k.error&&k.error.fields&&(J._hasTypeInErrorFields=vt(k.error.fields)),k.success&&k.success.fields&&(J._hasTypeInSuccessFields=vt(k.success.fields)),k.info&&k.info.fields&&(J._hasTypeInInfoFields=vt(k.info.fields)),J.template=ue.template}function lr(J,k,q){let ee={};m().each(Ke[J][k],function(pe,ge){ge.version===q&&(ee=ge)});const ae={article:ee,versions:bt[J][k]};return Cn(ae,ee),se(ae)}function Zn(J,k,q){const ee=m()("article[data-group='"+J+"'][data-name='"+k+"']:visible"),ae=lr(J,k,q);ee.after(ae),ee.next().find(".versions li.version a").on("click",fn),m()("#sidenav li[data-group='"+J+"'][data-name='"+k+"'][data-version='"+q+"']").removeClass("has-modifications"),ee.remove()}function b(J,k,q){const ee=[];return k.forEach(function(ae){q?J.forEach(function(pe){const ge=pe.split(q);(ge[0]===ae||ge[1]===ae)&&ee.push(pe)}):J.forEach(function(pe){pe===ae&&ee.push(ae)})}),J.forEach(function(ae){ee.indexOf(ae)===-1&&ee.push(ae)}),ee}function K(J,k){const q=[];return k.forEach(ee=>{Object.keys(J).forEach(ae=>{J[ae].replace(/_/g," ")===ee&&q.push(ae)})}),Object.keys(J).forEach(ee=>{q.indexOf(ee)===-1&&q.push(ee)}),q}Pn()}})()})();

@@ -27,6 +27,17 @@ interface TalkPlusResponse {
   "code": string,
   "message": string
 }
+/*
+async function getUserChannel(user:tt_user){
+
+}
+async function createUserChannel(){
+
+}
+async function deleteUserChannel(){
+
+}
+*/
 async function createChatUser(user:tt_user):Promise<tt_user_talkplus>{
   const url = baseUrl + "api/users/create";
 
@@ -67,10 +78,11 @@ async function createChatUser(user:tt_user):Promise<tt_user_talkplus>{
 
 async function updateUserProfile(user:tt_user):Promise<tt_user>{
   const cdnBaseUrl = process.env.CDN_BASE_URL? process.env.CDN_BASE_URL : "";
+  const profileImage = user.PROFILE_IMAGE? user.PROFILE_IMAGE : "";
   const url = baseUrl + "api/users/"+String(user.tt_user_talkplu.TALKPLUS_ID);
   const params = {
     username : user.NICKNAME,
-    profileImageUrl : cdnBaseUrl+user.PROFILE_IMAGE,
+    profileImageUrl : cdnBaseUrl+profileImage,
   };
   const result: HttpResponse<TalkPlusResponse> = await fetch(
     url, {

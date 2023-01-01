@@ -1,7 +1,11 @@
-import {tt_product, tt_product_image, tt_user} from '@src/models/init-models';
+import {
+  tt_product,
+  tt_product_image,
+  tt_trade_review,
+  tt_user,
+} from '@src/models/init-models';
 import {RouteError} from '@src/declarations/classes';
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
-import logger from "jet-logger";
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
 import {tt_trade_status} from "@src/models/dummy/tt_trade_status";
 
@@ -32,14 +36,16 @@ async function getAll(): Promise<tt_product[]> {
  * Get trade user bought
  */
 async function getUserBought(user: tt_user): Promise<tt_product[]> {
-  const persists = await tt_product.findAll({where: {BUYER_USER_ID: user.USER_ID},
+  const persists = await tt_product.findAll({
+    where: {BUYER_USER_ID: user.USER_ID},
     include:
       [{model: tt_product_image, as: "tt_product_images"},
         {
           model: tt_user,
           as: "SELLER_USER",
           attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
-        }]
+        },
+        {model: tt_trade_review, as: "tt_trade_reviews"}],
   });
   if (!persists) {
     throw new RouteError(
@@ -54,14 +60,16 @@ async function getUserBought(user: tt_user): Promise<tt_product[]> {
  * Get trade user is selling
  */
 async function getUserSold(user: tt_user): Promise<tt_product[]> {
-  const persists = await tt_product.findAll({where: {SELLER_USER_ID: user.USER_ID},
+  const persists = await tt_product.findAll({
+    where: {SELLER_USER_ID: user.USER_ID},
     include:
       [{model: tt_product_image, as: "tt_product_images"},
         {
           model: tt_user,
           as: "SELLER_USER",
           attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
-        }],
+        },
+        {model: tt_trade_review, as: "tt_trade_reviews"}],
 
   });
   if (!persists) {

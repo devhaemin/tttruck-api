@@ -2,6 +2,7 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import {IReq, IRes} from './shared/types';
 import {tt_trade_review} from '@src/models/init-models';
 import tradeReviewService from "@src/services/trade-review-service";
+import {tt_trade_review_type} from "@src/models/dummy/tt_trade_status";
 
 
 // **** Variables **** //
@@ -34,37 +35,100 @@ async function getByProduct(req: IReq, res: IRes) {
 
 /**
  * @api {post} /trade/reviews/seller/add 판매자 리뷰 추가하기
- * @apiName GetTradeReviewsByProduct
+ * @apiName AddSellerReview
  * @apiGroup TradeReview
  * @apiPermission normalUser
  *
- * @apiBody {number} productId=0 상품ID
- * @apiBody {number} rating=5 점수
- * @apiBody {string} SUBJECT 제목
- * @apiBody {string} CONTENTS 내용
+ * @apiParamExample {json} Request-Example:
+ * {
+ *     "PRODUCT_ID":62,
+ *     "RATING" : 5,
+ *     "SUBJECT" : "안녕하세요 리뷰 제목",
+ *     "CONTENTS": "판매자 리뷰 내용"
+ * }
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ *     "RATINGS": 0,
+ *     "CREATE_TIME": {
+ *         "fn": "current_timestamp",
+ *         "args": []
+ *     },
+ *     "UPDATE_TIME": {
+ *         "fn": "current_timestamp",
+ *         "args": []
+ *     },
+ *     "DELETE_TF": false,
+ *     "TRADE_REVIEW_ID": 3,
+ *     "PRODUCT_ID": 62,
+ *     "SUBJECT": "안녕하세요 리뷰 제목",
+ *     "CONTENTS": "판매자 리뷰 내용",
+ *     "TRADE_REVIEW_TYPE": 1
+ * }
  *
  */
 async function postSeller(req: IReq<tt_trade_review>, res: IRes) {
   const tradeReview = req.body;
-  const result = await tradeReviewService.postReview(tradeReview);
+  const result = await tradeReviewService.postReview(tradeReview,tt_trade_review_type.SELLER_REVIEW);
   return res.status(HttpStatusCodes.OK).json(result).end();
 }
 
 /**
- * @api {post} /trade/reviews/buyer/add 판매자 리뷰 추가하기
- * @apiName GetTradeReviewsByProduct
+ * @api {post} /trade/reviews/buyer/add 구매자 리뷰 추가하기
+ * @apiName AddBuyerReview
  * @apiGroup TradeReview
  * @apiPermission normalUser
  *
- * @apiBody {number} productId=0 상품ID
- * @apiBody {number} rating=5 점수
- * @apiBody {string} SUBJECT 제목
- * @apiBody {string} CONTENTS 내용
+ * @apiParamExample {json} Request-Example:
+ * {
+ *     "PRODUCT_ID":62,
+ *     "RATING" : 5,
+ *     "SUBJECT" : "안녕하세요 리뷰 제목",
+ *     "CONTENTS": "판매자 리뷰 내용"
+ * }
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ * {
+ *     "RATINGS": 0,
+ *     "CREATE_TIME": {
+ *         "fn": "current_timestamp",
+ *         "args": []
+ *     },
+ *     "UPDATE_TIME": {
+ *         "fn": "current_timestamp",
+ *         "args": []
+ *     },
+ *     "DELETE_TF": false,
+ *     "TRADE_REVIEW_ID": 3,
+ *     "PRODUCT_ID": 62,
+ *     "SUBJECT": "안녕하세요 리뷰 제목",
+ *     "CONTENTS": "판매자 리뷰 내용",
+ *     "TRADE_REVIEW_TYPE": 1
+ * }
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ * {
+ *     "RATINGS": 0,
+ *     "CREATE_TIME": {
+ *         "fn": "current_timestamp",
+ *         "args": []
+ *     },
+ *     "UPDATE_TIME": {
+ *         "fn": "current_timestamp",
+ *         "args": []
+ *     },
+ *     "DELETE_TF": false,
+ *     "TRADE_REVIEW_ID": 7,
+ *     "PRODUCT_ID": 62,
+ *     "SUBJECT": "안녕하세요 리뷰 제목2",
+ *     "CONTENTS": "판매자 리뷰 내용2",
+ *     "TRADE_REVIEW_TYPE": 0
+ * }
  *
  */
 async function postBuyer(req: IReq<tt_trade_review>, res: IRes) {
   const tradeReview = req.body;
-  const result = await tradeReviewService.postReview(tradeReview);
+  const result = await tradeReviewService.postReview(tradeReview, tt_trade_review_type.BUYER_REVIEW);
   return res.status(HttpStatusCodes.OK).json(result).end();
 }
 

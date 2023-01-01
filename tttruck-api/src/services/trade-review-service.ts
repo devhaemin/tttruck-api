@@ -16,7 +16,8 @@ async function getByProduct(productId:number):Promise<tt_trade_review[]>{
   }
   return tradeReviews;
 }
-async function postReview(tradeReview:tt_trade_review):Promise<tt_trade_review>{
+async function postReview(tradeReview:tt_trade_review, tradeReviewType: number):Promise<tt_trade_review>{
+  tradeReview.TRADE_REVIEW_TYPE = tradeReviewType;
   return await tt_trade_review.create(tradeReview);
 }
 async function postBuyer():Promise<tt_trade_review[]>{

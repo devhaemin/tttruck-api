@@ -18,6 +18,8 @@ const paths = {
 } as const;
 
 // **** Functions **** //
+
+// **** Functions **** //
 /**
  * @api {get} /trade/reviews/product/:id 상품별 리뷰 목록
  * @apiName GetTradeReviewsByProduct
@@ -68,7 +70,9 @@ async function getByProduct(req: IReq, res: IRes) {
  */
 async function postSeller(req: IReq<tt_trade_review>, res: IRes) {
   const tradeReview = req.body;
-  const result = await tradeReviewService.postReview(tradeReview,tt_trade_review_type.SELLER_REVIEW);
+  const user = res.locals.user;
+  const result =
+    await tradeReviewService.postReview(user, tradeReview,tt_trade_review_type.SELLER_REVIEW);
   return res.status(HttpStatusCodes.OK).json(result).end();
 }
 
@@ -128,7 +132,9 @@ async function postSeller(req: IReq<tt_trade_review>, res: IRes) {
  */
 async function postBuyer(req: IReq<tt_trade_review>, res: IRes) {
   const tradeReview = req.body;
-  const result = await tradeReviewService.postReview(tradeReview, tt_trade_review_type.BUYER_REVIEW);
+  const user = res.locals.user;
+  const result =
+    await tradeReviewService.postReview(user,tradeReview, tt_trade_review_type.BUYER_REVIEW);
   return res.status(HttpStatusCodes.OK).json(result).end();
 }
 

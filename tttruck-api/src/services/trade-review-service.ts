@@ -1,7 +1,8 @@
-import {tt_trade_review} from '@src/models/init-models';
+import {tt_product, tt_trade_review, tt_user} from '@src/models/init-models';
 import {RouteError} from '@src/declarations/classes';
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import {IReq, IRes} from "@src/routes/shared/types";
+import {prodNotFoundErr} from "@src/services/product-service";
 
 const tradeReviewNotFoundErr = "Can't find the trade review by product id";
 // **** Variables **** //
@@ -16,12 +17,22 @@ async function getByProduct(productId:number):Promise<tt_trade_review[]>{
   }
   return tradeReviews;
 }
-async function postReview(tradeReview:tt_trade_review, tradeReviewType: number):Promise<tt_trade_review>{
+async function postReview(user:tt_user, tradeReview:tt_trade_review, tradeReviewType: number):Promise<tt_trade_review>{
+  const product = await tt_product.findByPk(tradeReview.PRODUCT_ID);
+  if(!product){
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      prodNotFoundErr,
+    );
+  }
+  if(user.USER_ID !== product.SELLER_USER_ID && user.USER_ID !== product.BUYER_USER_ID){
+    throw new RouteError(
+      HttpStatusCodes.UNAUTHORIZED,
+      "User can not perform on this action",
+    );
+  }
   tradeReview.TRADE_REVIEW_TYPE = tradeReviewType;
   return await tt_trade_review.create(tradeReview);
-}
-async function postBuyer():Promise<tt_trade_review[]>{
-  return tt_trade_review.findAll();
 }
 async function update():Promise<tt_trade_review[]>{
   return tt_trade_review.findAll();
@@ -40,7 +51,6 @@ async function update():Promise<tt_trade_review[]>{
 export default {
   getByProduct,
   postReview,
-  postBuyer,
   update,
   delete : _delete,
 } as const;

@@ -1,24 +1,23 @@
-import {
-  tt_notice,
-  tt_notice_image,
-  tt_trade_review,
-  tt_user,
-} from '@src/models/init-models';
+import {tt_trade_review} from '@src/models/init-models';
 import {RouteError} from '@src/declarations/classes';
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
-import logger from "jet-logger";
-import {tt_user_group} from "@src/models/dummy/tt_user_group";
-import {S3File} from "@src/routes/shared/awsMultipart";
 import {IReq, IRes} from "@src/routes/shared/types";
 
-
+const tradeReviewNotFoundErr = "Can't find the trade review by product id";
 // **** Variables **** //
 
-async function getByProduct():Promise<tt_trade_review[]>{
-  return tt_trade_review.findAll();
+async function getByProduct(productId:number):Promise<tt_trade_review[]>{
+  const tradeReviews = await tt_trade_review.findAll({where:{PRODUCT_ID : productId}});
+  if(!tradeReviews){
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      tradeReviewNotFoundErr,
+    );
+  }
+  return tradeReviews;
 }
-async function postSeller():Promise<tt_trade_review[]>{
-  return tt_trade_review.findAll();
+async function postReview(tradeReview:tt_trade_review):Promise<tt_trade_review>{
+  return await tt_trade_review.create(tradeReview);
 }
 async function postBuyer():Promise<tt_trade_review[]>{
   return tt_trade_review.findAll();
@@ -39,7 +38,7 @@ async function update():Promise<tt_trade_review[]>{
 
 export default {
   getByProduct,
-  postSeller,
+  postReview,
   postBuyer,
   update,
   delete : _delete,

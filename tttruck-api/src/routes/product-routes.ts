@@ -245,7 +245,7 @@ async function getByCategory(req: IReq, res: IRes) {
 
 /**
  * @api {get} /products/categories Get Products by Category
- * @apiName GetProductByCategory
+ * @apiName GetProductByCategoryies
  * @apiGroup Product
  *
  * @apiPermission none

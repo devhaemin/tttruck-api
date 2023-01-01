@@ -693,12 +693,13 @@ async function getByCategory(req: IReq, res: IRes) {
  */
 
 interface Categories extends UserLocation{
-  categories: [string]
+  categories: [string] | undefined
 }
 async function getByCategories(
   req: IReqQuery<Categories>,
   res: IRes) {
-  const categories = req.query.categories.map((c)=>Number.parseInt(c));
+  const queryCate = req.query.categories? req.query.categories : [];
+  const categories = queryCate.map((c)=>Number.parseInt(c));
   const {longitude, latitude} = res.locals.location;
   const products = await productService.getByCategories(longitude, latitude ,categories);
   logger.info(products);

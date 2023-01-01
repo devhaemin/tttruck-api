@@ -2,17 +2,15 @@
  * Middleware to verify user logged in and is an an admin.
  */
 
-import {Request, Response, NextFunction} from 'express';
+import {NextFunction, Request, Response} from 'express';
 import {JwtPayload} from 'jsonwebtoken';
 
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
-import EnvVars from '@src/declarations/major/EnvVars';
-import jwtUtil from '@src/util/jwt-util';
-import {IUser, UserRoles} from '@src/models/User';
-import {tt_user, tt_userAttributes} from "@src/models/tt_user";
+import {IUser} from '@src/models/User';
+import {tt_user} from "@src/models/tt_user";
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
-import {IReq} from "@src/routes/shared/types";
 import logger from "jet-logger";
+import {tt_user_talkplus} from "@src/models/init-models";
 
 
 // **** Variables **** //
@@ -50,7 +48,7 @@ export async function adminMw(
       .json({error: jwtNotPresentErr});
   }
   userToken = userToken.split(" ")[1];
-  const clientData = await tt_user.findAll({where : {ACCESSTOKEN : userToken}});
+  const clientData = await tt_user.findAll({where: {ACCESSTOKEN: userToken}});
   logger.info(JSON.stringify(clientData));
   if (
     clientData &&
@@ -66,19 +64,19 @@ export async function adminMw(
       .json({error: userUnauthErr});
   }
 }
+
 export async function noPhoneUserMw(
   req: Request,
   res: Response,
   next: NextFunction,
-)
-{
+) {
   const userToken = req.headers['authorization'];
   if (!userToken) {
     return res
       .status(HttpStatusCodes.UNAUTHORIZED)
       .json({error: jwtNotPresentErr});
   }
-  const clientData = await tt_user.findAll({where : {ACCESSTOKEN : userToken}});
+  const clientData = await tt_user.findAll({where: {ACCESSTOKEN: userToken}});
   if (
     clientData &&
     clientData.length > 0 &&
@@ -93,6 +91,7 @@ export async function noPhoneUserMw(
       .json({error: userUnauthErr});
   }
 }
+
 export async function normalUserMw(
   req: Request,
   res: Response,
@@ -106,7 +105,11 @@ export async function normalUserMw(
       .json({error: jwtNotPresentErr});
   }
   userToken = userToken.split(" ")[1];
-  const clientData = await tt_user.findAll({where : {ACCESSTOKEN : userToken}});
+  const clientData = await tt_user.findAll(
+    {
+      where: {ACCESSTOKEN: userToken},
+      include: [{model: tt_user_talkplus, as: "tt_user_talkplu"}],
+    });
   logger.info(clientData);
   if (
     clientData && clientData.length > 0 &&

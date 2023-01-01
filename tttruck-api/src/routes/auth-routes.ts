@@ -10,7 +10,7 @@ import logger from "jet-logger";
 import {S3File} from "@src/routes/shared/awsMultipart";
 import productService from "@src/services/product-service";
 import {getClientIP} from "@src/util/ip-util";
-import chatService from "@src/chats/chat-service";
+import chatService from "@src/services/chat-service";
 
 // **** Variables **** //
 

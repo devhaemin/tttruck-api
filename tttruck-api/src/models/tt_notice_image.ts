@@ -131,7 +131,7 @@ export class tt_notice_image extends Model<tt_notice_imageAttributes, tt_notice_
         ]
       },
       {
-        name: "tt_notice_image_tt_notice_null_fk",
+        name: "tt_notice_image_tt_notice_NOTICE_ID_fk",
         using: "BTREE",
         fields: [
           { name: "NOTICE_ID" },

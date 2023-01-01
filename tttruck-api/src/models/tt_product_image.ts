@@ -5,7 +5,7 @@ import type { tt_product, tt_productId } from './tt_product';
 export interface tt_product_imageAttributes {
   PRODUCT_IMAGE_ID: number;
   PRODUCT_ID: number;
-  FILE_NAME?: string;
+  FILE_NAME: string;
   FILE_PATH?: string;
   FILE_SIZE?: number;
   ORG_FILE_SEQ?: number;
@@ -19,13 +19,13 @@ export interface tt_product_imageAttributes {
 
 export type tt_product_imagePk = "PRODUCT_IMAGE_ID";
 export type tt_product_imageId = tt_product_image[tt_product_imagePk];
-export type tt_product_imageOptionalAttributes = "PRODUCT_IMAGE_ID" | "FILE_NAME" | "FILE_PATH" | "FILE_SIZE" | "ORG_FILE_SEQ" | "FILE_URL" | "THUMB_PATH" | "FILE_ID" | "CONTENT_ID" | "TIME" | "PRIORITY";
+export type tt_product_imageOptionalAttributes = "PRODUCT_IMAGE_ID" | "FILE_PATH" | "FILE_SIZE" | "ORG_FILE_SEQ" | "FILE_URL" | "THUMB_PATH" | "FILE_ID" | "CONTENT_ID" | "TIME" | "PRIORITY";
 export type tt_product_imageCreationAttributes = Optional<tt_product_imageAttributes, tt_product_imageOptionalAttributes>;
 
 export class tt_product_image extends Model<tt_product_imageAttributes, tt_product_imageCreationAttributes> implements tt_product_imageAttributes {
   PRODUCT_IMAGE_ID!: number;
   PRODUCT_ID!: number;
-  FILE_NAME?: string;
+  FILE_NAME!: string;
   FILE_PATH?: string;
   FILE_SIZE?: number;
   ORG_FILE_SEQ?: number;
@@ -62,7 +62,7 @@ export class tt_product_image extends Model<tt_product_imageAttributes, tt_produ
     },
     FILE_NAME: {
       type: DataTypes.STRING(800),
-      allowNull: true,
+      allowNull: false,
       comment: "첨부파일명"
     },
     FILE_PATH: {

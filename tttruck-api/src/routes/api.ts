@@ -9,12 +9,29 @@ import {getS3Multer} from "@src/routes/shared/awsMultipart";
 import tradeRoutes from "@src/routes/trade-routes";
 import {locationCheck} from "@src/routes/shared/locationCheck";
 import tradeReviewRoutes from "@src/routes/trade-review-routes";
+import chatRoutes from "@src/routes/chat-routes";
 // **** Init **** //
 
 const apiRouter = Router(),
   validate = jetValidator();
 
+const chatRouter = Router();
 
+chatRouter.get(
+  chatRoutes.paths.getUserChannel,
+  normalUserMw,
+  chatRoutes.getUserChannel,
+);
+chatRouter.post(
+  chatRoutes.paths.createChannel,
+  normalUserMw,
+  chatRoutes.createChannel,
+);
+
+apiRouter.use(
+  chatRoutes.paths.basePath,
+  chatRouter,
+);
 // **** Setup auth routes **** //
 
 const authRouter = Router();
@@ -22,8 +39,8 @@ const profileImageMulter = getS3Multer('profile');
 
 authRouter.get(
   authRoutes.paths.generateNickname,
-  authRoutes.generateNickname
-)
+  authRoutes.generateNickname,
+);
 
 authRouter.get(
   authRoutes.paths.tokenLogin,
@@ -33,8 +50,8 @@ authRouter.get(
 authRouter.put(
   authRoutes.paths.updateProfile,
   normalUserMw,
-  authRoutes.updateProfile
-)
+  authRoutes.updateProfile,
+);
 // Login user
 authRouter.post(
   authRoutes.paths.login,
@@ -77,12 +94,12 @@ const productImageMulter = getS3Multer('product/image');
 // Get all products
 productRouter.get(productRoutes.paths.getAll, locationCheck, productRoutes.getAll);
 
-productRouter.get(productRoutes.paths.getByCategories,locationCheck, productRoutes.getByCategories);
+productRouter.get(productRoutes.paths.getByCategories, locationCheck, productRoutes.getByCategories);
 
 productRouter.get(productRoutes.paths.getCategories, productRoutes.getCategories);
 
 // Get products by category
-productRouter.get(productRoutes.paths.getByCategory,locationCheck,  productRoutes.getByCategory);
+productRouter.get(productRoutes.paths.getByCategory, locationCheck, productRoutes.getByCategory);
 
 // Get product by ID
 productRouter.get(productRoutes.paths.getById, productRoutes.getById);

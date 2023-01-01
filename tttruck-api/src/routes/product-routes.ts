@@ -146,10 +146,8 @@ async function getAll(req: IReq, res: IRes) {
  *
  * @apiParamExample {json} Request-Example:
  * {
- * "location":{
- *         "latitude": "37.56211",
- *         "longitude": "126.941069"
- *     }
+ *     "latitude": "37.56211",
+ *     "longitude": "126.941069"
  * }
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -252,13 +250,9 @@ async function getByCategory(req: IReq, res: IRes) {
  * @apiPermission none
  * @apiParamExample {json} Request-Example:
  * {
- *     "location":{
- *         "latitude": "37.56211",
- *         "longitude": "126.941069"
- *     },
- *     "categories":[
- *         1,2,3
- *       ]
+ *     "latitude": "37.56211",
+ *     "longitude": "126.941069"
+ *     "categories":[1,2,3]
  * }
  *
  * @apiSuccessExample Success-Response:
@@ -692,16 +686,17 @@ async function getByCategory(req: IReq, res: IRes) {
  *     }
  */
 
-interface Categories extends UserLocation{
-  categories: [string] | undefined
+interface Categories extends UserLocation {
+  categories: [string] | undefined;
 }
+
 async function getByCategories(
   req: IReqQuery<Categories>,
   res: IRes) {
-  const queryCate = req.query.categories? req.query.categories : [];
-  const categories = queryCate.map((c)=>Number.parseInt(c));
+  const queryCate = req.query.categories ? req.query.categories : [];
+  const categories = queryCate.map((c) => Number.parseInt(c));
   const {longitude, latitude} = res.locals.location;
-  const products = await productService.getByCategories(longitude, latitude ,categories);
+  const products = await productService.getByCategories(longitude, latitude, categories);
   logger.info(products);
   return res.status(HttpStatusCodes.OK).json(products);
 }
@@ -930,8 +925,7 @@ async function imageUpload(req: IReq<{ productId: number }>, res: IRes) {
  *       "error": "ProductNotFound"
  *     }
  */
-async function setImageOrder(req: IReq<[{ PRODUCT_IMAGE_ID: number, PRIORITY: number }]>, res: IRes)
-{
+async function setImageOrder(req: IReq<[{ PRODUCT_IMAGE_ID: number, PRIORITY: number }]>, res: IRes) {
   const priorities = req.body;
   await productService.setImageOrder(priorities);
   return res.status(HttpStatusCodes.CREATED).end();

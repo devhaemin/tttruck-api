@@ -7,9 +7,75 @@ import HttpStatusCodes from "@src/declarations/major/HttpStatusCodes";
 // Paths
 const paths = {
   basePath: '/chat',
+  getChannelById:'/talkplus/channel/:id',
   getUserChannel: '/talkplus/channel/all',
   createChannel: '/talkplus/channel/add',
 } as const;
+
+/**
+ * @api {get} /chat/talkplus/channel/:id Get all User chat channels.
+ * @apiName GetChannelById
+ * @apiGroup TalkPlus
+ * @apiPermission normalUser
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ * {
+ *     "CHANNEL_ID": 1,
+ *     "TALKPLUS_CHANNEL_ID": "63b1dacabd470d0001002d61",
+ *     "PRODUCT_ID": 61,
+ *     "NAME": "ewwer",
+ *     "OWNER_ID": "tttruck21",
+ *     "TYPE": "private",
+ *     "IMAGE_URL": "",
+ *     "MAX_MEMBER_COUNT": 2,
+ *     "STATUS": 0,
+ *     "SELLER_ID": "tttruck22",
+ *     "PRODUCT": {
+ *         "PRODUCT_ID": 61,
+ *         "SUBJECT": "ewwer",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 123123123,
+ *         "PRODUCT_SIZE": "123123",
+ *         "PRODUCT_WEIGHT": 300000,
+ *         "CONTENTS": "213123123123",
+ *         "SELLER_USER_ID": 22,
+ *         "SELLER_USER_IPv4": 2097057137,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-31T08:14:23.000Z",
+ *         "TAG": "",
+ *         "ADDRESS": " 1",
+ *         "LATITUDE": "37.541",
+ *         "LONGITUDE": "126.986",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 126.986,
+ *                 37.541
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 22,
+ *         "UPDATE_USER_IPv4": 2097057137,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-31T08:14:23.000Z",
+ *         "TRADE_STATUS": 0,
+ *         "TRADE_TIME": "2022-12-31T08:14:23.000Z",
+ *         "BUYER_USER_ID": null,
+ *         "BUYER_USER_IPv4": null,
+ *         "BUYER_USER_IPv6": null,
+ *         "DELETE_TF": false,
+ *         "QUANTITY": "123123개"
+ *     }
+ * }
+ */
+async function getChannelById(req: IReq, res: IRes) {
+  const user = res.locals.user;
+  const channelId = req.params.id;
+  const result = await chatService.getProductByChannelId(Number(channelId));
+  res.status(HttpStatusCodes.OK).json(result).end();
+}
 
 /**
  * @api {get} /chat/talkplus/channel/all Get all User chat channels.
@@ -136,4 +202,5 @@ export default {
   paths,
   createChannel,
   getUserChannel,
+  getChannelById,
 } as const;

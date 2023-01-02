@@ -85,6 +85,18 @@ interface TalkPlusChannelResponse {
   "message": string,
 }
 
+async function getProductByChannelId(channelId: number):Promise<tt_talkplus_channel>{
+  const channelWithProduct = await tt_talkplus_channel.findByPk(channelId, {
+    include:[{model: tt_product, as: "PRODUCT"}],
+  });
+  if(!channelWithProduct){
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      "Channel not found",
+    )
+  }
+  return channelWithProduct;
+}
 
 async function getUserChannel(user: tt_user)
   : Promise<TalkPlusChannelResponse> {
@@ -301,4 +313,5 @@ export default {
   loginTalkplus,
   createUserChannel,
   getUserChannel,
+  getProductByChannelId,
 };

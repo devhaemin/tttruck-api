@@ -3,6 +3,7 @@ import {RouteError} from "@src/declarations/classes";
 import HttpStatusCodes from "@src/declarations/major/HttpStatusCodes";
 import {
   tt_product,
+  tt_product_image,
   tt_talkplus_channel,
   tt_user_talkplus,
 } from "@src/models/init-models";
@@ -14,7 +15,7 @@ import {prodNotFoundErr} from "@src/services/product-service";
 const baseUrl = "https://api.talkplus.io/v1.4/";
 const apiKey = process.env.TALKPLUS_API_KEY ? process.env.TALKPLUS_API_KEY : "";
 const appId = process.env.TALKPLUS_APP_ID ? process.env.TALKPLUS_APP_ID : "";
-const cdnBaseUrl:string = process.env.CDN_BASE_URL ? process.env.CDN_BASE_URL : "";
+const cdnBaseUrl: string = process.env.CDN_BASE_URL ? process.env.CDN_BASE_URL : "";
 
 interface HttpResponse<T> extends Response {
   parsedBody?: T;
@@ -85,9 +86,9 @@ interface TalkPlusChannelResponse {
 }
 
 
-async function getUserChannel(user:tt_user)
-  :Promise<TalkPlusChannelResponse>{
-  const url = baseUrl + "api/users/"+user.tt_user_talkplu.TALKPLUS_ID+"/channels";
+async function getUserChannel(user: tt_user)
+  : Promise<TalkPlusChannelResponse> {
+  const url = baseUrl + "api/users/" + user.tt_user_talkplu.TALKPLUS_ID + "/channels";
   const result: HttpResponse<TalkPlusChannelResponse> = await fetch(
     url, {
       method: 'GET',
@@ -95,7 +96,7 @@ async function getUserChannel(user:tt_user)
         "Content-Type": "application/json; charset=utf-8",
         "api-key": apiKey,
         "app-id": appId,
-      }
+      },
     });
   const talkPlusResult = await result.json() as TalkPlusChannelResponse;
   logger.info(JSON.stringify(talkPlusResult));
@@ -109,25 +110,30 @@ async function getUserChannel(user:tt_user)
 }
 
 
-
-async function createUserChannel(productId:number ,ownerId: number)
-  :Promise<tt_talkplus_channel> {
+async function createUserChannel(productId: number, ownerId: number)
+  : Promise<tt_talkplus_channel> {
   const owner = await tt_user_talkplus.findByPk(ownerId);
   const product = await tt_product.findByPk(productId);
-  if(!product){
+  if (!product) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
       prodNotFoundErr,
     );
   }
-  if (!owner ) {
+  if (!owner) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
       userNotFoundErr,
     );
   }
-  const seller = await tt_user_talkplus.findByPk(product.SELLER_USER_ID);
-  if(!seller){
+  const seller = await tt_user_talkplus.findByPk(product.SELLER_USER_ID,
+    {
+      include: [{
+        model: tt_product_image,
+        as: "tt_product_images",
+      }],
+    });
+  if (!seller) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
       userNotFoundErr,
@@ -166,11 +172,11 @@ async function createUserChannel(productId:number ,ownerId: number)
     {
       PRODUCT_ID: productId,
       NAME: product.SUBJECT,
-      OWNER_ID : owner.TALKPLUS_ID,
-      TYPE : "private",
-      IMAGE_URL : params.imageUrl,
-      SELLER_ID : seller.TALKPLUS_ID,
-      TALKPLUS_CHANNEL_ID : talkPlusResult.channel.id,
+      OWNER_ID: owner.TALKPLUS_ID,
+      TYPE: "private",
+      IMAGE_URL: params.imageUrl,
+      SELLER_ID: seller.TALKPLUS_ID,
+      TALKPLUS_CHANNEL_ID: talkPlusResult.channel.id,
     });
 }
 

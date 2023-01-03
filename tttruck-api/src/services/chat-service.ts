@@ -98,8 +98,9 @@ async function getChannelsByProductId(productlId: number): Promise<tt_talkplus_c
   return channelsWithProduct;
 }
 
-async function getProductByChannelId(channelId: number): Promise<tt_talkplus_channel> {
-  const channelWithProduct = await tt_talkplus_channel.findByPk(channelId, {
+async function getProductByChannelId(channelId: string): Promise<tt_talkplus_channel> {
+  const channelWithProduct = await tt_talkplus_channel.findOne({
+    where: {TALKPLUS_CHANNEL_ID: channelId},
     include: [{model: tt_product, as: "PRODUCT"}],
   });
   if (!channelWithProduct) {

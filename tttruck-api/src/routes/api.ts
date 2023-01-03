@@ -100,7 +100,10 @@ const productImageMulter = getS3Multer('product/image');
 // Get all products
 productRouter.get(productRoutes.paths.getAll, locationCheck, productRoutes.getAll);
 
-productRouter.get(productRoutes.paths.getByCategories, locationCheck, productRoutes.getByCategories);
+productRouter.get(
+  productRoutes.paths.getByCategories,
+  locationCheck,
+  productRoutes.getByCategories);
 
 productRouter.get(productRoutes.paths.getCategories, productRoutes.getCategories);
 

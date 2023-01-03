@@ -139,7 +139,7 @@ async function getChannelsByProductId(req: IReq, res: IRes) {
 async function getChannelById(req: IReq, res: IRes) {
   const user = res.locals.user;
   const channelId = req.params.id;
-  const result = await chatService.getProductByChannelId(Number(channelId));
+  const result = await chatService.getProductByChannelId(channelId);
   res.status(HttpStatusCodes.OK).json(result).end();
 }
 

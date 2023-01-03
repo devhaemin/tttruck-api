@@ -18,16 +18,16 @@ const apiRouter = Router(),
 const chatRouter = Router();
 
 chatRouter.get(
+  chatRoutes.paths.getUserChannel,
+  normalUserMw,
+  chatRoutes.getUserChannel,
+);
+chatRouter.get(
   chatRoutes.paths.getChannelById,
   normalUserMw,
   chatRoutes.getChannelById,
 );
 
-chatRouter.get(
-  chatRoutes.paths.getUserChannel,
-  normalUserMw,
-  chatRoutes.getUserChannel,
-);
 chatRouter.post(
   chatRoutes.paths.createChannel,
   normalUserMw,

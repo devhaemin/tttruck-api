@@ -84,16 +84,29 @@ interface TalkPlusChannelResponse {
   "code": string,
   "message": string,
 }
-
-async function getProductByChannelId(channelId: number):Promise<tt_talkplus_channel>{
-  const channelWithProduct = await tt_talkplus_channel.findByPk(channelId, {
-    include:[{model: tt_product, as: "PRODUCT"}],
+async function getChannelsByProductId(productlId: number): Promise<tt_talkplus_channel[]> {
+  const channelsWithProduct = await tt_talkplus_channel.findAll({
+    where:{PRODUCT_ID:productlId},
+    include: [{model: tt_product, as: "PRODUCT"}],
   });
-  if(!channelWithProduct){
+  if (!channelsWithProduct) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
       "Channel not found",
-    )
+    );
+  }
+  return channelsWithProduct;
+}
+
+async function getProductByChannelId(channelId: number): Promise<tt_talkplus_channel> {
+  const channelWithProduct = await tt_talkplus_channel.findByPk(channelId, {
+    include: [{model: tt_product, as: "PRODUCT"}],
+  });
+  if (!channelWithProduct) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      "Channel not found",
+    );
   }
   return channelWithProduct;
 }
@@ -314,4 +327,5 @@ export default {
   createUserChannel,
   getUserChannel,
   getProductByChannelId,
+  getChannelsByProductId,
 };

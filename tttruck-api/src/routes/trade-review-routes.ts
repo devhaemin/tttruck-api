@@ -30,7 +30,7 @@ const paths = {
  *
  */
 async function getByProduct(req: IReq, res: IRes) {
-  const productId = Number(req.params['productId']);
+  const productId = Number(req.params.id);
   const result = await tradeReviewService.getByProduct(productId);
   return res.status(HttpStatusCodes.OK).json(result).end();
 }

@@ -87,8 +87,8 @@ async function getUserSold(req: IReq, res: IRes) {
  *
  * @apiPermission normalUser
  *
- * @apiParam {number} productId
- * @apiParam {number} buyerId
+ * @apiParam {number} productId URL 경로에
+ * @apiParam {number} buyerId Body에
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -102,8 +102,9 @@ async function getUserSold(req: IReq, res: IRes) {
  */
 
 async function doTrade(req: IReq<{productId:number, buyerId:number}>, res: IRes) {
-  const {productId, buyerId} = req.body;
-  const result = await tradeService.doTrade(res.locals.user, buyerId, productId);
+  const productId = req.params.id;
+  const {buyerId} = req.body;
+  const result = await tradeService.doTrade(res.locals.user, buyerId, Number(productId));
   return res.status(HttpStatusCodes.OK).json(result);
 }
 

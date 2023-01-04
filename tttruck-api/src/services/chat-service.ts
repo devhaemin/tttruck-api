@@ -5,6 +5,7 @@ import {
   tt_product,
   tt_product_image,
   tt_talkplus_channel,
+  tt_talkplus_message,
   tt_user_talkplus,
 } from "@src/models/init-models";
 import logger from "jet-logger";
@@ -84,11 +85,30 @@ interface TalkPlusChannelResponse {
   "code": string,
   "message": string,
 }
-async function getChannelsByProductId(productlId: number): Promise<tt_talkplus_channel[]> {
+
+async function getChannelsByProductId(user: tt_user, productId: number): Promise<tt_talkplus_channel[]> {
+  const prod = await tt_product.findByPk(productId);
+  if (!prod) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      prodNotFoundErr,
+    );
+  }
+  if (user.USER_ID !== prod.SELLER_USER_ID && user.GROUP !== 99) {
+    throw new RouteError(
+      HttpStatusCodes.UNAUTHORIZED,
+      "User can not perform this action",
+    );
+  }
   const channelsWithProduct = await tt_talkplus_channel.findAll({
-    where:{PRODUCT_ID:productlId},
-    include: [{model: tt_product, as: "PRODUCT"}],
+    where: {PRODUCT_ID: productId},
+    include: [{model: tt_product, as: "PRODUCT"},
+      {
+        model: tt_user_talkplus, as: "BUYER",
+        attributes: ["USER_ID", "TALKPLUS_USERNAME", "TALKPLUS_PROFILE_IMAGE_URL"],
+      }],
   });
+
   if (!channelsWithProduct) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
@@ -98,7 +118,7 @@ async function getChannelsByProductId(productlId: number): Promise<tt_talkplus_c
   return channelsWithProduct;
 }
 
-async function getProductByChannelId(channelId: string): Promise<tt_talkplus_channel> {
+async function getChannelWithProductById(channelId: string): Promise<tt_talkplus_channel> {
   const channelWithProduct = await tt_talkplus_channel.findOne({
     where: {TALKPLUS_CHANNEL_ID: channelId},
     include: [{model: tt_product, as: "PRODUCT"}],
@@ -110,6 +130,18 @@ async function getProductByChannelId(channelId: string): Promise<tt_talkplus_cha
     );
   }
   return channelWithProduct;
+}
+
+async function sendMessage(user: tt_user, msg: string, channelId:string):Promise<tt_talkplus_message> {
+
+  return await tt_talkplus_message.create(
+    {
+      TALKPLUS_CHANNEL_ID:channelId,
+      SEND_USER_TALKPLUS_ID: user.tt_user_talkplu.TALKPLUS_ID,
+      SEND_USER_ID: user.USER_ID,
+      TEXT: msg,
+    },
+  );
 }
 
 async function getUserChannel(user: tt_user)
@@ -135,10 +167,9 @@ async function getUserChannel(user: tt_user)
   return talkPlusResult;
 }
 
-
-async function createUserChannel(productId: number, ownerId: number)
+async function createUserChannel(productId: number, buyerId: number)
   : Promise<tt_talkplus_channel> {
-  const owner = await tt_user_talkplus.findByPk(ownerId);
+  const buyer = await tt_user_talkplus.findByPk(buyerId);
   const product = await tt_product.findByPk(productId, {
     include: [{
       model: tt_product_image,
@@ -151,7 +182,7 @@ async function createUserChannel(productId: number, ownerId: number)
       prodNotFoundErr,
     );
   }
-  if (!owner) {
+  if (!buyer) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
       userNotFoundErr,
@@ -167,12 +198,15 @@ async function createUserChannel(productId: number, ownerId: number)
   const url = baseUrl + "api/channels/create";
   const params = {
     name: product.SUBJECT,
-    ownerId: owner.TALKPLUS_ID,
+    ownerId: buyer.TALKPLUS_ID,
     type: "private",
     /*channelId: "",*/
-    members: [owner.TALKPLUS_ID, seller.TALKPLUS_ID],
+    members: [buyer.TALKPLUS_ID, seller.TALKPLUS_ID],
     imageUrl: product.tt_product_images && product.tt_product_images[0]
       ? cdnBaseUrl + product.tt_product_images[0].FILE_NAME : "",
+    data: {
+      productId: String(productId),
+    },
     maxMemberCount: 2,
   };
   const result: HttpResponse<TalkPlusChannelResponse> = await fetch(
@@ -197,7 +231,7 @@ async function createUserChannel(productId: number, ownerId: number)
     {
       PRODUCT_ID: productId,
       NAME: product.SUBJECT,
-      OWNER_ID: owner.TALKPLUS_ID,
+      BUYER_ID: buyer.TALKPLUS_ID,
       TYPE: "private",
       IMAGE_URL: params.imageUrl,
       SELLER_ID: seller.TALKPLUS_ID,
@@ -327,6 +361,7 @@ export default {
   loginTalkplus,
   createUserChannel,
   getUserChannel,
-  getProductByChannelId,
+  getChannelWithProductById,
   getChannelsByProductId,
+  sendMessage,
 };

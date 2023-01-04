@@ -23,6 +23,11 @@ chatRouter.get(
   chatRoutes.getUserChannel,
 );
 chatRouter.get(
+  chatRoutes.paths.getChannelsByProductId,
+  normalUserMw,
+  chatRoutes.getChannelsByProductId,
+);
+chatRouter.get(
   chatRoutes.paths.getChannelById,
   normalUserMw,
   chatRoutes.getChannelById,
@@ -33,6 +38,12 @@ chatRouter.post(
   normalUserMw,
   chatRoutes.createChannel,
 );
+
+chatRouter.post(
+  chatRoutes.paths.sendMessage,
+  normalUserMw,
+  chatRoutes.sendMessage,
+)
 
 apiRouter.use(
   chatRoutes.paths.basePath,
@@ -219,9 +230,8 @@ tradeRouter.get(
   normalUserMw,
   tradeRoutes.getUserSold);
 
-tradeRouter.post(
+tradeRouter.put(
   tradeRoutes.paths.doTrade,
-  validate("id"),
   normalUserMw,
   tradeRoutes.doTrade);
 

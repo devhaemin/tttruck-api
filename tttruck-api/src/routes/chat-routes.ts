@@ -7,83 +7,313 @@ import HttpStatusCodes from "@src/declarations/major/HttpStatusCodes";
 // Paths
 const paths = {
   basePath: '/chat',
-  getChannelsByProductId:'/talkplus/product/channels/:id',
-  getChannelById:'/talkplus/channel/:id',
+  getChannelsByProductId: '/talkplus/product/:id/channels',
+  getChannelById: '/talkplus/channel/:id',
   getUserChannel: '/talkplus/channel/all',
   createChannel: '/talkplus/channel/add',
+  sendMessage: '/talkplus/message/add',
 } as const;
 
 /**
- * @api {get} /chat/talkplus/product/channels/:id Get all User chat channels.
- * @apiName GetChannelById
+ * @api {get} /chat/talkplus/product/:id/channels Get all Channels with buyer user
+ * @apiName GetChannelByProductId
  * @apiGroup TalkPlus
  * @apiPermission normalUser
  *
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
- * {
- *     "CHANNEL_ID": 1,
- *     "TALKPLUS_CHANNEL_ID": "63b1dacabd470d0001002d61",
- *     "PRODUCT_ID": 61,
- *     "NAME": "ewwer",
- *     "OWNER_ID": "tttruck21",
- *     "TYPE": "private",
- *     "IMAGE_URL": "",
- *     "MAX_MEMBER_COUNT": 2,
- *     "STATUS": 0,
- *     "SELLER_ID": "tttruck22",
- *     "PRODUCT": {
+ * [
+ *     {
+ *         "CHANNEL_ID": 1,
+ *         "TALKPLUS_CHANNEL_ID": "63b1dacabd470d0001002d61",
  *         "PRODUCT_ID": 61,
- *         "SUBJECT": "ewwer",
- *         "PRIORITY": 1,
- *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 123123123,
- *         "PRODUCT_SIZE": "123123",
- *         "PRODUCT_WEIGHT": 300000,
- *         "CONTENTS": "213123123123",
- *         "SELLER_USER_ID": 22,
- *         "SELLER_USER_IPv4": 2097057137,
- *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-31T08:14:23.000Z",
- *         "TAG": "",
- *         "ADDRESS": " 1",
- *         "LATITUDE": "37.541",
- *         "LONGITUDE": "126.986",
- *         "LOCATION": {
- *             "type": "Point",
- *             "coordinates": [
- *                 126.986,
- *                 37.541
- *             ]
+ *         "NAME": "ewwer",
+ *         "BUYER_ID": "tttruck21",
+ *         "TYPE": "private",
+ *         "IMAGE_URL": "",
+ *         "MAX_MEMBER_COUNT": 2,
+ *         "STATUS": 0,
+ *         "SELLER_ID": "tttruck22",
+ *         "LASTCHAT_TIME": "2023-01-03T13:27:08.000Z",
+ *         "PRODUCT": {
+ *             "PRODUCT_ID": 61,
+ *             "SUBJECT": "ewwer",
+ *             "PRIORITY": 1,
+ *             "PRODUCT_CATEGORY_ID": 1,
+ *             "PRODUCT_PRICE": 123123123,
+ *             "PRODUCT_SIZE": "123123",
+ *             "PRODUCT_WEIGHT": 300000,
+ *             "CONTENTS": "213123123123",
+ *             "SELLER_USER_ID": 22,
+ *             "SELLER_USER_IPv4": 2097057137,
+ *             "SELLER_USER_IPv6": null,
+ *             "UPLOAD_TIME": "2022-12-31T08:14:23.000Z",
+ *             "TAG": "",
+ *             "ADDRESS": " 1",
+ *             "LATITUDE": "37.541",
+ *             "LONGITUDE": "126.986",
+ *             "LOCATION": {
+ *                 "type": "Point",
+ *                 "coordinates": [
+ *                     126.986,
+ *                     37.541
+ *                 ]
+ *             },
+ *             "UPDATE_USER_ID": 22,
+ *             "UPDATE_USER_IPv4": 2097057137,
+ *             "UPDATE_USER_IPv6": null,
+ *             "UPDATE_DATE": "2023-01-03T13:07:04.000Z",
+ *             "TRADE_STATUS": 0,
+ *             "TRADE_TIME": "2022-12-31T08:14:23.000Z",
+ *             "BUYER_USER_ID": null,
+ *             "BUYER_USER_IPv4": null,
+ *             "BUYER_USER_IPv6": null,
+ *             "DELETE_TF": false,
+ *             "QUANTITY": "123123개",
+ *             "CHAT_TF": true
  *         },
- *         "UPDATE_USER_ID": 22,
- *         "UPDATE_USER_IPv4": 2097057137,
- *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-31T08:14:23.000Z",
- *         "TRADE_STATUS": 0,
- *         "TRADE_TIME": "2022-12-31T08:14:23.000Z",
- *         "BUYER_USER_ID": null,
- *         "BUYER_USER_IPv4": null,
- *         "BUYER_USER_IPv6": null,
- *         "DELETE_TF": false,
- *         "QUANTITY": "123123개"
+ *         "BUYER": {
+ *             "USER_ID": 21,
+ *             "TALKPLUS_USERNAME": "너그러운북극곰",
+ *             "TALKPLUS_PROFILE_IMAGE_URL": "https://cdn.tttruck.co.kr/profile/1672636824458_chvu.jpeg"
+ *         }
+ *     },
+ *     {
+ *         "CHANNEL_ID": 8,
+ *         "TALKPLUS_CHANNEL_ID": "63b294464b5f8800010013bc",
+ *         "PRODUCT_ID": 61,
+ *         "NAME": "ewwer",
+ *         "BUYER_ID": "tttruck21",
+ *         "TYPE": "private",
+ *         "IMAGE_URL": "https://cdn.tttruck.co.kr/product/image/1672474463470_banner.jpg",
+ *         "MAX_MEMBER_COUNT": 2,
+ *         "STATUS": 0,
+ *         "SELLER_ID": "tttruck22",
+ *         "LASTCHAT_TIME": "2023-01-03T13:27:08.000Z",
+ *         "PRODUCT": {
+ *             "PRODUCT_ID": 61,
+ *             "SUBJECT": "ewwer",
+ *             "PRIORITY": 1,
+ *             "PRODUCT_CATEGORY_ID": 1,
+ *             "PRODUCT_PRICE": 123123123,
+ *             "PRODUCT_SIZE": "123123",
+ *             "PRODUCT_WEIGHT": 300000,
+ *             "CONTENTS": "213123123123",
+ *             "SELLER_USER_ID": 22,
+ *             "SELLER_USER_IPv4": 2097057137,
+ *             "SELLER_USER_IPv6": null,
+ *             "UPLOAD_TIME": "2022-12-31T08:14:23.000Z",
+ *             "TAG": "",
+ *             "ADDRESS": " 1",
+ *             "LATITUDE": "37.541",
+ *             "LONGITUDE": "126.986",
+ *             "LOCATION": {
+ *                 "type": "Point",
+ *                 "coordinates": [
+ *                     126.986,
+ *                     37.541
+ *                 ]
+ *             },
+ *             "UPDATE_USER_ID": 22,
+ *             "UPDATE_USER_IPv4": 2097057137,
+ *             "UPDATE_USER_IPv6": null,
+ *             "UPDATE_DATE": "2023-01-03T13:07:04.000Z",
+ *             "TRADE_STATUS": 0,
+ *             "TRADE_TIME": "2022-12-31T08:14:23.000Z",
+ *             "BUYER_USER_ID": null,
+ *             "BUYER_USER_IPv4": null,
+ *             "BUYER_USER_IPv6": null,
+ *             "DELETE_TF": false,
+ *             "QUANTITY": "123123개",
+ *             "CHAT_TF": true
+ *         },
+ *         "BUYER": {
+ *             "USER_ID": 21,
+ *             "TALKPLUS_USERNAME": "너그러운북극곰",
+ *             "TALKPLUS_PROFILE_IMAGE_URL": "https://cdn.tttruck.co.kr/profile/1672636824458_c.jpeg"
+ *         }
+ *     },
+ *     {
+ *         "CHANNEL_ID": 10,
+ *         "TALKPLUS_CHANNEL_ID": "63b428788aabd70001001dd1",
+ *         "PRODUCT_ID": 61,
+ *         "NAME": "ewwer",
+ *         "BUYER_ID": "tttruck21",
+ *         "TYPE": "private",
+ *         "IMAGE_URL": "https://cdn.tttruck.co.kr/product/image/1672474463470_banner.jpg",
+ *         "MAX_MEMBER_COUNT": 2,
+ *         "STATUS": 0,
+ *         "SELLER_ID": "tttruck22",
+ *         "LASTCHAT_TIME": "2023-01-03T13:27:08.000Z",
+ *         "PRODUCT": {
+ *             "PRODUCT_ID": 61,
+ *             "SUBJECT": "ewwer",
+ *             "PRIORITY": 1,
+ *             "PRODUCT_CATEGORY_ID": 1,
+ *             "PRODUCT_PRICE": 123123123,
+ *             "PRODUCT_SIZE": "123123",
+ *             "PRODUCT_WEIGHT": 300000,
+ *             "CONTENTS": "213123123123",
+ *             "SELLER_USER_ID": 22,
+ *             "SELLER_USER_IPv4": 2097057137,
+ *             "SELLER_USER_IPv6": null,
+ *             "UPLOAD_TIME": "2022-12-31T08:14:23.000Z",
+ *             "TAG": "",
+ *             "ADDRESS": " 1",
+ *             "LATITUDE": "37.541",
+ *             "LONGITUDE": "126.986",
+ *             "LOCATION": {
+ *                 "type": "Point",
+ *                 "coordinates": [
+ *                     126.986,
+ *                     37.541
+ *                 ]
+ *             },
+ *             "UPDATE_USER_ID": 22,
+ *             "UPDATE_USER_IPv4": 2097057137,
+ *             "UPDATE_USER_IPv6": null,
+ *             "UPDATE_DATE": "2023-01-03T13:07:04.000Z",
+ *             "TRADE_STATUS": 0,
+ *             "TRADE_TIME": "2022-12-31T08:14:23.000Z",
+ *             "BUYER_USER_ID": null,
+ *             "BUYER_USER_IPv4": null,
+ *             "BUYER_USER_IPv6": null,
+ *             "DELETE_TF": false,
+ *             "QUANTITY": "123123개",
+ *             "CHAT_TF": true
+ *         },
+ *         "BUYER": {
+ *             "USER_ID": 21,
+ *             "TALKPLUS_USERNAME": "너그러운북극곰",
+ *             "TALKPLUS_PROFILE_IMAGE_URL": "https://cdn.tttruck.co.kr/profile/1672636824458_chv.jpeg"
+ *         }
+ *     },
+ *     {
+ *         "CHANNEL_ID": 15,
+ *         "TALKPLUS_CHANNEL_ID": "63b57d5a25317a0001001795",
+ *         "PRODUCT_ID": 61,
+ *         "NAME": "ewwer",
+ *         "BUYER_ID": "tttruck23",
+ *         "TYPE": "private",
+ *         "IMAGE_URL": "https://cdn.tttruck.co.kr/product/image/1672474463470_banner.jpg",
+ *         "MAX_MEMBER_COUNT": 2,
+ *         "STATUS": 0,
+ *         "SELLER_ID": "tttruck22",
+ *         "LASTCHAT_TIME": "2023-01-04T13:21:31.000Z",
+ *         "PRODUCT": {
+ *             "PRODUCT_ID": 61,
+ *             "SUBJECT": "ewwer",
+ *             "PRIORITY": 1,
+ *             "PRODUCT_CATEGORY_ID": 1,
+ *             "PRODUCT_PRICE": 123123123,
+ *             "PRODUCT_SIZE": "123123",
+ *             "PRODUCT_WEIGHT": 300000,
+ *             "CONTENTS": "213123123123",
+ *             "SELLER_USER_ID": 22,
+ *             "SELLER_USER_IPv4": 2097057137,
+ *             "SELLER_USER_IPv6": null,
+ *             "UPLOAD_TIME": "2022-12-31T08:14:23.000Z",
+ *             "TAG": "",
+ *             "ADDRESS": " 1",
+ *             "LATITUDE": "37.541",
+ *             "LONGITUDE": "126.986",
+ *             "LOCATION": {
+ *                 "type": "Point",
+ *                 "coordinates": [
+ *                     126.986,
+ *                     37.541
+ *                 ]
+ *             },
+ *             "UPDATE_USER_ID": 22,
+ *             "UPDATE_USER_IPv4": 2097057137,
+ *             "UPDATE_USER_IPv6": null,
+ *             "UPDATE_DATE": "2023-01-03T13:07:04.000Z",
+ *             "TRADE_STATUS": 0,
+ *             "TRADE_TIME": "2022-12-31T08:14:23.000Z",
+ *             "BUYER_USER_ID": null,
+ *             "BUYER_USER_IPv4": null,
+ *             "BUYER_USER_IPv6": null,
+ *             "DELETE_TF": false,
+ *             "QUANTITY": "123123개",
+ *             "CHAT_TF": true
+ *         },
+ *         "BUYER": {
+ *             "USER_ID": 23,
+ *             "TALKPLUS_USERNAME": "차가운염소4146",
+ *             "TALKPLUS_PROFILE_IMAGE_URL": ""
+ *         }
+ *     },
+ *     {
+ *         "CHANNEL_ID": 17,
+ *         "TALKPLUS_CHANNEL_ID": "63b57ee81cbf20000100178e",
+ *         "PRODUCT_ID": 61,
+ *         "NAME": "ewwer",
+ *         "BUYER_ID": "tttruck22",
+ *         "TYPE": "private",
+ *         "IMAGE_URL": "https://cdn.tttruck.co.kr/product/image/1672474463470_banner.jpg",
+ *         "MAX_MEMBER_COUNT": 2,
+ *         "STATUS": 0,
+ *         "SELLER_ID": "tttruck22",
+ *         "LASTCHAT_TIME": "2023-01-04T13:28:08.000Z",
+ *         "PRODUCT": {
+ *             "PRODUCT_ID": 61,
+ *             "SUBJECT": "ewwer",
+ *             "PRIORITY": 1,
+ *             "PRODUCT_CATEGORY_ID": 1,
+ *             "PRODUCT_PRICE": 123123123,
+ *             "PRODUCT_SIZE": "123123",
+ *             "PRODUCT_WEIGHT": 300000,
+ *             "CONTENTS": "213123123123",
+ *             "SELLER_USER_ID": 22,
+ *             "SELLER_USER_IPv4": 2097057137,
+ *             "SELLER_USER_IPv6": null,
+ *             "UPLOAD_TIME": "2022-12-31T08:14:23.000Z",
+ *             "TAG": "",
+ *             "ADDRESS": " 1",
+ *             "LATITUDE": "37.541",
+ *             "LONGITUDE": "126.986",
+ *             "LOCATION": {
+ *                 "type": "Point",
+ *                 "coordinates": [
+ *                     126.986,
+ *                     37.541
+ *                 ]
+ *             },
+ *             "UPDATE_USER_ID": 22,
+ *             "UPDATE_USER_IPv4": 2097057137,
+ *             "UPDATE_USER_IPv6": null,
+ *             "UPDATE_DATE": "2023-01-03T13:07:04.000Z",
+ *             "TRADE_STATUS": 0,
+ *             "TRADE_TIME": "2022-12-31T08:14:23.000Z",
+ *             "BUYER_USER_ID": null,
+ *             "BUYER_USER_IPv4": null,
+ *             "BUYER_USER_IPv6": null,
+ *             "DELETE_TF": false,
+ *             "QUANTITY": "123123개",
+ *             "CHAT_TF": true
+ *         },
+ *         "BUYER": {
+ *             "USER_ID": 22,
+ *             "TALKPLUS_USERNAME": "얌이아빠",
+ *             "TALKPLUS_PROFILE_IMAGE_URL": "https://cdn.tttruck.co.kr/profile/1672837842224_Frame 4288.png"
+ *         }
  *     }
- * }
+ * ]
  */
 async function getChannelsByProductId(req: IReq, res: IRes) {
   const user = res.locals.user;
   const prodId = req.params.id;
-  const result = await chatService.getChannelsByProductId(Number(prodId));
+  const result = await chatService.getChannelsByProductId(user, Number(prodId));
   res.status(HttpStatusCodes.OK).json(result).end();
 }
 
 /**
- * @api {get} /chat/talkplus/channel/:id Get all User chat channels.
+ * @api {get} /chat/talkplus/channel/:id Get one channel by channel ID
  * @apiName GetChannelById
  * @apiGroup TalkPlus
  * @apiPermission normalUser
- *
+ * @apiDeprecated Don't use.
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -139,12 +369,12 @@ async function getChannelsByProductId(req: IReq, res: IRes) {
 async function getChannelById(req: IReq, res: IRes) {
   const user = res.locals.user;
   const channelId = req.params.id;
-  const result = await chatService.getProductByChannelId(channelId);
+  const result = await chatService.getChannelWithProductById(channelId);
   res.status(HttpStatusCodes.OK).json(result).end();
 }
 
 /**
- * @api {get} /chat/talkplus/channel/all Get all User chat channels.
+ * @api {get} /chat/talkplus/channel/all Get all channels by User ID
  * @apiName GetUserChannel
  * @apiGroup TalkPlus
  * @apiPermission normalUser
@@ -229,11 +459,40 @@ async function getUserChannel(req: IReq, res: IRes) {
   const result = await chatService.getUserChannel(user);
   res.status(HttpStatusCodes.OK).json(result).end();
 }
+/**
+ * @api {post} /chat/talkplus/message/add SendMessage
+ * @apiName SendMessage
+ * @apiGroup TalkPlus
+ * @apiPermission normalUser
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "text": "안녕하세요",
+ *       "channelId": "63b1dacabd470d0001002d61"
+ *     }
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *     "MESSAGE_ID": 2,
+ *     "TALKPLUS_CHANNEL_ID": "63b1dacabd470d0001002d61",
+ *     "SEND_USER_TALKPLUS_ID": "tttruck21",
+ *     "SEND_USER_ID": 21,
+ *     "TEXT": "안녕하세요"
+ * }
+ *
+ */
+async function sendMessage(req: IReq<{text:string, channelId:string}>, res:IRes){
+  const user = res.locals.user;
+  const {text, channelId} = req.body;
+  const result = await chatService.sendMessage(user, text, channelId);
+  res.status(HttpStatusCodes.OK).json(result).end();
+}
 
 /**
  * @api {post} /chat/talkplus/channel/add 채팅 채널 생성
  * @apiName AddTalkplusChannel
- * @apiGroup Talkplus
+ * @apiGroup TalkPlus
  * @apiPermission normalUser
  *
  * @apiBody {number} productId 상품 USER_ID
@@ -255,10 +514,10 @@ async function getUserChannel(req: IReq, res: IRes) {
  *
  */
 
-async function createChannel(req: IReq<{ productId: number}>, res: IRes) {
+async function createChannel(req: IReq<{ productId: number }>, res: IRes) {
   const {productId} = req.body;
-  const ownerId = res.locals.user.USER_ID;
-  const talkPlusChannel = await chatService.createUserChannel(productId, ownerId);
+  const buyerId = res.locals.user.USER_ID;
+  const talkPlusChannel = await chatService.createUserChannel(productId, buyerId);
   res.status(HttpStatusCodes.OK).json(talkPlusChannel).end();
 }
 
@@ -270,4 +529,5 @@ export default {
   getUserChannel,
   getChannelById,
   getChannelsByProductId,
+  sendMessage,
 } as const;

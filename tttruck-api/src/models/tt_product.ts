@@ -35,11 +35,12 @@ export interface tt_productAttributes {
   BUYER_USER_IPv6?: any;
   DELETE_TF?: number;
   QUANTITY?: string;
+  CHAT_TF: number;
 }
 
 export type tt_productPk = "PRODUCT_ID";
 export type tt_productId = tt_product[tt_productPk];
-export type tt_productOptionalAttributes = "PRODUCT_ID" | "PRIORITY" | "SELLER_USER_ID" | "SELLER_USER_IPv4" | "SELLER_USER_IPv6" | "UPLOAD_TIME" | "TAG" | "ADDRESS" | "LATITUDE" | "LONGITUDE" | "LOCATION" | "UPDATE_USER_ID" | "UPDATE_USER_IPv4" | "UPDATE_USER_IPv6" | "UPDATE_DATE" | "TRADE_STATUS" | "TRADE_TIME" | "BUYER_USER_ID" | "BUYER_USER_IPv4" | "BUYER_USER_IPv6" | "DELETE_TF" | "QUANTITY";
+export type tt_productOptionalAttributes = "PRODUCT_ID" | "PRIORITY" | "SELLER_USER_ID" | "SELLER_USER_IPv4" | "SELLER_USER_IPv6" | "UPLOAD_TIME" | "TAG" | "ADDRESS" | "LATITUDE" | "LONGITUDE" | "LOCATION" | "UPDATE_USER_ID" | "UPDATE_USER_IPv4" | "UPDATE_USER_IPv6" | "UPDATE_DATE" | "TRADE_STATUS" | "TRADE_TIME" | "BUYER_USER_ID" | "BUYER_USER_IPv4" | "BUYER_USER_IPv6" | "DELETE_TF" | "QUANTITY" | "CHAT_TF";
 export type tt_productCreationAttributes = Optional<tt_productAttributes, tt_productOptionalAttributes>;
 
 export class tt_product extends Model<tt_productAttributes, tt_productCreationAttributes> implements tt_productAttributes {
@@ -71,6 +72,7 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
   BUYER_USER_IPv6?: any;
   DELETE_TF?: number;
   QUANTITY?: string;
+  CHAT_TF!: number;
 
   // tt_product hasMany tt_product_image via PRODUCT_ID
   tt_product_images!: tt_product_image[];
@@ -278,6 +280,11 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
     QUANTITY: {
       type: DataTypes.STRING(30),
       allowNull: true
+    },
+    CHAT_TF: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     sequelize,

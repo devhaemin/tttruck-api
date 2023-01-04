@@ -8,6 +8,7 @@ import type { tt_notice_master, tt_notice_masterId } from './tt_notice_master';
 import type { tt_product, tt_productId } from './tt_product';
 import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
 import type { tt_sns_auth, tt_sns_authId } from './tt_sns_auth';
+import type { tt_talkplus_message, tt_talkplus_messageId } from './tt_talkplus_message';
 import type { tt_user_talkplus, tt_user_talkplusCreationAttributes, tt_user_talkplusId } from './tt_user_talkplus';
 import type { tt_view_log, tt_view_logId } from './tt_view_log';
 
@@ -19,6 +20,8 @@ export interface tt_userAttributes {
   NAME?: string;
   ACCESSTOKEN: string;
   WASTE_SAVINGS: number;
+  GREENGAS_SAVINGS?: number;
+  COST_SAVINGS?: number;
   GROUP: number;
   PROFILE_IMAGE?: string;
   INTERIOR_COMPANY_TF: number;
@@ -44,7 +47,7 @@ export interface tt_userAttributes {
 
 export type tt_userPk = "USER_ID";
 export type tt_userId = tt_user[tt_userPk];
-export type tt_userOptionalAttributes = "USER_ID" | "NICKNAME" | "NAME" | "WASTE_SAVINGS" | "PROFILE_IMAGE" | "INTERIOR_COMPANY_TF" | "INTERIOR_COMPANY_NAME" | "BIRTHDAY" | "GENDER" | "ZIP_CODE" | "ADDRESS" | "DETAIL_ADDRESS" | "JOIN_STATE" | "RESTING_TF" | "LEAVE_TF" | "PHONE_AUTH_CODE" | "PHONE_AUTH_DATE" | "PHONE_AUTH_SUCCEED_DATE" | "PHONE_AUTH_TF" | "REG_TIME" | "UPD_TIME" | "JOIN_TIME" | "JOIN_PERMIT_USER_ID" | "JOIN_AGREE";
+export type tt_userOptionalAttributes = "USER_ID" | "NICKNAME" | "NAME" | "WASTE_SAVINGS" | "GREENGAS_SAVINGS" | "COST_SAVINGS" | "PROFILE_IMAGE" | "INTERIOR_COMPANY_TF" | "INTERIOR_COMPANY_NAME" | "BIRTHDAY" | "GENDER" | "ZIP_CODE" | "ADDRESS" | "DETAIL_ADDRESS" | "JOIN_STATE" | "RESTING_TF" | "LEAVE_TF" | "PHONE_AUTH_CODE" | "PHONE_AUTH_DATE" | "PHONE_AUTH_SUCCEED_DATE" | "PHONE_AUTH_TF" | "REG_TIME" | "UPD_TIME" | "JOIN_TIME" | "JOIN_PERMIT_USER_ID" | "JOIN_AGREE";
 export type tt_userCreationAttributes = Optional<tt_userAttributes, tt_userOptionalAttributes>;
 
 export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes> implements tt_userAttributes {
@@ -55,6 +58,8 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   NAME?: string;
   ACCESSTOKEN!: string;
   WASTE_SAVINGS!: number;
+  GREENGAS_SAVINGS?: number;
+  COST_SAVINGS?: number;
   GROUP!: number;
   PROFILE_IMAGE?: string;
   INTERIOR_COMPANY_TF!: number;
@@ -221,6 +226,18 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   hasTt_sns_auth!: Sequelize.HasManyHasAssociationMixin<tt_sns_auth, tt_sns_authId>;
   hasTt_sns_auths!: Sequelize.HasManyHasAssociationsMixin<tt_sns_auth, tt_sns_authId>;
   countTt_sns_auths!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_talkplus_message via SEND_USER_ID
+  tt_talkplus_messages!: tt_talkplus_message[];
+  getTt_talkplus_messages!: Sequelize.HasManyGetAssociationsMixin<tt_talkplus_message>;
+  setTt_talkplus_messages!: Sequelize.HasManySetAssociationsMixin<tt_talkplus_message, tt_talkplus_messageId>;
+  addTt_talkplus_message!: Sequelize.HasManyAddAssociationMixin<tt_talkplus_message, tt_talkplus_messageId>;
+  addTt_talkplus_messages!: Sequelize.HasManyAddAssociationsMixin<tt_talkplus_message, tt_talkplus_messageId>;
+  createTt_talkplus_message!: Sequelize.HasManyCreateAssociationMixin<tt_talkplus_message>;
+  removeTt_talkplus_message!: Sequelize.HasManyRemoveAssociationMixin<tt_talkplus_message, tt_talkplus_messageId>;
+  removeTt_talkplus_messages!: Sequelize.HasManyRemoveAssociationsMixin<tt_talkplus_message, tt_talkplus_messageId>;
+  hasTt_talkplus_message!: Sequelize.HasManyHasAssociationMixin<tt_talkplus_message, tt_talkplus_messageId>;
+  hasTt_talkplus_messages!: Sequelize.HasManyHasAssociationsMixin<tt_talkplus_message, tt_talkplus_messageId>;
+  countTt_talkplus_messages!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user belongsTo tt_user via JOIN_PERMIT_USER_ID
   JOIN_PERMIT_USER!: tt_user;
   getJOIN_PERMIT_USER!: Sequelize.BelongsToGetAssociationMixin<tt_user>;
@@ -284,6 +301,14 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
       allowNull: false,
       defaultValue: 0,
       comment: "폐기절감량"
+    },
+    GREENGAS_SAVINGS: {
+      type: DataTypes.BIGINT,
+      allowNull: true
+    },
+    COST_SAVINGS: {
+      type: DataTypes.BIGINT,
+      allowNull: true
     },
     GROUP: {
       type: DataTypes.BIGINT,

@@ -145,6 +145,7 @@ async function getJwtUser(phone: string, password: string): Promise<tt_user> {
     phone: user.PHONE,
     password: user.PASSWORD,
   });
+
   return await user.save();
 }
 

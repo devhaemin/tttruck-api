@@ -14,7 +14,7 @@ async function getByProduct(productId: number): Promise<tt_trade_review[]> {
     include: [{
       model: tt_user, as: "USER", attributes: [
         "USER_ID",
-        "PROFILE_IMAGE_URL",
+        "PROFILE_IMAGE",
         "NICKNAME",
       ],
     }],

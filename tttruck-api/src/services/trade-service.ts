@@ -113,6 +113,7 @@ async function doTrade(user: tt_user, buyerId: number, productId: number): Promi
   }
   // Return user
   trade.set("TRADE_STATUS", tt_trade_status.SOLD);
+  trade.set("BUYER_USER_ID",buyerId);
   const productResult = await trade.save();
   return productResult;
 }

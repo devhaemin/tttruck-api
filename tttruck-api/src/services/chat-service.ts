@@ -319,7 +319,7 @@ async function updateUserProfile(user: tt_user): Promise<tt_user> {
 
 async function loginTalkplus(userId: number): Promise<tt_user_talkplus> {
   const url = baseUrl + "api/users/login";
-  const userTalkplus = await tt_user_talkplus.findByPk(userId);
+  const userTalkplus = await tt_user_talkplus.findOne({where:{USER_ID:userId}});
   if (!userTalkplus) {
     throw new RouteError(
       HttpStatusCodes.UNAUTHORIZED,

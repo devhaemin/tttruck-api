@@ -223,14 +223,14 @@ async function uploadImage(productId: number, file: S3File | null, user: tt_user
   }
   product.UPDATE_USER_IPv4 = ip;
   product.UPDATE_USER_ID = user.USER_ID;
-  tt_product_image.create({
+  await product.update(product);
+  return tt_product_image.create({
     PRODUCT_ID: product.PRODUCT_ID,
     FILE_NAME: file.key,
     FILE_PATH: file.path,
     FILE_URL: file.location,
     FILE_SIZE: file.size,
   });
-  return await product.update(product);
 }
 
 async function deleteImage(user: tt_user, id: number): Promise<void> {

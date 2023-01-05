@@ -906,7 +906,7 @@ async function imageUpload(req: IReq<{ productId: number }>, res: IRes) {
 
 /**
  * @api {post} /products/image/order Set Image order
- * @apiName AddProductImage
+ * @apiName SetImageOrder
  * @apiGroup Product
  *
  * @apiPermission normalUser

@@ -191,7 +191,7 @@ async function createUserChannel(productId: number, buyerId: number)
       userNotFoundErr,
     );
   }
-  const channelExist = await tt_talkplus_channel.findOne({where:{PRODUCT_ID:productId,BUYER_ID:buyerId}});
+  const channelExist = await tt_talkplus_channel.findOne({where:{PRODUCT_ID:productId,BUYER_ID:buyer.TALKPLUS_ID}});
   if(channelExist){
     return channelExist;
   }

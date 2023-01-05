@@ -43,6 +43,7 @@ async function postReview(user: tt_user, tradeReview: tt_trade_review, tradeRevi
       "User can not perform on this action",
     );
   }
+  tradeReview.USER_ID = user.USER_ID;
   tradeReview.TRADE_REVIEW_TYPE = tradeReviewType;
   return await tt_trade_review.create(tradeReview);
 }

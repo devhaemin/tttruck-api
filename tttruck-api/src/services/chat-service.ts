@@ -169,7 +169,7 @@ async function getUserChannel(user: tt_user)
 
 async function createUserChannel(productId: number, buyerId: number)
   : Promise<tt_talkplus_channel> {
-  const buyer = await tt_user_talkplus.findByPk(buyerId);
+  const buyer = await tt_user_talkplus.findOne({where:{USER_ID:buyerId}});
   const product = await tt_product.findByPk(productId, {
     include: [{
       model: tt_product_image,
@@ -188,7 +188,7 @@ async function createUserChannel(productId: number, buyerId: number)
       userNotFoundErr,
     );
   }
-  const seller = await tt_user_talkplus.findByPk(product.SELLER_USER_ID);
+  const seller = await tt_user_talkplus.findOne({where:{USER_ID:product.SELLER_USER_ID}});
   if (!seller) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,

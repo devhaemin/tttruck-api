@@ -11,11 +11,12 @@ export interface tt_user_talkplusAttributes {
   TALKPLUS_USERNAME?: string;
   TALKPLUS_PROFILE_IMAGE_URL?: string;
   TALKPLUS_LOGIN_TOKEN?: string;
+  LEAVE_TF: number;
 }
 
 export type tt_user_talkplusPk = "TALKPLUS_ID";
 export type tt_user_talkplusId = tt_user_talkplus[tt_user_talkplusPk];
-export type tt_user_talkplusOptionalAttributes = "TALKPLUS_PASSWORD" | "TALKPLUS_USERNAME" | "TALKPLUS_PROFILE_IMAGE_URL" | "TALKPLUS_LOGIN_TOKEN";
+export type tt_user_talkplusOptionalAttributes = "TALKPLUS_PASSWORD" | "TALKPLUS_USERNAME" | "TALKPLUS_PROFILE_IMAGE_URL" | "TALKPLUS_LOGIN_TOKEN" | "LEAVE_TF";
 export type tt_user_talkplusCreationAttributes = Optional<tt_user_talkplusAttributes, tt_user_talkplusOptionalAttributes>;
 
 export class tt_user_talkplus extends Model<tt_user_talkplusAttributes, tt_user_talkplusCreationAttributes> implements tt_user_talkplusAttributes {
@@ -25,6 +26,7 @@ export class tt_user_talkplus extends Model<tt_user_talkplusAttributes, tt_user_
   TALKPLUS_USERNAME?: string;
   TALKPLUS_PROFILE_IMAGE_URL?: string;
   TALKPLUS_LOGIN_TOKEN?: string;
+  LEAVE_TF!: number;
 
   // tt_user_talkplus belongsTo tt_user via USER_ID
   USER!: tt_user;
@@ -99,6 +101,11 @@ export class tt_user_talkplus extends Model<tt_user_talkplusAttributes, tt_user_
     TALKPLUS_LOGIN_TOKEN: {
       type: DataTypes.STRING(300),
       allowNull: true
+    },
+    LEAVE_TF: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     sequelize,

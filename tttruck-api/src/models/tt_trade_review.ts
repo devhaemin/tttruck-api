@@ -1,6 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_product, tt_productId } from './tt_product';
+import type { tt_user, tt_userId } from './tt_user';
 
 export interface tt_trade_reviewAttributes {
   TRADE_REVIEW_ID: number;
@@ -41,6 +42,11 @@ export class tt_trade_review extends Model<tt_trade_reviewAttributes, tt_trade_r
   getPRODUCT!: Sequelize.BelongsToGetAssociationMixin<tt_product>;
   setPRODUCT!: Sequelize.BelongsToSetAssociationMixin<tt_product, tt_productId>;
   createPRODUCT!: Sequelize.BelongsToCreateAssociationMixin<tt_product>;
+  // tt_trade_review belongsTo tt_user via USER_ID
+  USER!: tt_user;
+  getUSER!: Sequelize.BelongsToGetAssociationMixin<tt_user>;
+  setUSER!: Sequelize.BelongsToSetAssociationMixin<tt_user, tt_userId>;
+  createUSER!: Sequelize.BelongsToCreateAssociationMixin<tt_user>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_trade_review {
     return tt_trade_review.init({
@@ -64,7 +70,11 @@ export class tt_trade_review extends Model<tt_trade_reviewAttributes, tt_trade_r
     },
     USER_ID: {
       type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'tt_user',
+        key: 'USER_ID'
+      }
     },
     RATINGS: {
       type: DataTypes.INTEGER,
@@ -120,6 +130,13 @@ export class tt_trade_review extends Model<tt_trade_reviewAttributes, tt_trade_r
         using: "BTREE",
         fields: [
           { name: "PRODUCT_ID" },
+        ]
+      },
+      {
+        name: "tt_trade_review_tt_user_USER_ID_fk",
+        using: "BTREE",
+        fields: [
+          { name: "USER_ID" },
         ]
       },
     ]

@@ -2,7 +2,7 @@ import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 
 export interface tt_alarmAttributes {
-  NOTIFICATION_ID: number;
+  ALARM_ID: number;
   USER_ID: number;
   SUBJECT: string;
   CONTENTS?: string;
@@ -11,13 +11,13 @@ export interface tt_alarmAttributes {
   TIME: Date;
 }
 
-export type tt_alarmPk = "NOTIFICATION_ID";
+export type tt_alarmPk = "ALARM_ID";
 export type tt_alarmId = tt_alarm[tt_alarmPk];
-export type tt_alarmOptionalAttributes = "NOTIFICATION_ID" | "CONTENTS" | "VIEW_TF" | "IMAGEURL" | "TIME";
+export type tt_alarmOptionalAttributes = "ALARM_ID" | "CONTENTS" | "VIEW_TF" | "IMAGEURL" | "TIME";
 export type tt_alarmCreationAttributes = Optional<tt_alarmAttributes, tt_alarmOptionalAttributes>;
 
 export class tt_alarm extends Model<tt_alarmAttributes, tt_alarmCreationAttributes> implements tt_alarmAttributes {
-  NOTIFICATION_ID!: number;
+  ALARM_ID!: number;
   USER_ID!: number;
   SUBJECT!: string;
   CONTENTS?: string;
@@ -28,7 +28,7 @@ export class tt_alarm extends Model<tt_alarmAttributes, tt_alarmCreationAttribut
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_alarm {
     return tt_alarm.init({
-    NOTIFICATION_ID: {
+    ALARM_ID: {
       autoIncrement: true,
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
@@ -72,7 +72,7 @@ export class tt_alarm extends Model<tt_alarmAttributes, tt_alarmCreationAttribut
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "NOTIFICATION_ID" },
+          { name: "ALARM_ID" },
         ]
       },
     ]

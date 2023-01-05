@@ -9,6 +9,7 @@ import type { tt_product, tt_productId } from './tt_product';
 import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
 import type { tt_sns_auth, tt_sns_authId } from './tt_sns_auth';
 import type { tt_talkplus_message, tt_talkplus_messageId } from './tt_talkplus_message';
+import type { tt_trade_review, tt_trade_reviewId } from './tt_trade_review';
 import type { tt_user_signout, tt_user_signoutId } from './tt_user_signout';
 import type { tt_user_talkplus, tt_user_talkplusCreationAttributes, tt_user_talkplusId } from './tt_user_talkplus';
 import type { tt_view_log, tt_view_logId } from './tt_view_log';
@@ -239,6 +240,18 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   hasTt_talkplus_message!: Sequelize.HasManyHasAssociationMixin<tt_talkplus_message, tt_talkplus_messageId>;
   hasTt_talkplus_messages!: Sequelize.HasManyHasAssociationsMixin<tt_talkplus_message, tt_talkplus_messageId>;
   countTt_talkplus_messages!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_trade_review via USER_ID
+  tt_trade_reviews!: tt_trade_review[];
+  getTt_trade_reviews!: Sequelize.HasManyGetAssociationsMixin<tt_trade_review>;
+  setTt_trade_reviews!: Sequelize.HasManySetAssociationsMixin<tt_trade_review, tt_trade_reviewId>;
+  addTt_trade_review!: Sequelize.HasManyAddAssociationMixin<tt_trade_review, tt_trade_reviewId>;
+  addTt_trade_reviews!: Sequelize.HasManyAddAssociationsMixin<tt_trade_review, tt_trade_reviewId>;
+  createTt_trade_review!: Sequelize.HasManyCreateAssociationMixin<tt_trade_review>;
+  removeTt_trade_review!: Sequelize.HasManyRemoveAssociationMixin<tt_trade_review, tt_trade_reviewId>;
+  removeTt_trade_reviews!: Sequelize.HasManyRemoveAssociationsMixin<tt_trade_review, tt_trade_reviewId>;
+  hasTt_trade_review!: Sequelize.HasManyHasAssociationMixin<tt_trade_review, tt_trade_reviewId>;
+  hasTt_trade_reviews!: Sequelize.HasManyHasAssociationsMixin<tt_trade_review, tt_trade_reviewId>;
+  countTt_trade_reviews!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user belongsTo tt_user via JOIN_PERMIT_USER_ID
   JOIN_PERMIT_USER!: tt_user;
   getJOIN_PERMIT_USER!: Sequelize.BelongsToGetAssociationMixin<tt_user>;
@@ -442,6 +455,7 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   }, {
     sequelize,
     tableName: 'tt_user',
+    hasTrigger: true,
     timestamps: false,
     indexes: [
       {

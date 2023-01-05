@@ -168,6 +168,8 @@ export function initModels(sequelize: Sequelize) {
   tt_user.hasMany(tt_sns_auth, { as: "tt_sns_auths", foreignKey: "USER_ID"});
   tt_talkplus_message.belongsTo(tt_user, { as: "SEND_USER", foreignKey: "SEND_USER_ID"});
   tt_user.hasMany(tt_talkplus_message, { as: "tt_talkplus_messages", foreignKey: "SEND_USER_ID"});
+  tt_trade_review.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
+  tt_user.hasMany(tt_trade_review, { as: "tt_trade_reviews", foreignKey: "USER_ID"});
   tt_user.belongsTo(tt_user, { as: "JOIN_PERMIT_USER", foreignKey: "JOIN_PERMIT_USER_ID"});
   tt_user.hasMany(tt_user, { as: "tt_users", foreignKey: "JOIN_PERMIT_USER_ID"});
   tt_user_signout.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});

@@ -9,6 +9,7 @@ import type { tt_product, tt_productId } from './tt_product';
 import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
 import type { tt_sns_auth, tt_sns_authId } from './tt_sns_auth';
 import type { tt_talkplus_message, tt_talkplus_messageId } from './tt_talkplus_message';
+import type { tt_user_signout, tt_user_signoutId } from './tt_user_signout';
 import type { tt_user_talkplus, tt_user_talkplusCreationAttributes, tt_user_talkplusId } from './tt_user_talkplus';
 import type { tt_view_log, tt_view_logId } from './tt_view_log';
 
@@ -243,6 +244,18 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   getJOIN_PERMIT_USER!: Sequelize.BelongsToGetAssociationMixin<tt_user>;
   setJOIN_PERMIT_USER!: Sequelize.BelongsToSetAssociationMixin<tt_user, tt_userId>;
   createJOIN_PERMIT_USER!: Sequelize.BelongsToCreateAssociationMixin<tt_user>;
+  // tt_user hasMany tt_user_signout via USER_ID
+  tt_user_signouts!: tt_user_signout[];
+  getTt_user_signouts!: Sequelize.HasManyGetAssociationsMixin<tt_user_signout>;
+  setTt_user_signouts!: Sequelize.HasManySetAssociationsMixin<tt_user_signout, tt_user_signoutId>;
+  addTt_user_signout!: Sequelize.HasManyAddAssociationMixin<tt_user_signout, tt_user_signoutId>;
+  addTt_user_signouts!: Sequelize.HasManyAddAssociationsMixin<tt_user_signout, tt_user_signoutId>;
+  createTt_user_signout!: Sequelize.HasManyCreateAssociationMixin<tt_user_signout>;
+  removeTt_user_signout!: Sequelize.HasManyRemoveAssociationMixin<tt_user_signout, tt_user_signoutId>;
+  removeTt_user_signouts!: Sequelize.HasManyRemoveAssociationsMixin<tt_user_signout, tt_user_signoutId>;
+  hasTt_user_signout!: Sequelize.HasManyHasAssociationMixin<tt_user_signout, tt_user_signoutId>;
+  hasTt_user_signouts!: Sequelize.HasManyHasAssociationsMixin<tt_user_signout, tt_user_signoutId>;
+  countTt_user_signouts!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user hasOne tt_user_talkplus via USER_ID
   tt_user_talkplu!: tt_user_talkplus;
   getTt_user_talkplu!: Sequelize.HasOneGetAssociationMixin<tt_user_talkplus>;

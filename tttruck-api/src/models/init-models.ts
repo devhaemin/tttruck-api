@@ -33,6 +33,8 @@ import { tt_trade_review as _tt_trade_review } from "./tt_trade_review";
 import type { tt_trade_reviewAttributes, tt_trade_reviewCreationAttributes } from "./tt_trade_review";
 import { tt_user as _tt_user } from "./tt_user";
 import type { tt_userAttributes, tt_userCreationAttributes } from "./tt_user";
+import { tt_user_signout as _tt_user_signout } from "./tt_user_signout";
+import type { tt_user_signoutAttributes, tt_user_signoutCreationAttributes } from "./tt_user_signout";
 import { tt_user_talkplus as _tt_user_talkplus } from "./tt_user_talkplus";
 import type { tt_user_talkplusAttributes, tt_user_talkplusCreationAttributes } from "./tt_user_talkplus";
 import { tt_view_log as _tt_view_log } from "./tt_view_log";
@@ -56,6 +58,7 @@ export {
   _tt_talkplus_message as tt_talkplus_message,
   _tt_trade_review as tt_trade_review,
   _tt_user as tt_user,
+  _tt_user_signout as tt_user_signout,
   _tt_user_talkplus as tt_user_talkplus,
   _tt_view_log as tt_view_log,
 };
@@ -95,6 +98,8 @@ export type {
   tt_trade_reviewCreationAttributes,
   tt_userAttributes,
   tt_userCreationAttributes,
+  tt_user_signoutAttributes,
+  tt_user_signoutCreationAttributes,
   tt_user_talkplusAttributes,
   tt_user_talkplusCreationAttributes,
   tt_view_logAttributes,
@@ -119,6 +124,7 @@ export function initModels(sequelize: Sequelize) {
   const tt_talkplus_message = _tt_talkplus_message.initModel(sequelize);
   const tt_trade_review = _tt_trade_review.initModel(sequelize);
   const tt_user = _tt_user.initModel(sequelize);
+  const tt_user_signout = _tt_user_signout.initModel(sequelize);
   const tt_user_talkplus = _tt_user_talkplus.initModel(sequelize);
   const tt_view_log = _tt_view_log.initModel(sequelize);
 
@@ -164,6 +170,8 @@ export function initModels(sequelize: Sequelize) {
   tt_user.hasMany(tt_talkplus_message, { as: "tt_talkplus_messages", foreignKey: "SEND_USER_ID"});
   tt_user.belongsTo(tt_user, { as: "JOIN_PERMIT_USER", foreignKey: "JOIN_PERMIT_USER_ID"});
   tt_user.hasMany(tt_user, { as: "tt_users", foreignKey: "JOIN_PERMIT_USER_ID"});
+  tt_user_signout.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
+  tt_user.hasMany(tt_user_signout, { as: "tt_user_signouts", foreignKey: "USER_ID"});
   tt_user_talkplus.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasOne(tt_user_talkplus, { as: "tt_user_talkplu", foreignKey: "USER_ID"});
   tt_view_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
@@ -193,6 +201,7 @@ export function initModels(sequelize: Sequelize) {
     tt_talkplus_message: tt_talkplus_message,
     tt_trade_review: tt_trade_review,
     tt_user: tt_user,
+    tt_user_signout: tt_user_signout,
     tt_user_talkplus: tt_user_talkplus,
     tt_view_log: tt_view_log,
   };

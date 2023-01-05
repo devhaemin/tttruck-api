@@ -151,10 +151,12 @@ export class tt_talkplus_channel extends Model<tt_talkplus_channelAttributes, tt
         ]
       },
       {
-        name: "tt_talkplus_channel_tt_user_talkplus_null_fk",
+        name: "tt_talkplus_channel_product_buyer",
+        unique: true,
         using: "BTREE",
         fields: [
           { name: "BUYER_ID" },
+          { name: "PRODUCT_ID" },
         ]
       },
       {

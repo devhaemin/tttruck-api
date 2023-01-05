@@ -77,7 +77,7 @@ export class tt_user_talkplus extends Model<tt_user_talkplusAttributes, tt_user_
         model: 'tt_user',
         key: 'USER_ID'
       },
-      unique: "tt_user_talkplus_tt_user_null_fk"
+      unique: "tt_user_talkplus_tt_user_USER_ID_fk"
     },
     TALKPLUS_ID: {
       type: DataTypes.STRING(100),

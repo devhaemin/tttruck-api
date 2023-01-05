@@ -93,6 +93,11 @@ authRouter.post(
   profileImageMulter.single('file'),
   authRoutes.profileImageUpload,
 );
+authRouter.post(
+  authRoutes.paths.signout,
+  normalUserMw,
+  authRoutes.signout,
+);
 
 // Logout user
 authRouter.get(authRoutes.paths.logout, authRoutes.logout);

@@ -4,12 +4,10 @@ import authService from '@src/services/auth-service';
 import EnvVars from '@src/declarations/major/EnvVars';
 import codeUtil from "@src/util/code-util";
 import {IReq, IRes} from './shared/types';
-import {tt_phone_auth, tt_user} from "@src/models/init-models";
+import {tt_user, tt_user_signout} from "@src/models/init-models";
 import {getRandomNicknames} from "@src/util/nick-gen-util";
 import logger from "jet-logger";
 import {S3File} from "@src/routes/shared/awsMultipart";
-import productService from "@src/services/product-service";
-import {getClientIP} from "@src/util/ip-util";
 import chatService from "@src/services/chat-service";
 
 // **** Variables **** //
@@ -19,13 +17,14 @@ const paths = {
   basePath: '/auth',
   generateNickname: '/nickname/generate',
   login: '/login',
-  phoneCheckAuth:'/phone/checkAuth',
+  phoneCheckAuth: '/phone/checkAuth',
   tokenLogin: '/tokenLogin',
   logout: '/logout',
   signup: '/signup',
   profileImageUpload: '/profile/image',
-  updateProfile:'/profile',
+  updateProfile: '/profile',
   phoneRequestAuth: '/phone/requestAuth',
+  signout:'/signout',
 } as const;
 
 
@@ -120,18 +119,18 @@ async function tokenLogin(req: IReq, res: IRes) {
  *     }
  *
  */
-async function generateNickname(req:IReq, res:IRes){
+async function generateNickname(req: IReq, res: IRes) {
   const nicknames = getRandomNicknames();
   let nickname = "";
-  for(let i = 0; i < 10; ++i){
-    const result = await tt_user.findAll({where:{NICKNAME:nicknames[i]}});
-    if(!result || result.length === 0 ) {
+  for (let i = 0; i < 10; ++i) {
+    const result = await tt_user.findAll({where: {NICKNAME: nicknames[i]}});
+    if (!result || result.length === 0) {
       nickname = nicknames[i];
       logger.info(nickname);
       break;
     }
   }
-  return res.status(200).json({NICKNAME:nickname}).end();
+  return res.status(200).json({NICKNAME: nickname}).end();
 }
 
 /**
@@ -188,7 +187,7 @@ async function generateNickname(req:IReq, res:IRes){
  * }
  *
  */
-async function login(req: IReq<{phone:string, password:string}>, res: IRes) {
+async function login(req: IReq<{ phone: string, password: string }>, res: IRes) {
   const {phone, password} = req.body;
   // Add jwt to cookie
   const jwtUser = await authService.getJwtUser(phone, password);
@@ -285,9 +284,9 @@ async function signup(req: IReq<ISignUpReq>, res: IRes) {
  *
  */
 
-async function phoneCheckAuth(req: IReq<{PHONE:string,PHONE_AUTH_CODE:string}>, res: IRes) {
-  const {PHONE,PHONE_AUTH_CODE} = req.body;
-  const phoneAuth = await authService.checkPhoneAuth(PHONE,PHONE_AUTH_CODE);
+async function phoneCheckAuth(req: IReq<{ PHONE: string, PHONE_AUTH_CODE: string }>, res: IRes) {
+  const {PHONE, PHONE_AUTH_CODE} = req.body;
+  const phoneAuth = await authService.checkPhoneAuth(PHONE, PHONE_AUTH_CODE);
   return res.status(HttpStatusCodes.OK).json(phoneAuth).end();
 }
 
@@ -313,6 +312,7 @@ async function phoneRequestAuth(req: IReq<IPhoneAuthReq>, res: IRes) {
   await authService.setPhoneAuth(authCode, req.body.phone);
   return res.status(HttpStatusCodes.OK).end();
 }
+
 /**
  * @api {put} /auth/profile Update profile
  * @apiName UpdateProfile
@@ -332,10 +332,10 @@ async function phoneRequestAuth(req: IReq<IPhoneAuthReq>, res: IRes) {
  *       "error": "UserNotFound"
  *     }
  */
-async function updateProfile(req: IReq<{nickname:string}>, res: IRes) {
+async function updateProfile(req: IReq<{ nickname: string }>, res: IRes) {
   const {nickname} = req.body;
   const user = res.locals.user;
-  user.set({"NICKNAME":nickname});
+  user.set({"NICKNAME": nickname});
   const result = await user.save();
   const talkplusUser = await authService.getUserWithTalkplus(res.locals.user.USER_ID);
   const talkplus =
@@ -372,6 +372,35 @@ async function profileImageUpload(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.CREATED).json(talkplus).end();
 }
 
+/**
+ * @api {post} /auth/signout 회원 소프트 삭제 (회원 탈퇴)
+ * @apiName SignOut
+ * @apiGroup Auth
+ * @apiPermission normalUser
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "text": "볼 거리가 없어요 \n 앱을 삭제했는데 계정도 없어졌으면 좋겠어요. :)"
+ *     }
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *
+ *     }
+ *
+ */
+async function signout(req: IReq<{ text: string }>, res: IRes) {
+  const user = res.locals.user;
+  const {text} = req.body;
+  const result = await user.update({LEAVE_TF: Number(true)});
+  const createResult = await tt_user_signout.create(
+    {
+      USER_ID: user.USER_ID,
+      TEXT: text,
+    });
+  res.status(200).json(result).end();
+}
 
 /**
  * Logout the user.
@@ -396,4 +425,5 @@ export default {
   updateProfile,
   profileImageUpload,
   signup,
+  signout,
 } as const;

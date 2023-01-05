@@ -8,6 +8,7 @@ import {RouteError} from '@src/declarations/classes';
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
 import {tt_trade_status} from "@src/models/dummy/tt_trade_status";
+import {Sequelize} from "sequelize";
 
 
 // **** Variables **** //
@@ -46,6 +47,9 @@ async function getUserBought(user: tt_user): Promise<tt_product[]> {
           attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
         },
         {model: tt_trade_review, as: "tt_trade_reviews"}],
+    order: [
+      [{model: tt_product_image, as: "tt_product_images"}, 'PRIORITY', 'ASC'],
+    ],
   });
   if (!persists) {
     throw new RouteError(
@@ -70,7 +74,9 @@ async function getUserSold(user: tt_user): Promise<tt_product[]> {
           attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
         },
         {model: tt_trade_review, as: "tt_trade_reviews"}],
-
+    order: [
+      [{model: tt_product_image, as: "tt_product_images"}, 'PRIORITY', 'ASC'],
+    ],
   });
   if (!persists) {
     throw new RouteError(

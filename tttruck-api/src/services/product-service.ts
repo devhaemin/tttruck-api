@@ -40,7 +40,8 @@ async function getAll(longitude: string, latitude: string): Promise<tt_product[]
             as: "SELLER_USER",
             attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
           }],
-      order: Sequelize.literal('DISTANCE ASC'),
+      order: [Sequelize.literal('DISTANCE ASC'),
+        [{model: tt_product_image, as: "tt_product_images"}, 'PRIORITY', 'ASC']],
     });
   if (!persists) {
     throw new RouteError(
@@ -76,7 +77,8 @@ async function getByCategory(longitude: string, latitude: string, id: number): P
           as: "SELLER_USER",
           attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
         }],
-    order: Sequelize.literal('DISTANCE ASC'),
+    order: [Sequelize.literal('DISTANCE ASC'),
+      [{model: tt_product_image, as: "tt_product_images"}, 'PRIORITY', 'ASC']],
   });
   if (!persists) {
     throw new RouteError(
@@ -114,7 +116,8 @@ async function getByCategories(longitude: string, latitude: string, categories: 
           as: "SELLER_USER",
           attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
         }],
-    order: Sequelize.literal('DISTANCE ASC'),
+    order: [Sequelize.literal('DISTANCE ASC'),
+      [{model: tt_product_image, as: "tt_product_images"}, 'PRIORITY', 'ASC']],
   });
   if (!persists) {
     throw new RouteError(
@@ -137,6 +140,7 @@ async function getById(id: number): Promise<tt_product> {
           as: "SELLER_USER",
           attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
         }],
+    order: [[{model: tt_product_image, as: "tt_product_images"}, 'PRIORITY', 'ASC']],
   });
   if (!persists) {
     throw new RouteError(
@@ -238,6 +242,9 @@ async function deleteImage(user: tt_user, id: number): Promise<void> {
     where: {PRODUCT_IMAGE_ID: id},
     include:
       [{model: tt_product, as: "PRODUCT"}],
+    order: [
+      ['PRIORITY', 'ASC'],
+    ],
   });
   if (!persists) {
     throw new RouteError(

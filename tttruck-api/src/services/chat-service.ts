@@ -175,6 +175,9 @@ async function createUserChannel(productId: number, buyerId: number)
       model: tt_product_image,
       as: "tt_product_images",
     }],
+    order: [
+      [{model: tt_product_image, as: "tt_product_images"}, 'PRIORITY', 'ASC'],
+    ],
   });
   if (!product) {
     throw new RouteError(

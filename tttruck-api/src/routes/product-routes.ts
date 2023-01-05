@@ -1,6 +1,9 @@
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 
-import productService, {prodNotFoundErr} from '@src/services/product-service';
+import productService, {
+  prodAuthorityErr,
+  prodNotFoundErr,
+} from '@src/services/product-service';
 import {IReq, IReqQuery, IRes} from './shared/types';
 import {tt_product, tt_product_category} from '@src/models/init-models';
 import logger from "jet-logger";
@@ -8,6 +11,7 @@ import {getClientIP} from "@src/util/ip-util";
 import {S3File} from "@src/routes/shared/awsMultipart";
 import {UserLocation} from "@src/routes/shared/locationCheck";
 import {RouteError} from "@src/declarations/classes";
+import {tt_user_group} from "@src/models/dummy/tt_user_group";
 
 
 // **** Variables **** //
@@ -41,23 +45,30 @@ const paths = {
  *     }
  *
  */
-async function updateStatus(req:IReq<{status:number}>, res: IRes){
+async function updateStatus(req: IReq<{ status: number }>, res: IRes) {
   const {status} = req.body;
   const prodId = req.params.id;
+  const user = res.locals.user;
   const product = await tt_product.findByPk(prodId);
-  if(!product){
+  if (!product) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
       prodNotFoundErr,
     );
   }
-  if(status > 2){
+  if (product.SELLER_USER_ID !== user.USER_ID && user.GROUP !== tt_user_group.ADMIN) {
     throw new RouteError(
-      HttpStatusCodes.BAD_REQUEST,
-      "Can't update product status into "+String(status),
+      HttpStatusCodes.UNAUTHORIZED,
+      prodAuthorityErr,
     );
   }
-  const result = await product.update({TRADE_STATUS:status});
+  if (status > 2) {
+    throw new RouteError(
+      HttpStatusCodes.BAD_REQUEST,
+      "Can't update product status into " + String(status),
+    );
+  }
+  const result = await product.update({TRADE_STATUS: status});
   return res.status(HttpStatusCodes.OK).json(result).end();
 }
 

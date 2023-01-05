@@ -1,6 +1,6 @@
 export enum tt_trade_status {
   ONSALE = 0,
-  ONCHAT = 1,
+  ONRESERVE = 1,
   SOLD = 9
 }
 export enum tt_trade_review_type {

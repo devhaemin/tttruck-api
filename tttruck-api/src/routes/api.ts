@@ -43,7 +43,7 @@ chatRouter.post(
   chatRoutes.paths.sendMessage,
   normalUserMw,
   chatRoutes.sendMessage,
-)
+);
 
 apiRouter.use(
   chatRoutes.paths.basePath,
@@ -143,6 +143,12 @@ productRouter.put(
   normalUserMw,
   productRoutes.update,
 );
+
+productRouter.put(
+  productRoutes.paths.updateStatus,
+  normalUserMw,
+  productRoutes.updateStatus,
+)
 
 productRouter.post(
   productRoutes.paths.imageUpload,

@@ -114,6 +114,8 @@ async function doTrade(user: tt_user, buyerId: number, productId: number): Promi
   // Return user
   trade.set("TRADE_STATUS", tt_trade_status.SOLD);
   trade.set("BUYER_USER_ID",buyerId);
+  await user.update({WASTE_SAVINGS:buyer.WASTE_SAVINGS+trade.PRODUCT_WEIGHT});
+  await buyer.update({WASTE_SAVINGS:buyer.WASTE_SAVINGS+trade.PRODUCT_WEIGHT});
   const productResult = await trade.save();
   return productResult;
 }

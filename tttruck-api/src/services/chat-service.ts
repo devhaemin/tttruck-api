@@ -293,10 +293,17 @@ async function createChatUser(user: tt_user): Promise<tt_user_talkplus> {
 async function updateUserProfile(user: tt_user): Promise<tt_user> {
   const profileImage = user.PROFILE_IMAGE ? user.PROFILE_IMAGE : "";
   const url = baseUrl + "api/users/" + String(user.tt_user_talkplu.TALKPLUS_ID);
-  const params = {
-    username: user.NICKNAME,
-    profileImageUrl: cdnBaseUrl + profileImage,
-  };
+  let params;
+  if(user.PROFILE_IMAGE){
+    params = {
+      username: user.NICKNAME,
+      profileImageUrl: cdnBaseUrl + profileImage,
+    };
+  }else{
+    params = {
+      username: user.NICKNAME,
+    };
+  }
   const result: HttpResponse<TalkPlusUserResponse> = await fetch(
     url, {
       method: 'PUT',

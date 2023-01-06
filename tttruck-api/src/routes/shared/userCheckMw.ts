@@ -17,7 +17,8 @@ import {tt_user_talkplus} from "@src/models/init-models";
 
 const jwtNotPresentErr =
     'JWT not present in header ( Authorization - Bearer Token )',
-  userUnauthErr = 'User not authorized to perform this action';
+  userUnauthErr = 'User not authorized to perform this action',
+  userLeftErr = 'The user signed out.';
 
 
 // **** Types **** //
@@ -110,15 +111,19 @@ export async function normalUserMw(
       where: {ACCESSTOKEN: userToken},
       include: [{model: tt_user_talkplus, as: "tt_user_talkplu"}],
     });
-  logger.info(clientData);
-  if (
-    clientData && clientData.length > 0 &&
-    (clientData[0].GROUP >= tt_user_group.NORMAL) &&
-    clientData[0].PHONE_AUTH_TF
-  ) {
-    res.locals.user = clientData[0];
-    return next();
-    // Return an unauth error if user is not an admin
+  if (clientData && clientData.length > 0) {
+    if(clientData[0].LEAVE_TF){
+      return res
+        .status(HttpStatusCodes.FORBIDDEN)
+        .json({error:userLeftErr});
+    }
+    if ((clientData[0].GROUP >= tt_user_group.NORMAL) &&
+      clientData[0].PHONE_AUTH_TF
+    ) {
+      res.locals.user = clientData[0];
+      return next();
+      // Return an unauth error if user is not an admin
+    }
   } else {
     return res
       .status(HttpStatusCodes.UNAUTHORIZED)

@@ -24,7 +24,7 @@ const paths = {
   profileImageUpload: '/profile/image',
   updateProfile: '/profile',
   phoneRequestAuth: '/phone/requestAuth',
-  signout:'/signout',
+  signout: '/signout',
 } as const;
 
 
@@ -393,13 +393,17 @@ async function profileImageUpload(req: IReq, res: IRes) {
 async function signout(req: IReq<{ text: string }>, res: IRes) {
   const user = res.locals.user;
   const {text} = req.body;
-  const result = await user.update({LEAVE_TF: Number(true)});
+  const result = await user.update(
+    {
+      LEAVE_TF: Number(true),
+      ACCESSTOKEN: "",
+    });
   const createResult = await tt_user_signout.create(
     {
       USER_ID: user.USER_ID,
       TEXT: text,
     });
-  res.status(200).json(result).end();
+  res.status(200).json(createResult).end();
 }
 
 /**

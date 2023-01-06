@@ -121,7 +121,16 @@ async function getChannelsByProductId(user: tt_user, productId: number): Promise
 async function getChannelWithProductById(channelId: string): Promise<tt_talkplus_channel> {
   const channelWithProduct = await tt_talkplus_channel.findOne({
     where: {TALKPLUS_CHANNEL_ID: channelId},
-    include: [{model: tt_product, as: "PRODUCT"}],
+    include: [{model: tt_product, as: "PRODUCT"},
+      {
+        model: tt_user_talkplus, as: "BUYER",
+        attributes: ["USER_ID", "TALKPLUS_USERNAME", "TALKPLUS_PROFILE_IMAGE_URL"],
+      },
+      {
+        model: tt_user_talkplus, as: "SELLER",
+        attributes: ["USER_ID", "TALKPLUS_USERNAME", "TALKPLUS_PROFILE_IMAGE_URL"],
+      },
+    ],
   });
   if (!channelWithProduct) {
     throw new RouteError(

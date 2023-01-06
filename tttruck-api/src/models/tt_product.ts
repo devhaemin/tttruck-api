@@ -211,12 +211,12 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
       comment: "장소"
     },
     LATITUDE: {
-      type: DataTypes.STRING(15),
+      type: DataTypes.STRING(30),
       allowNull: false,
       defaultValue: "37.541"
     },
     LONGITUDE: {
-      type: DataTypes.STRING(15),
+      type: DataTypes.STRING(30),
       allowNull: false,
       defaultValue: "126.986"
     },

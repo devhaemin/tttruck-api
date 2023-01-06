@@ -146,6 +146,12 @@ async function getJwtUser(phone: string, password: string): Promise<tt_user> {
       errors.unauth,
     );
   }
+  if (user.LEAVE_TF) {
+    throw new RouteError(
+      HttpStatusCodes.UNAUTHORIZED,
+      "User signed out",
+    );
+  }
   // Setup Admin Cookie
   user.ACCESSTOKEN = await jwtUtil.sign({
     phone: user.PHONE,

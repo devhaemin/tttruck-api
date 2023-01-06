@@ -43,6 +43,12 @@ async function uploadProfileImage(file: S3File | null, user: tt_user) {
       "AWS API Connection error.",
     );
   }
+  if(!file.key || file.key===""){
+    throw new RouteError(
+      HttpStatusCodes.BAD_REQUEST,
+      "File does not exist.",
+    );
+  }
   logger.info(JSON.stringify(file));
   user.PROFILE_IMAGE = file.key;
   return await tt_user.update({PROFILE_IMAGE:file.key}, {where: {USER_ID: user.USER_ID}});

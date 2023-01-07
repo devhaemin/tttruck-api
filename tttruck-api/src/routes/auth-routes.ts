@@ -9,6 +9,7 @@ import {getRandomNicknames} from "@src/util/nick-gen-util";
 import logger from "jet-logger";
 import {S3File} from "@src/routes/shared/awsMultipart";
 import chatService from "@src/services/chat-service";
+import pwdUtil from "@src/util/pwd-util";
 
 // **** Variables **** //
 
@@ -25,6 +26,7 @@ const paths = {
   updateProfile: '/profile',
   phoneRequestAuth: '/phone/requestAuth',
   signout: '/signout',
+  resetPassword: '/password/reset',
 } as const;
 
 
@@ -407,6 +409,23 @@ async function signout(req: IReq<{ text: string }>, res: IRes) {
 }
 
 /**
+ * @api {post} /auth/password/reset 비밀번호 초기화
+ * @apiName PasswordReset
+ * @apiGroup Auth
+ * @apiPermission normalUser
+ *
+ * @apiBody {String} PASSWORD
+ *
+ */
+async function resetPassword(req: IReq<{PASSWORD:string}>, res: IRes){
+  const user = res.locals.user;
+  const newPw = req.body.PASSWORD;
+  user.PASSWORD = await pwdUtil.getHash(newPw);
+  const result = await user.save();
+  return res.status(HttpStatusCodes.OK).json(result).end();
+}
+
+/**
  * Logout the user.
  */
 function logout(_: IReq, res: IRes) {
@@ -428,6 +447,7 @@ export default {
   phoneRequestAuth,
   updateProfile,
   profileImageUpload,
+  resetPassword,
   signup,
   signout,
 } as const;

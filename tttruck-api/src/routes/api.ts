@@ -75,6 +75,10 @@ authRouter.post(
   authRoutes.login,
 );
 authRouter.post(
+  authRoutes.paths.resetPassword,
+  authRoutes.resetPassword,
+);
+authRouter.post(
   authRoutes.paths.signup,
   authRoutes.signup,
 );

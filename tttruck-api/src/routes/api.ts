@@ -76,6 +76,7 @@ authRouter.post(
 );
 authRouter.post(
   authRoutes.paths.resetPassword,
+  normalUserMw,
   authRoutes.resetPassword,
 );
 authRouter.post(

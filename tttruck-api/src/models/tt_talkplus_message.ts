@@ -1,6 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_talkplus_channel, tt_talkplus_channelId } from './tt_talkplus_channel';
+import type { tt_talkplus_file, tt_talkplus_fileId } from './tt_talkplus_file';
 import type { tt_user, tt_userId } from './tt_user';
 import type { tt_user_talkplus, tt_user_talkplusId } from './tt_user_talkplus';
 
@@ -31,6 +32,18 @@ export class tt_talkplus_message extends Model<tt_talkplus_messageAttributes, tt
   getTALKPLUS_CHANNEL!: Sequelize.BelongsToGetAssociationMixin<tt_talkplus_channel>;
   setTALKPLUS_CHANNEL!: Sequelize.BelongsToSetAssociationMixin<tt_talkplus_channel, tt_talkplus_channelId>;
   createTALKPLUS_CHANNEL!: Sequelize.BelongsToCreateAssociationMixin<tt_talkplus_channel>;
+  // tt_talkplus_message hasMany tt_talkplus_file via MESSAGE_ID
+  tt_talkplus_files!: tt_talkplus_file[];
+  getTt_talkplus_files!: Sequelize.HasManyGetAssociationsMixin<tt_talkplus_file>;
+  setTt_talkplus_files!: Sequelize.HasManySetAssociationsMixin<tt_talkplus_file, tt_talkplus_fileId>;
+  addTt_talkplus_file!: Sequelize.HasManyAddAssociationMixin<tt_talkplus_file, tt_talkplus_fileId>;
+  addTt_talkplus_files!: Sequelize.HasManyAddAssociationsMixin<tt_talkplus_file, tt_talkplus_fileId>;
+  createTt_talkplus_file!: Sequelize.HasManyCreateAssociationMixin<tt_talkplus_file>;
+  removeTt_talkplus_file!: Sequelize.HasManyRemoveAssociationMixin<tt_talkplus_file, tt_talkplus_fileId>;
+  removeTt_talkplus_files!: Sequelize.HasManyRemoveAssociationsMixin<tt_talkplus_file, tt_talkplus_fileId>;
+  hasTt_talkplus_file!: Sequelize.HasManyHasAssociationMixin<tt_talkplus_file, tt_talkplus_fileId>;
+  hasTt_talkplus_files!: Sequelize.HasManyHasAssociationsMixin<tt_talkplus_file, tt_talkplus_fileId>;
+  countTt_talkplus_files!: Sequelize.HasManyCountAssociationsMixin;
   // tt_talkplus_message belongsTo tt_user via SEND_USER_ID
   SEND_USER!: tt_user;
   getSEND_USER!: Sequelize.BelongsToGetAssociationMixin<tt_user>;

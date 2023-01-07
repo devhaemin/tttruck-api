@@ -5,7 +5,10 @@ import {adminMw, normalUserMw} from '@src/routes/shared/userCheckMw';
 import productRoutes from '@src/routes/product-routes';
 import authRoutes from "@src/routes/auth-routes";
 import noticeRoutes from "@src/routes/notice-routes";
-import {getS3Multer} from "@src/routes/shared/awsMultipart";
+import {
+  getS3ImageMulter,
+  getS3VideoMulter,
+} from "@src/routes/shared/awsMultipart";
 import tradeRoutes from "@src/routes/trade-routes";
 import {locationCheck} from "@src/routes/shared/locationCheck";
 import tradeReviewRoutes from "@src/routes/trade-review-routes";
@@ -16,6 +19,8 @@ const apiRouter = Router(),
   validate = jetValidator();
 
 const chatRouter = Router();
+const chatImageMulter = getS3ImageMulter('chat/image');
+const chatVideoMulter = getS3VideoMulter('chat/video');
 
 chatRouter.get(
   chatRoutes.paths.getUserChannel,
@@ -44,6 +49,19 @@ chatRouter.post(
   normalUserMw,
   chatRoutes.sendMessage,
 );
+chatRouter.post(
+  chatRoutes.paths.sendImageMessage,
+  normalUserMw,
+  chatImageMulter.single('file'),
+  chatRoutes.sendImageMessage,
+);
+chatRouter.post(
+  chatRoutes.paths.sendVideoMessage,
+  normalUserMw,
+  chatVideoMulter.single('file'),
+  chatRoutes.sendVideoMessage,
+);
+
 
 apiRouter.use(
   chatRoutes.paths.basePath,
@@ -52,7 +70,7 @@ apiRouter.use(
 // **** Setup auth routes **** //
 
 const authRouter = Router();
-const profileImageMulter = getS3Multer('profile');
+const profileImageMulter = getS3ImageMulter('profile');
 
 authRouter.get(
   authRoutes.paths.generateNickname,
@@ -116,7 +134,7 @@ apiRouter.use(authRoutes.paths.basePath, authRouter);
 // **** Setup product routes **** //
 
 const productRouter = Router();
-const productImageMulter = getS3Multer('product/image');
+const productImageMulter = getS3ImageMulter('product/image');
 
 // Get all products
 productRouter.get(productRoutes.paths.getAll, locationCheck, productRoutes.getAll);
@@ -153,7 +171,7 @@ productRouter.put(
   productRoutes.paths.updateStatus,
   normalUserMw,
   productRoutes.updateStatus,
-)
+);
 
 productRouter.post(
   productRoutes.paths.imageUpload,
@@ -187,7 +205,7 @@ apiRouter.use(productRoutes.paths.basePath, productRouter);
 // **** Setup Notice routes **** //
 
 const noticeRouter = Router();
-const noticeImageMulter = getS3Multer('notice/image');
+const noticeImageMulter = getS3ImageMulter('notice/image');
 
 // Get notice categories
 noticeRouter.get(noticeRoutes.paths.getCategories, noticeRoutes.getCategories);
@@ -284,7 +302,7 @@ tradeReviewRouter.put(
 );
 
 // Delete one user
-noticeRouter.delete(
+tradeReviewRouter.delete(
   tradeReviewRoutes.paths.delete,
   validate(['id', 'number', 'params']),
   adminMw,

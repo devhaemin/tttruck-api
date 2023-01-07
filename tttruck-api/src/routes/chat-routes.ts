@@ -1,6 +1,7 @@
 import {IReq, IRes} from './shared/types';
 import chatService from "@src/services/chat-service";
 import HttpStatusCodes from "@src/declarations/major/HttpStatusCodes";
+import {S3File} from "@src/routes/shared/awsMultipart";
 
 // **** Variables **** //
 
@@ -12,6 +13,8 @@ const paths = {
   getUserChannel: '/talkplus/channel/all',
   createChannel: '/talkplus/channel/add',
   sendMessage: '/talkplus/message/add',
+  sendImageMessage: '/talkplus/message/image/add',
+  sendVideoMessage: '/talkplus/message/video/add',
 } as const;
 
 /**
@@ -490,6 +493,63 @@ async function sendMessage(req: IReq<{text:string, channelId:string}>, res:IRes)
 }
 
 /**
+ * @api {post} /chat/talkplus/message/image/add SendImageMessage
+ * @apiName SendImageMessage
+ * @apiGroup TalkPlus
+ * @apiPermission normalUser
+ *
+ * @apiBody {String} text
+ * @apiBody {String} channelId
+ * @apiBody {File} file
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *     "MESSAGE_ID": 2,
+ *     "TALKPLUS_CHANNEL_ID": "63b1dacabd470d0001002d61",
+ *     "SEND_USER_TALKPLUS_ID": "tttruck21",
+ *     "SEND_USER_ID": 21,
+ *     "TEXT": "안녕하세요"
+ * }
+ *
+ */
+async function sendImageMessage(req: IReq<{text:string, channelId:string}>, res:IRes){
+  const user = res.locals.user;
+  const file = req.file as S3File;
+  const {text, channelId} = req.body;
+  const result = await chatService.sendFileMessage(user, text, channelId,file,"image");
+  res.status(HttpStatusCodes.OK).json(result).end();
+}
+/**
+ * @api {post} /chat/talkplus/message/video/add SendVideoMessage
+ * @apiName SendVideoMessage
+ * @apiGroup TalkPlus
+ * @apiPermission normalUser
+ *
+ * @apiBody {String} text
+ * @apiBody {String} channelId
+ * @apiBody {File} file
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *     "MESSAGE_ID": 2,
+ *     "TALKPLUS_CHANNEL_ID": "63b1dacabd470d0001002d61",
+ *     "SEND_USER_TALKPLUS_ID": "tttruck21",
+ *     "SEND_USER_ID": 21,
+ *     "TEXT": "안녕하세요"
+ * }
+ *
+ */
+async function sendVideoMessage(req: IReq<{text:string, channelId:string}>, res:IRes){
+  const user = res.locals.user;
+  const file = req.file as S3File;
+  const {text, channelId} = req.body;
+  const result = await chatService.sendFileMessage(user, text, channelId,file,"video");
+  res.status(HttpStatusCodes.OK).json(result).end();
+}
+
+/**
  * @api {post} /chat/talkplus/channel/add 채팅 채널 생성
  * @apiName AddTalkplusChannel
  * @apiGroup TalkPlus
@@ -530,4 +590,6 @@ export default {
   getChannelById,
   getChannelsByProductId,
   sendMessage,
+  sendImageMessage,
+  sendVideoMessage,
 } as const;

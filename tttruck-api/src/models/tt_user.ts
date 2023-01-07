@@ -8,6 +8,7 @@ import type { tt_notice_master, tt_notice_masterId } from './tt_notice_master';
 import type { tt_product, tt_productId } from './tt_product';
 import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
 import type { tt_sns_auth, tt_sns_authId } from './tt_sns_auth';
+import type { tt_talkplus_file, tt_talkplus_fileId } from './tt_talkplus_file';
 import type { tt_talkplus_message, tt_talkplus_messageId } from './tt_talkplus_message';
 import type { tt_trade_review, tt_trade_reviewId } from './tt_trade_review';
 import type { tt_user_signout, tt_user_signoutId } from './tt_user_signout';
@@ -228,6 +229,18 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   hasTt_sns_auth!: Sequelize.HasManyHasAssociationMixin<tt_sns_auth, tt_sns_authId>;
   hasTt_sns_auths!: Sequelize.HasManyHasAssociationsMixin<tt_sns_auth, tt_sns_authId>;
   countTt_sns_auths!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_talkplus_file via USER_ID
+  tt_talkplus_files!: tt_talkplus_file[];
+  getTt_talkplus_files!: Sequelize.HasManyGetAssociationsMixin<tt_talkplus_file>;
+  setTt_talkplus_files!: Sequelize.HasManySetAssociationsMixin<tt_talkplus_file, tt_talkplus_fileId>;
+  addTt_talkplus_file!: Sequelize.HasManyAddAssociationMixin<tt_talkplus_file, tt_talkplus_fileId>;
+  addTt_talkplus_files!: Sequelize.HasManyAddAssociationsMixin<tt_talkplus_file, tt_talkplus_fileId>;
+  createTt_talkplus_file!: Sequelize.HasManyCreateAssociationMixin<tt_talkplus_file>;
+  removeTt_talkplus_file!: Sequelize.HasManyRemoveAssociationMixin<tt_talkplus_file, tt_talkplus_fileId>;
+  removeTt_talkplus_files!: Sequelize.HasManyRemoveAssociationsMixin<tt_talkplus_file, tt_talkplus_fileId>;
+  hasTt_talkplus_file!: Sequelize.HasManyHasAssociationMixin<tt_talkplus_file, tt_talkplus_fileId>;
+  hasTt_talkplus_files!: Sequelize.HasManyHasAssociationsMixin<tt_talkplus_file, tt_talkplus_fileId>;
+  countTt_talkplus_files!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user hasMany tt_talkplus_message via SEND_USER_ID
   tt_talkplus_messages!: tt_talkplus_message[];
   getTt_talkplus_messages!: Sequelize.HasManyGetAssociationsMixin<tt_talkplus_message>;

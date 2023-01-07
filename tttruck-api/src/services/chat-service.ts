@@ -5,6 +5,7 @@ import {
   tt_product,
   tt_product_image,
   tt_talkplus_channel,
+  tt_talkplus_file,
   tt_talkplus_message,
   tt_user_talkplus,
 } from "@src/models/init-models";
@@ -12,6 +13,7 @@ import logger from "jet-logger";
 import authService from "@src/services/auth-service";
 import {userNotFoundErr} from "@src/services/user-service";
 import {prodNotFoundErr} from "@src/services/product-service";
+import {S3File} from "@src/routes/shared/awsMultipart";
 
 const baseUrl = "https://api.talkplus.io/v1.4/";
 const apiKey = process.env.TALKPLUS_API_KEY ? process.env.TALKPLUS_API_KEY : "";
@@ -141,7 +143,64 @@ async function getChannelWithProductById(channelId: string): Promise<tt_talkplus
   return channelWithProduct;
 }
 
-async function sendMessage(user: tt_user, msg: string, channelId:string):Promise<tt_talkplus_message> {
+async function sendFileMessage(user: tt_user, msg: string, channelId:string, file:S3File|null, type:string )
+  :Promise<tt_talkplus_message> {
+  if (!file) {
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      "AWS API Connection error.",
+    );
+  }
+  const url = baseUrl + "api/channels/"+channelId+"/messages/send";
+  const params = {
+    senderId: user.tt_user_talkplu.TALKPLUS_ID,
+    text: msg,
+    type: "custom",
+    data: {
+      file:file.key,
+      type:type,
+    },
+  };
+  const result: HttpResponse<TalkPlusChannelResponse> = await fetch(
+    url, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "api-key": apiKey,
+        "app-id": appId,
+      },
+      body: JSON.stringify(params),
+    });
+  const talkPlusMsg = await tt_talkplus_message.create(
+    {
+      TALKPLUS_CHANNEL_ID:channelId,
+      SEND_USER_TALKPLUS_ID: user.tt_user_talkplu.TALKPLUS_ID,
+      SEND_USER_ID: user.USER_ID,
+      TEXT: msg,
+    },
+  );
+  const talkPlusFile = await tt_talkplus_file.create({
+    MESSAGE_ID: talkPlusMsg.MESSAGE_ID,
+    USER_ID:talkPlusMsg.SEND_USER_ID,
+    FILE_NAME: file.key,
+    FILE_PATH: file.path,
+    FILE_URL: file.location,
+    FILE_SIZE: file.size,
+    FILE_TYPE: type,
+  });
+  const msgResult = await tt_talkplus_message.findByPk(talkPlusMsg.MESSAGE_ID,{
+    include:[{model:tt_talkplus_file,as:"tt_talkplus_files"}],
+  });
+  if(!msgResult){
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      "DB Connection Failed on ChatService SendFile",
+    );
+  }
+  return msgResult;
+}
+async function sendMessage(user: tt_user, msg: string, channelId:string)
+  :Promise<tt_talkplus_message> {
 
   return await tt_talkplus_message.create(
     {
@@ -387,4 +446,5 @@ export default {
   getChannelWithProductById,
   getChannelsByProductId,
   sendMessage,
+  sendFileMessage,
 };

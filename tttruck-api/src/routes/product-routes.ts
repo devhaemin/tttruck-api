@@ -969,7 +969,8 @@ async function imageUpload(req: IReq<{ productId: number }>, res: IRes) {
  *       "error": "ProductNotFound"
  *     }
  */
-async function setImageOrder(req: IReq<[{ PRODUCT_IMAGE_ID: number, PRIORITY: number }]>, res: IRes) {
+async function setImageOrder(req: IReq<[{ PRODUCT_IMAGE_ID: number, PRIORITY: number }]>, res: IRes)
+{
   const priorities = req.body;
   await productService.setImageOrder(priorities);
   return res.status(HttpStatusCodes.CREATED).end();

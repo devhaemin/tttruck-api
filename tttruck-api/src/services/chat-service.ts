@@ -143,22 +143,22 @@ async function getChannelWithProductById(channelId: string): Promise<tt_talkplus
   return channelWithProduct;
 }
 
-async function sendFileMessage(user: tt_user, msg: string, channelId:string, file:S3File|null, type:string )
-  :Promise<tt_talkplus_message> {
+async function sendFileMessage(user: tt_user, msg: string, channelId: string, file: S3File | null, type: string)
+  : Promise<tt_talkplus_message> {
   if (!file) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
       "AWS API Connection error.",
     );
   }
-  const url = baseUrl + "api/channels/"+channelId+"/messages/send";
+  const url = baseUrl + "api/channels/" + channelId + "/messages/send";
   const params = {
     senderId: user.tt_user_talkplu.TALKPLUS_ID,
     text: msg,
     type: "custom",
     data: {
-      file:file.key,
-      type:type,
+      file: file.key,
+      type: type,
     },
   };
   const result: HttpResponse<TalkPlusChannelResponse> = await fetch(
@@ -173,7 +173,7 @@ async function sendFileMessage(user: tt_user, msg: string, channelId:string, fil
     });
   const talkPlusMsg = await tt_talkplus_message.create(
     {
-      TALKPLUS_CHANNEL_ID:channelId,
+      TALKPLUS_CHANNEL_ID: channelId,
       SEND_USER_TALKPLUS_ID: user.tt_user_talkplu.TALKPLUS_ID,
       SEND_USER_ID: user.USER_ID,
       TEXT: msg,
@@ -181,17 +181,17 @@ async function sendFileMessage(user: tt_user, msg: string, channelId:string, fil
   );
   const talkPlusFile = await tt_talkplus_file.create({
     MESSAGE_ID: talkPlusMsg.MESSAGE_ID,
-    USER_ID:talkPlusMsg.SEND_USER_ID,
+    USER_ID: talkPlusMsg.SEND_USER_ID,
     FILE_NAME: file.key,
     FILE_PATH: file.path,
     FILE_URL: file.location,
     FILE_SIZE: file.size,
     FILE_TYPE: type,
   });
-  const msgResult = await tt_talkplus_message.findByPk(talkPlusMsg.MESSAGE_ID,{
-    include:[{model:tt_talkplus_file,as:"tt_talkplus_files"}],
+  const msgResult = await tt_talkplus_message.findByPk(talkPlusMsg.MESSAGE_ID, {
+    include: [{model: tt_talkplus_file, as: "tt_talkplus_files"}],
   });
-  if(!msgResult){
+  if (!msgResult) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
       "DB Connection Failed on ChatService SendFile",
@@ -199,12 +199,13 @@ async function sendFileMessage(user: tt_user, msg: string, channelId:string, fil
   }
   return msgResult;
 }
-async function sendMessage(user: tt_user, msg: string, channelId:string)
-  :Promise<tt_talkplus_message> {
+
+async function sendMessage(user: tt_user, msg: string, channelId: string)
+  : Promise<tt_talkplus_message> {
 
   return await tt_talkplus_message.create(
     {
-      TALKPLUS_CHANNEL_ID:channelId,
+      TALKPLUS_CHANNEL_ID: channelId,
       SEND_USER_TALKPLUS_ID: user.tt_user_talkplu.TALKPLUS_ID,
       SEND_USER_ID: user.USER_ID,
       TEXT: msg,
@@ -237,7 +238,7 @@ async function getUserChannel(user: tt_user)
 
 async function createUserChannel(productId: number, buyerId: number)
   : Promise<tt_talkplus_channel> {
-  const buyer = await tt_user_talkplus.findOne({where:{USER_ID:buyerId}});
+  const buyer = await tt_user_talkplus.findOne({where: {USER_ID: buyerId}});
   const product = await tt_product.findByPk(productId, {
     include: [{
       model: tt_product_image,
@@ -259,11 +260,16 @@ async function createUserChannel(productId: number, buyerId: number)
       userNotFoundErr,
     );
   }
-  const channelExist = await tt_talkplus_channel.findOne({where:{PRODUCT_ID:productId,BUYER_ID:buyer.TALKPLUS_ID}});
-  if(channelExist){
+  const channelExist = await tt_talkplus_channel.findOne({
+    where: {
+      PRODUCT_ID: productId,
+      BUYER_ID: buyer.TALKPLUS_ID,
+    },
+  });
+  if (channelExist) {
     return channelExist;
   }
-  const seller = await tt_user_talkplus.findOne({where:{USER_ID:product.SELLER_USER_ID}});
+  const seller = await tt_user_talkplus.findOne({where: {USER_ID: product.SELLER_USER_ID}});
   if (!seller) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
@@ -362,12 +368,12 @@ async function updateUserProfile(user: tt_user): Promise<tt_user> {
   const profileImage = user.PROFILE_IMAGE ? user.PROFILE_IMAGE : "";
   const url = baseUrl + "api/users/" + String(user.tt_user_talkplu.TALKPLUS_ID);
   let params;
-  if(user.PROFILE_IMAGE){
+  if (user.PROFILE_IMAGE) {
     params = {
       username: user.NICKNAME,
       profileImageUrl: cdnBaseUrl + profileImage,
     };
-  }else{
+  } else {
     params = {
       username: user.NICKNAME,
     };
@@ -401,7 +407,7 @@ async function updateUserProfile(user: tt_user): Promise<tt_user> {
 
 async function loginTalkplus(userId: number): Promise<tt_user_talkplus> {
   const url = baseUrl + "api/users/login";
-  const userTalkplus = await tt_user_talkplus.findOne({where:{USER_ID:userId}});
+  const userTalkplus = await tt_user_talkplus.findOne({where: {USER_ID: userId}});
   if (!userTalkplus) {
     throw new RouteError(
       HttpStatusCodes.UNAUTHORIZED,

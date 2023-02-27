@@ -13,6 +13,7 @@ import tradeRoutes from "@src/routes/trade-routes";
 import {locationCheck} from "@src/routes/shared/locationCheck";
 import tradeReviewRoutes from "@src/routes/trade-review-routes";
 import chatRoutes from "@src/routes/chat-routes";
+import {paginationCheck} from "@src/routes/shared/paginationCheck";
 // **** Init **** //
 
 const apiRouter = Router(),
@@ -137,7 +138,10 @@ const productRouter = Router();
 const productImageMulter = getS3ImageMulter('product/image');
 
 // Get all products
-productRouter.get(productRoutes.paths.getAll, locationCheck, productRoutes.getAll);
+productRouter.get(
+  productRoutes.paths.getAll,
+  locationCheck,
+  productRoutes.getAll);
 
 productRouter.get(
   productRoutes.paths.getByCategories,
@@ -147,7 +151,10 @@ productRouter.get(
 productRouter.get(productRoutes.paths.getCategories, productRoutes.getCategories);
 
 // Get products by category
-productRouter.get(productRoutes.paths.getByCategory, locationCheck, productRoutes.getByCategory);
+productRouter.get(
+  productRoutes.paths.getByCategory,
+  locationCheck,
+  productRoutes.getByCategory);
 
 // Get product by ID
 productRouter.get(productRoutes.paths.getById, productRoutes.getById);

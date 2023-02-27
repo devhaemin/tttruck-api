@@ -86,7 +86,9 @@ async function updateStatus(req: IReq<{ status: number }>, res: IRes) {
  * @apiParamExample {json} Request-Example:
  * {
  *     "latitude": "37.56211",
- *     "longitude": "126.941069"
+ *     "longitude": "126.941069",
+ *     "limit": 30,
+ *     "offset": 0
  * }
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -172,9 +174,10 @@ async function updateStatus(req: IReq<{ status: number }>, res: IRes) {
  *       "error": "ProductNotFound"
  *     }
  */
-async function getAll(req: IReq, res: IRes) {
+async function getAll(req: IReqQuery<{ limit: string, offset: string }>, res: IRes) {
   const {longitude, latitude} = res.locals.location;
-  const products = await productService.getAll(longitude, latitude);
+  const {limit, offset} = req.query;
+  const products = await productService.getAll(longitude, latitude, Number(offset), Number(limit));
   logger.info(products);
   return res.status(HttpStatusCodes.OK).json(products);
 }
@@ -191,7 +194,9 @@ async function getAll(req: IReq, res: IRes) {
  * @apiParamExample {json} Request-Example:
  * {
  *     "latitude": "37.56211",
- *     "longitude": "126.941069"
+ *     "longitude": "126.941069",
+ *     "limit": 30,
+ *     "offset": 0
  * }
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -278,10 +283,12 @@ async function getAll(req: IReq, res: IRes) {
  *       "error": "ProductNotFound"
  *     }
  */
-async function getByCategory(req: IReq, res: IRes) {
+async function getByCategory(req: IReqQuery<{ limit: string, offset: string }>, res: IRes) {
   const id = +req.params.id;
+  const {offset, limit} = req.query;
   const {longitude, latitude} = res.locals.location;
-  const products = await productService.getByCategory(longitude, latitude, id);
+  const products = await productService.getByCategory(longitude, latitude, id,
+    Number(offset), Number(limit));
   logger.info(products);
   return res.status(HttpStatusCodes.OK).json(products);
 }
@@ -296,7 +303,9 @@ async function getByCategory(req: IReq, res: IRes) {
  * {
  *     "latitude": "37.56211",
  *     "longitude": "126.941069"
- *     "categories":[1,2,3]
+ *     "categories":[1,2,3],
+ *     "limit": 30,
+ *     "offset": 0
  * }
  *
  * @apiSuccessExample Success-Response:
@@ -730,17 +739,16 @@ async function getByCategory(req: IReq, res: IRes) {
  *     }
  */
 
-interface Categories extends UserLocation {
-  categories: [string] | undefined;
-}
 
 async function getByCategories(
-  req: IReqQuery<Categories>,
+  req: IReqQuery<{ categories:[string]|undefined, limit: string, offset: string }>,
   res: IRes) {
   const queryCate = req.query.categories ? req.query.categories : [];
   const categories = queryCate.map((c) => Number.parseInt(c));
   const {longitude, latitude} = res.locals.location;
-  const products = await productService.getByCategories(longitude, latitude, categories);
+  const {offset, limit} = req.query;
+  const products = await productService.getByCategories(longitude, latitude, categories,
+    Number(offset), Number(limit));
   logger.info(products);
   return res.status(HttpStatusCodes.OK).json(products);
 }
@@ -969,8 +977,7 @@ async function imageUpload(req: IReq<{ productId: number }>, res: IRes) {
  *       "error": "ProductNotFound"
  *     }
  */
-async function setImageOrder(req: IReq<[{ PRODUCT_IMAGE_ID: number, PRIORITY: number }]>, res: IRes)
-{
+async function setImageOrder(req: IReq<[{ PRODUCT_IMAGE_ID: number, PRIORITY: number }]>, res: IRes) {
   const priorities = req.body;
   await productService.setImageOrder(priorities);
   return res.status(HttpStatusCodes.CREATED).end();

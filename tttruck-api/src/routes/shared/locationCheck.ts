@@ -1,5 +1,5 @@
 import {NextFunction} from 'express';
-import {IReqQuery, IRes} from "@src/routes/shared/types";
+import {IReq, IReqQuery, IRes} from "@src/routes/shared/types";
 import {Query} from "express-serve-static-core";
 import logger from "jet-logger";
 
@@ -9,11 +9,13 @@ export interface UserLocation extends Query {
 }
 
 export function locationCheck(
-  req: IReqQuery<UserLocation>,
+  req: IReq,
   res: IRes,
   next: NextFunction,
 ) {
-  const {longitude, latitude} = req.query;
+  let {longitude, latitude} = req.query;
+  longitude = longitude as string;
+  latitude = latitude as string;
   if (!longitude || !latitude) {
     res.locals.location = {
       latitude: "0",

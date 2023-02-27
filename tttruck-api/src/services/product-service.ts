@@ -11,16 +11,21 @@ import {Op, Sequelize} from "sequelize";
 
 export const prodNotFoundErr = 'Product not found';
 export const prodAuthorityErr = 'Can not modify Product with your authority';
-
+const DEFAULT_LIMIT = 30;
+const DEFAULT_OFFSET = 0;
 
 // **** Functions **** //
 
 /**
  * Get all products
  */
-async function getAll(longitude: string, latitude: string): Promise<tt_product[]> {
+async function getAll(longitude: string, latitude: string, offset:number, limit:number ): Promise<tt_product[]> {
+  offset = offset || DEFAULT_OFFSET;
+  limit = limit || DEFAULT_LIMIT;
   const persists = await tt_product.findAll(
     {
+      offset:offset,
+      limit:limit,
       attributes: {
         include: [
           [
@@ -55,8 +60,12 @@ async function getAll(longitude: string, latitude: string): Promise<tt_product[]
 /**
  * Get products by category
  */
-async function getByCategory(longitude: string, latitude: string, id: number): Promise<tt_product[]> {
+async function getByCategory(longitude: string, latitude: string, id: number , offset:number, limit:number ): Promise<tt_product[]> {
+  offset = offset || DEFAULT_OFFSET;
+  limit = limit || DEFAULT_LIMIT;
   const persists = await tt_product.findAll({
+    offset:offset,
+    limit:limit,
     attributes: {
       include: [
         [
@@ -93,9 +102,13 @@ async function getByCategory(longitude: string, latitude: string, id: number): P
  *
  * Get products by categories
  */
-async function getByCategories(longitude: string, latitude: string, categories: number[]):
+async function getByCategories(longitude: string, latitude: string, categories: number[], offset:number, limit:number ):
   Promise<tt_product[]> {
+  offset = offset || DEFAULT_OFFSET;
+  limit = limit || DEFAULT_LIMIT;
   const persists = await tt_product.findAll({
+    offset:offset,
+    limit:limit,
     attributes: {
       include: [
         [

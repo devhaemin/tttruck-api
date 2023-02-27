@@ -3,6 +3,8 @@ import {Query} from 'express-serve-static-core';
 
 import {tt_user} from "@src/models/tt_user";
 import {UserLocation} from "@src/routes/shared/locationCheck";
+import {UserPagination} from "@src/routes/shared/paginationCheck";
+
 
 
 // **** Express **** //
@@ -20,6 +22,7 @@ export interface IRes extends e.Response {
   locals: {
     user: tt_user;
     location: UserLocation;
+    pagination: UserPagination;
   };
 }
 

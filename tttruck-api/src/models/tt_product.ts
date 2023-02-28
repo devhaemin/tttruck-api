@@ -3,6 +3,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
 import type { tt_product_image, tt_product_imageId } from './tt_product_image';
 import type { tt_talkplus_channel, tt_talkplus_channelId } from './tt_talkplus_channel';
+import type { tt_trade_log, tt_trade_logId } from './tt_trade_log';
 import type { tt_trade_review, tt_trade_reviewId } from './tt_trade_review';
 import type { tt_user, tt_userId } from './tt_user';
 
@@ -98,6 +99,18 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
   hasTt_talkplus_channel!: Sequelize.HasManyHasAssociationMixin<tt_talkplus_channel, tt_talkplus_channelId>;
   hasTt_talkplus_channels!: Sequelize.HasManyHasAssociationsMixin<tt_talkplus_channel, tt_talkplus_channelId>;
   countTt_talkplus_channels!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_product hasMany tt_trade_log via PRODUCT_ID
+  tt_trade_logs!: tt_trade_log[];
+  getTt_trade_logs!: Sequelize.HasManyGetAssociationsMixin<tt_trade_log>;
+  setTt_trade_logs!: Sequelize.HasManySetAssociationsMixin<tt_trade_log, tt_trade_logId>;
+  addTt_trade_log!: Sequelize.HasManyAddAssociationMixin<tt_trade_log, tt_trade_logId>;
+  addTt_trade_logs!: Sequelize.HasManyAddAssociationsMixin<tt_trade_log, tt_trade_logId>;
+  createTt_trade_log!: Sequelize.HasManyCreateAssociationMixin<tt_trade_log>;
+  removeTt_trade_log!: Sequelize.HasManyRemoveAssociationMixin<tt_trade_log, tt_trade_logId>;
+  removeTt_trade_logs!: Sequelize.HasManyRemoveAssociationsMixin<tt_trade_log, tt_trade_logId>;
+  hasTt_trade_log!: Sequelize.HasManyHasAssociationMixin<tt_trade_log, tt_trade_logId>;
+  hasTt_trade_logs!: Sequelize.HasManyHasAssociationsMixin<tt_trade_log, tt_trade_logId>;
+  countTt_trade_logs!: Sequelize.HasManyCountAssociationsMixin;
   // tt_product hasMany tt_trade_review via PRODUCT_ID
   tt_trade_reviews!: tt_trade_review[];
   getTt_trade_reviews!: Sequelize.HasManyGetAssociationsMixin<tt_trade_review>;
@@ -289,6 +302,7 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
   }, {
     sequelize,
     tableName: 'tt_product',
+    hasTrigger: true,
     timestamps: false,
     indexes: [
       {

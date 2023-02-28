@@ -31,6 +31,8 @@ import { tt_talkplus_file as _tt_talkplus_file } from "./tt_talkplus_file";
 import type { tt_talkplus_fileAttributes, tt_talkplus_fileCreationAttributes } from "./tt_talkplus_file";
 import { tt_talkplus_message as _tt_talkplus_message } from "./tt_talkplus_message";
 import type { tt_talkplus_messageAttributes, tt_talkplus_messageCreationAttributes } from "./tt_talkplus_message";
+import { tt_trade_log as _tt_trade_log } from "./tt_trade_log";
+import type { tt_trade_logAttributes, tt_trade_logCreationAttributes } from "./tt_trade_log";
 import { tt_trade_review as _tt_trade_review } from "./tt_trade_review";
 import type { tt_trade_reviewAttributes, tt_trade_reviewCreationAttributes } from "./tt_trade_review";
 import { tt_user as _tt_user } from "./tt_user";
@@ -59,6 +61,7 @@ export {
   _tt_talkplus_channel as tt_talkplus_channel,
   _tt_talkplus_file as tt_talkplus_file,
   _tt_talkplus_message as tt_talkplus_message,
+  _tt_trade_log as tt_trade_log,
   _tt_trade_review as tt_trade_review,
   _tt_user as tt_user,
   _tt_user_signout as tt_user_signout,
@@ -99,6 +102,8 @@ export type {
   tt_talkplus_fileCreationAttributes,
   tt_talkplus_messageAttributes,
   tt_talkplus_messageCreationAttributes,
+  tt_trade_logAttributes,
+  tt_trade_logCreationAttributes,
   tt_trade_reviewAttributes,
   tt_trade_reviewCreationAttributes,
   tt_userAttributes,
@@ -128,6 +133,7 @@ export function initModels(sequelize: Sequelize) {
   const tt_talkplus_channel = _tt_talkplus_channel.initModel(sequelize);
   const tt_talkplus_file = _tt_talkplus_file.initModel(sequelize);
   const tt_talkplus_message = _tt_talkplus_message.initModel(sequelize);
+  const tt_trade_log = _tt_trade_log.initModel(sequelize);
   const tt_trade_review = _tt_trade_review.initModel(sequelize);
   const tt_user = _tt_user.initModel(sequelize);
   const tt_user_signout = _tt_user_signout.initModel(sequelize);
@@ -142,6 +148,8 @@ export function initModels(sequelize: Sequelize) {
   tt_product.hasMany(tt_product_image, { as: "tt_product_images", foreignKey: "PRODUCT_ID"});
   tt_talkplus_channel.belongsTo(tt_product, { as: "PRODUCT", foreignKey: "PRODUCT_ID"});
   tt_product.hasMany(tt_talkplus_channel, { as: "tt_talkplus_channels", foreignKey: "PRODUCT_ID"});
+  tt_trade_log.belongsTo(tt_product, { as: "PRODUCT", foreignKey: "PRODUCT_ID"});
+  tt_product.hasMany(tt_trade_log, { as: "tt_trade_logs", foreignKey: "PRODUCT_ID"});
   tt_trade_review.belongsTo(tt_product, { as: "PRODUCT", foreignKey: "PRODUCT_ID"});
   tt_product.hasMany(tt_trade_review, { as: "tt_trade_reviews", foreignKey: "PRODUCT_ID"});
   tt_product.belongsTo(tt_product_category, { as: "PRODUCT_CATEGORY", foreignKey: "PRODUCT_CATEGORY_ID"});
@@ -178,6 +186,10 @@ export function initModels(sequelize: Sequelize) {
   tt_user.hasMany(tt_talkplus_file, { as: "tt_talkplus_files", foreignKey: "USER_ID"});
   tt_talkplus_message.belongsTo(tt_user, { as: "SEND_USER", foreignKey: "SEND_USER_ID"});
   tt_user.hasMany(tt_talkplus_message, { as: "tt_talkplus_messages", foreignKey: "SEND_USER_ID"});
+  tt_trade_log.belongsTo(tt_user, { as: "SELLER_USER", foreignKey: "SELLER_USER_ID"});
+  tt_user.hasMany(tt_trade_log, { as: "tt_trade_logs", foreignKey: "SELLER_USER_ID"});
+  tt_trade_log.belongsTo(tt_user, { as: "BUYER_USER", foreignKey: "BUYER_USER_ID"});
+  tt_user.hasMany(tt_trade_log, { as: "BUYER_USER_tt_trade_logs", foreignKey: "BUYER_USER_ID"});
   tt_trade_review.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasMany(tt_trade_review, { as: "tt_trade_reviews", foreignKey: "USER_ID"});
   tt_user.belongsTo(tt_user, { as: "JOIN_PERMIT_USER", foreignKey: "JOIN_PERMIT_USER_ID"});
@@ -212,6 +224,7 @@ export function initModels(sequelize: Sequelize) {
     tt_talkplus_channel: tt_talkplus_channel,
     tt_talkplus_file: tt_talkplus_file,
     tt_talkplus_message: tt_talkplus_message,
+    tt_trade_log: tt_trade_log,
     tt_trade_review: tt_trade_review,
     tt_user: tt_user,
     tt_user_signout: tt_user_signout,

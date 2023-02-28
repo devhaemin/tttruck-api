@@ -99,7 +99,8 @@ async function doTrade(user: tt_user, buyerId: number, productId: number): Promi
       tradeNotFoundErr,
     );
   }
-  if (!buyer) {
+  const seller = await tt_user.findByPk(trade?.SELLER_USER_ID);
+  if (!buyer || !seller) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
       "Can not find user",
@@ -111,11 +112,19 @@ async function doTrade(user: tt_user, buyerId: number, productId: number): Promi
       tradeAuthorityErr,
     );
   }
+  if( trade.TRADE_STATUS === tt_trade_status.SOLD){
+    throw new RouteError(
+      HttpStatusCodes.ALREADY_REPORTED,
+      "This product is already sold",
+    );
+  }
   // Return user
   trade.set("TRADE_STATUS", tt_trade_status.SOLD);
   trade.set("BUYER_USER_ID",buyerId);
-  await user.update({WASTE_SAVINGS:buyer.WASTE_SAVINGS+trade.PRODUCT_WEIGHT});
+  await seller.update({WASTE_SAVINGS:seller.WASTE_SAVINGS+trade.PRODUCT_WEIGHT});
+  await seller.update({SELLING_SAVINGS:seller.SELLING_SAVINGS+trade.PRODUCT_WEIGHT});
   await buyer.update({WASTE_SAVINGS:buyer.WASTE_SAVINGS+trade.PRODUCT_WEIGHT});
+  await buyer.update({BUYING_SAVINGS:buyer.BUYING_SAVINGS+trade.PRODUCT_WEIGHT});
   const productResult = await trade.save();
   return productResult;
 }

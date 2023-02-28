@@ -10,6 +10,7 @@ import type { tt_product_category, tt_product_categoryId } from './tt_product_ca
 import type { tt_sns_auth, tt_sns_authId } from './tt_sns_auth';
 import type { tt_talkplus_file, tt_talkplus_fileId } from './tt_talkplus_file';
 import type { tt_talkplus_message, tt_talkplus_messageId } from './tt_talkplus_message';
+import type { tt_trade_log, tt_trade_logId } from './tt_trade_log';
 import type { tt_trade_review, tt_trade_reviewId } from './tt_trade_review';
 import type { tt_user_signout, tt_user_signoutId } from './tt_user_signout';
 import type { tt_user_talkplus, tt_user_talkplusCreationAttributes, tt_user_talkplusId } from './tt_user_talkplus';
@@ -22,6 +23,8 @@ export interface tt_userAttributes {
   NICKNAME?: string;
   NAME?: string;
   ACCESSTOKEN: string;
+  BUYING_SAVINGS: number;
+  SELLING_SAVINGS: number;
   WASTE_SAVINGS: number;
   GREENGAS_SAVINGS?: number;
   COST_SAVINGS?: number;
@@ -45,12 +48,13 @@ export interface tt_userAttributes {
   UPD_TIME?: Date;
   JOIN_TIME?: Date;
   JOIN_PERMIT_USER_ID?: number;
-  JOIN_AGREE?: string;
+  JOIN_AGREE: string;
+  AGREE_UPD_TIME: Date;
 }
 
 export type tt_userPk = "USER_ID";
 export type tt_userId = tt_user[tt_userPk];
-export type tt_userOptionalAttributes = "USER_ID" | "NICKNAME" | "NAME" | "WASTE_SAVINGS" | "GREENGAS_SAVINGS" | "COST_SAVINGS" | "PROFILE_IMAGE" | "INTERIOR_COMPANY_TF" | "INTERIOR_COMPANY_NAME" | "BIRTHDAY" | "GENDER" | "ZIP_CODE" | "ADDRESS" | "DETAIL_ADDRESS" | "JOIN_STATE" | "RESTING_TF" | "LEAVE_TF" | "PHONE_AUTH_CODE" | "PHONE_AUTH_DATE" | "PHONE_AUTH_SUCCEED_DATE" | "PHONE_AUTH_TF" | "REG_TIME" | "UPD_TIME" | "JOIN_TIME" | "JOIN_PERMIT_USER_ID" | "JOIN_AGREE";
+export type tt_userOptionalAttributes = "USER_ID" | "NICKNAME" | "NAME" | "BUYING_SAVINGS" | "SELLING_SAVINGS" | "WASTE_SAVINGS" | "GREENGAS_SAVINGS" | "COST_SAVINGS" | "PROFILE_IMAGE" | "INTERIOR_COMPANY_TF" | "INTERIOR_COMPANY_NAME" | "BIRTHDAY" | "GENDER" | "ZIP_CODE" | "ADDRESS" | "DETAIL_ADDRESS" | "JOIN_STATE" | "RESTING_TF" | "LEAVE_TF" | "PHONE_AUTH_CODE" | "PHONE_AUTH_DATE" | "PHONE_AUTH_SUCCEED_DATE" | "PHONE_AUTH_TF" | "REG_TIME" | "UPD_TIME" | "JOIN_TIME" | "JOIN_PERMIT_USER_ID" | "JOIN_AGREE" | "AGREE_UPD_TIME";
 export type tt_userCreationAttributes = Optional<tt_userAttributes, tt_userOptionalAttributes>;
 
 export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes> implements tt_userAttributes {
@@ -60,6 +64,8 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   NICKNAME?: string;
   NAME?: string;
   ACCESSTOKEN!: string;
+  BUYING_SAVINGS!: number;
+  SELLING_SAVINGS!: number;
   WASTE_SAVINGS!: number;
   GREENGAS_SAVINGS?: number;
   COST_SAVINGS?: number;
@@ -83,7 +89,8 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   UPD_TIME?: Date;
   JOIN_TIME?: Date;
   JOIN_PERMIT_USER_ID?: number;
-  JOIN_AGREE?: string;
+  JOIN_AGREE!: string;
+  AGREE_UPD_TIME!: Date;
 
   // tt_user hasMany tt_access_log via USER_ID
   tt_access_logs!: tt_access_log[];
@@ -253,6 +260,30 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   hasTt_talkplus_message!: Sequelize.HasManyHasAssociationMixin<tt_talkplus_message, tt_talkplus_messageId>;
   hasTt_talkplus_messages!: Sequelize.HasManyHasAssociationsMixin<tt_talkplus_message, tt_talkplus_messageId>;
   countTt_talkplus_messages!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_trade_log via SELLER_USER_ID
+  tt_trade_logs!: tt_trade_log[];
+  getTt_trade_logs!: Sequelize.HasManyGetAssociationsMixin<tt_trade_log>;
+  setTt_trade_logs!: Sequelize.HasManySetAssociationsMixin<tt_trade_log, tt_trade_logId>;
+  addTt_trade_log!: Sequelize.HasManyAddAssociationMixin<tt_trade_log, tt_trade_logId>;
+  addTt_trade_logs!: Sequelize.HasManyAddAssociationsMixin<tt_trade_log, tt_trade_logId>;
+  createTt_trade_log!: Sequelize.HasManyCreateAssociationMixin<tt_trade_log>;
+  removeTt_trade_log!: Sequelize.HasManyRemoveAssociationMixin<tt_trade_log, tt_trade_logId>;
+  removeTt_trade_logs!: Sequelize.HasManyRemoveAssociationsMixin<tt_trade_log, tt_trade_logId>;
+  hasTt_trade_log!: Sequelize.HasManyHasAssociationMixin<tt_trade_log, tt_trade_logId>;
+  hasTt_trade_logs!: Sequelize.HasManyHasAssociationsMixin<tt_trade_log, tt_trade_logId>;
+  countTt_trade_logs!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_trade_log via BUYER_USER_ID
+  BUYER_USER_tt_trade_logs!: tt_trade_log[];
+  getBUYER_USER_tt_trade_logs!: Sequelize.HasManyGetAssociationsMixin<tt_trade_log>;
+  setBUYER_USER_tt_trade_logs!: Sequelize.HasManySetAssociationsMixin<tt_trade_log, tt_trade_logId>;
+  addBUYER_USER_tt_trade_log!: Sequelize.HasManyAddAssociationMixin<tt_trade_log, tt_trade_logId>;
+  addBUYER_USER_tt_trade_logs!: Sequelize.HasManyAddAssociationsMixin<tt_trade_log, tt_trade_logId>;
+  createBUYER_USER_tt_trade_log!: Sequelize.HasManyCreateAssociationMixin<tt_trade_log>;
+  removeBUYER_USER_tt_trade_log!: Sequelize.HasManyRemoveAssociationMixin<tt_trade_log, tt_trade_logId>;
+  removeBUYER_USER_tt_trade_logs!: Sequelize.HasManyRemoveAssociationsMixin<tt_trade_log, tt_trade_logId>;
+  hasBUYER_USER_tt_trade_log!: Sequelize.HasManyHasAssociationMixin<tt_trade_log, tt_trade_logId>;
+  hasBUYER_USER_tt_trade_logs!: Sequelize.HasManyHasAssociationsMixin<tt_trade_log, tt_trade_logId>;
+  countBUYER_USER_tt_trade_logs!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user hasMany tt_trade_review via USER_ID
   tt_trade_reviews!: tt_trade_review[];
   getTt_trade_reviews!: Sequelize.HasManyGetAssociationsMixin<tt_trade_review>;
@@ -334,6 +365,16 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
       type: DataTypes.STRING(500),
       allowNull: false,
       comment: "접근 토큰"
+    },
+    BUYING_SAVINGS: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      defaultValue: 0
+    },
+    SELLING_SAVINGS: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      defaultValue: 0
     },
     WASTE_SAVINGS: {
       type: DataTypes.BIGINT,
@@ -462,8 +503,14 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
     },
     JOIN_AGREE: {
       type: DataTypes.STRING(10),
-      allowNull: true,
+      allowNull: false,
+      defaultValue: "0",
       comment: "가입 약관 동의 여부(0: 개인정보 수집 및 이용동의 1: 개인정보 수집 목적 내 제3자 제공 동의 2: 14세 미만 법정 대리인 동의)"
+    },
+    AGREE_UPD_TIME: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: Sequelize.Sequelize.fn('current_timestamp')
     }
   }, {
     sequelize,

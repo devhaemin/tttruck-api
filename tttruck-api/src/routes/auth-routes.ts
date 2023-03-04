@@ -45,7 +45,8 @@ interface ISignUpReq extends tt_user {
   interior_company_name: string,
   birthday: string,
   gender: number, //(0: 남자, 1: 여자, 9: 기타)
-  zip_code: string
+  zip_code: string,
+  join_agree: string,
 }
 
 interface IPhoneAuthReq {
@@ -205,6 +206,7 @@ async function login(req: IReq<{ phone: string, password: string }>, res: IRes) 
  * @apiGroup Auth
  * @apiPermission none
  *
+ * @apiBody {String} JOIN_AGREE 가입 약관 동의 여부 Index 별로 조정 동의는 1, 비동의는 0(0: 개인정보 수집 및 이용동의 1: 개인정보 수집 목적 내 제3자 제공 동의 2: 14세 미만 법정 대리인 동의)
  * @apiParamExample {json} Request-Example:
  * {
  *     "NAME": "정해민",
@@ -216,7 +218,8 @@ async function login(req: IReq<{ phone: string, password: string }>, res: IRes) 
  *     "BIRTHDAY": "20001212",
  *     "GENDER" : 0,
  *     "ZIP_CODE" : "01256",
- *     "PHONE_AUTH_CODE" : "3911945"
+ *     "PHONE_AUTH_CODE" : "3911945",
+ *     "JOIN_AGREE" : "11100",
  * }
  *
  * @apiSuccessExample {json} Success-Response:

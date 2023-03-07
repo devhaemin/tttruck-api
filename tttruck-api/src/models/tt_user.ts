@@ -12,6 +12,7 @@ import type { tt_talkplus_file, tt_talkplus_fileId } from './tt_talkplus_file';
 import type { tt_talkplus_message, tt_talkplus_messageId } from './tt_talkplus_message';
 import type { tt_trade_log, tt_trade_logId } from './tt_trade_log';
 import type { tt_trade_review, tt_trade_reviewId } from './tt_trade_review';
+import type { tt_user_badge, tt_user_badgeId } from './tt_user_badge';
 import type { tt_user_signout, tt_user_signoutId } from './tt_user_signout';
 import type { tt_user_talkplus, tt_user_talkplusCreationAttributes, tt_user_talkplusId } from './tt_user_talkplus';
 import type { tt_view_log, tt_view_logId } from './tt_view_log';
@@ -301,6 +302,18 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   getJOIN_PERMIT_USER!: Sequelize.BelongsToGetAssociationMixin<tt_user>;
   setJOIN_PERMIT_USER!: Sequelize.BelongsToSetAssociationMixin<tt_user, tt_userId>;
   createJOIN_PERMIT_USER!: Sequelize.BelongsToCreateAssociationMixin<tt_user>;
+  // tt_user hasMany tt_user_badge via USER_ID
+  tt_user_badges!: tt_user_badge[];
+  getTt_user_badges!: Sequelize.HasManyGetAssociationsMixin<tt_user_badge>;
+  setTt_user_badges!: Sequelize.HasManySetAssociationsMixin<tt_user_badge, tt_user_badgeId>;
+  addTt_user_badge!: Sequelize.HasManyAddAssociationMixin<tt_user_badge, tt_user_badgeId>;
+  addTt_user_badges!: Sequelize.HasManyAddAssociationsMixin<tt_user_badge, tt_user_badgeId>;
+  createTt_user_badge!: Sequelize.HasManyCreateAssociationMixin<tt_user_badge>;
+  removeTt_user_badge!: Sequelize.HasManyRemoveAssociationMixin<tt_user_badge, tt_user_badgeId>;
+  removeTt_user_badges!: Sequelize.HasManyRemoveAssociationsMixin<tt_user_badge, tt_user_badgeId>;
+  hasTt_user_badge!: Sequelize.HasManyHasAssociationMixin<tt_user_badge, tt_user_badgeId>;
+  hasTt_user_badges!: Sequelize.HasManyHasAssociationsMixin<tt_user_badge, tt_user_badgeId>;
+  countTt_user_badges!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user hasMany tt_user_signout via USER_ID
   tt_user_signouts!: tt_user_signout[];
   getTt_user_signouts!: Sequelize.HasManyGetAssociationsMixin<tt_user_signout>;

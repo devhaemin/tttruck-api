@@ -17,8 +17,11 @@ import { userNotFoundErr } from '@src/services/user-service';
 // Paths
 const paths = {
   basePath: '/badge',
-  getBadgeList: '/list',
-
+  getUserBadges: '/userBadge/list',
+  getUserBadge: '/userBadge/:user_badgeId',
+  addUserBadge: '/userBadge',
+  updateUserBadge: '/userBadge/update/:user_badgeId',
+  deleteUserBadge: '/userBadge/delete/:user_badgeId',
   //get tt_badge
   getBadge: '/:badgeId',
   getBadges: '/',
@@ -31,7 +34,7 @@ const paths = {
 } as const;
 
 //tt_user_badge 관련
-async function getBadgeList(req:IReq,res:IRes){
+async function getUserBadges(req:IReq,res:IRes){
 
   // const userId = res.locals.user.USER_ID;
   // const badgeList = await badgeService.getBadgeList(Number(userId));
@@ -39,10 +42,34 @@ async function getBadgeList(req:IReq,res:IRes){
 
   ////Test 용 코드
   const userId = Number(43);
-  const badgeList = await badgeService.getBadgeList(userId);
+  const badgeList = await badgeService.getUserBadges(userId);
   return res.status(200).json(badgeList).end();
 }
+async function getUserBadge(req:IReq,res:IRes){
+  const userId = Number(43);
+  const {user_badgeId} = req.params;
+  const badgeList = await badgeService.getUserBadge(userId,Number(user_badgeId));
+  return res.status(200).json(badgeList).end();
+}
+async function addUserBadge(req:IReq<{userBadge: tt_user_badge}>,res:IRes){
+  const {userBadge} = req.body;
+  const result = await badgeService.addUserBadge(userBadge);
+  return res.status(HttpStatusCodes.CREATED).json(result).end();
+}
 
+async function updateUserBadge(req:IReq<{userBadge: tt_user_badge}>, res:IRes){
+  const {userBadge} = req.body;
+  const {user_badgeId} = req.params;
+  // const user = res.locals.user;
+  const result = await badgeService.updateUserBadge(userBadge,Number(user_badgeId));
+  return res.status(HttpStatusCodes.CREATED).json(result).end();
+}
+
+async function deleteUserBadge(req:IReq, res:IRes){
+  const {user_badgeId} = req.params;
+  const result = await badgeService.deleteUserBadge(Number(user_badgeId));
+  return res.status(HttpStatusCodes.ACCEPTED).json(result).end();
+}
 //tt_badge 관련
 
 //tt_badge entire row 출력
@@ -89,7 +116,11 @@ async function deleteBadge(req:IReq, res:IRes){
 
 export default {
   paths,
-  getBadgeList,
+  getUserBadges,
+  getUserBadge,
+  addUserBadge,
+  updateUserBadge,
+  deleteUserBadge,
   getBadges,
   getBadge,
   addBadge,

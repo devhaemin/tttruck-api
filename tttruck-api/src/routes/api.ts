@@ -137,9 +137,14 @@ apiRouter.use(authRoutes.paths.basePath, authRouter);
 
 const badgeRouter = Router();
 
-badgeRouter.get(badgeRoutes.paths.getBadgeList,badgeRoutes.getBadgeList);
+badgeRouter.get(badgeRoutes.paths.getUserBadges,badgeRoutes.getUserBadges);
+badgeRouter.get(badgeRoutes.paths.getUserBadge,badgeRoutes.getUserBadge);
 badgeRouter.get(badgeRoutes.paths.getBadges,badgeRoutes.getBadges);
 badgeRouter.get(badgeRoutes.paths.getBadge,badgeRoutes.getBadge);
+
+badgeRouter.post(badgeRoutes.paths.addUserBadge,badgeRoutes.addUserBadge);
+badgeRouter.put(badgeRoutes.paths.updateUserBadge,badgeRoutes.updateUserBadge);
+badgeRouter.delete(badgeRoutes.paths.deleteUserBadge,badgeRoutes.deleteUserBadge);
 
 badgeRouter.post(badgeRoutes.paths.addBadge,badgeRoutes.addBadge);
 badgeRouter.put(badgeRoutes.paths.updateBadge,badgeRoutes.updateBadge);

@@ -20,7 +20,7 @@ export const errors = {
 } as const;
 
 //tt_user_badge
-async function getBadgeList(userId:number):Promise<tt_user_badge[]>{
+async function getUserBadges(userId:number):Promise<tt_user_badge[]>{
   const badge = await tt_user_badge.findAll({
     include:[{model:tt_badge,as:"BADGE"}],
     where:{
@@ -47,9 +47,27 @@ async function getBadgeOption(badgeId:number): Promise<tt_user_badge>{
   return badgeOp;
 }
 
-// async function addUserBadge():Promise <tt_user_badge>{
-  
-// }
+async function getUserBadge(userId:number,user_badgeId:number):Promise<tt_user_badge[]>{
+  const badge = await tt_user_badge.findAll({
+    include:[{model:tt_badge,as:"BADGE"}],
+    where:{
+      USER_ID:userId,
+      ID:user_badgeId,
+    },
+  });
+  return badge;
+}
+
+async function addUserBadge(userbadge:tt_user_badge):Promise<tt_user_badge>{
+  return await tt_user_badge.create(userbadge);
+}
+async function updateUserBadge(badge:tt_user_badge,user_badgeId:number):Promise<tt_user_badge>{
+  const affectedCount = await tt_user_badge.update(badge, { where: { ID:user_badgeId } });
+  return badge;
+}
+async function deleteUserBadge(user_badgeId:number):Promise<void>{
+  await tt_user_badge.destroy({where:{ID: user_badgeId}});
+}
 
 //tt_badge
 async function getBadges():Promise<tt_badge[]>{
@@ -62,7 +80,6 @@ async function getBadge(id:number):Promise<tt_badge[]>{
   return badge;
 }
 async function addBadge(badge:tt_badge):Promise<tt_badge>{
-  console.log(badge);
   return await tt_badge.create(badge);
 }
 async function updateBadge(badge:tt_badge,badgeId:number):Promise<tt_badge>{
@@ -77,8 +94,12 @@ async function deleteBadge(id:number):Promise<void>{
 // **** Export default **** //
 export default {
   //tt_user_badge관련
-  getBadgeList,
+  getUserBadges,
+  getUserBadge,
   getBadgeOption,
+  addUserBadge,
+  updateUserBadge,
+  deleteUserBadge,
   //tt_badge관련
   getBadges,
   getBadge,

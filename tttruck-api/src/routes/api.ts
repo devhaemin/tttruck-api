@@ -14,6 +14,7 @@ import {locationCheck} from "@src/routes/shared/locationCheck";
 import tradeReviewRoutes from "@src/routes/trade-review-routes";
 import chatRoutes from "@src/routes/chat-routes";
 import {paginationCheck} from "@src/routes/shared/paginationCheck";
+import badgeRoutes from "@src/routes/badge-routes";
 // **** Init **** //
 
 const apiRouter = Router(),
@@ -132,7 +133,24 @@ apiRouter.use(authRoutes.paths.basePath, authRouter);
 
 // **** Setup auth routes **** //
 
+// **** Setup badge routes **** //
+
+const badgeRouter = Router();
+
+badgeRouter.get(badgeRoutes.paths.getBadgeList,badgeRoutes.getBadgeList);
+badgeRouter.get(badgeRoutes.paths.getBadges,badgeRoutes.getBadges);
+badgeRouter.get(badgeRoutes.paths.getBadge,badgeRoutes.getBadge);
+
+badgeRouter.post(badgeRoutes.paths.addBadge,badgeRoutes.addBadge);
+badgeRouter.put(badgeRoutes.paths.updateBadge,badgeRoutes.updateBadge);
+badgeRouter.delete(badgeRoutes.paths.deleteBadge,badgeRoutes.deleteBadge);
+
+
+apiRouter.use(badgeRoutes.paths.basePath,badgeRouter);
+
 // **** Setup product routes **** //
+
+
 
 const productRouter = Router();
 const productImageMulter = getS3ImageMulter('product/image');

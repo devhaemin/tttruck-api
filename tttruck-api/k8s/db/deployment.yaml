@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+spec:
+  replicas: 1 # Set the number of replicas you want to run
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: <your-docker-username>/<your-mariadb-image-name>:<tag>
+          ports:
+            - containerPort: 3306 # Replace with the port your MariaDB database is listening on
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: haemin1234! # Replace with your MariaDB root password
+            - name: MYSQL_DATABASE
+              value: tttruck-db # Replace with your MariaDB database name
+            - name: MYSQL_USER
+              value: tttruck # Replace with your MariaDB username
+            - name: MYSQL_PASSWORD
+              value: haemin1234! # Replace with your MariaDB password

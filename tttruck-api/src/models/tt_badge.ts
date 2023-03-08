@@ -1,5 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
+import type { tt_badge_condition, tt_badge_conditionId } from './tt_badge_condition';
 import type { tt_user_badge, tt_user_badgeId } from './tt_user_badge';
 
 export interface tt_badgeAttributes {
@@ -7,7 +8,7 @@ export interface tt_badgeAttributes {
   BADGE_SUBJECT?: string;
   BADGE_CONTENT?: string;
   BADGE_FILE_URL?: string;
-  BADGE_REG_DATE?: number;
+  BADGE_REG_DATE?: Date;
   BADGE_OP1_CONTENT?: string;
   BADGE_OP2_CONTENT?: string;
 }
@@ -22,10 +23,22 @@ export class tt_badge extends Model<tt_badgeAttributes, tt_badgeCreationAttribut
   BADGE_SUBJECT?: string;
   BADGE_CONTENT?: string;
   BADGE_FILE_URL?: string;
-  BADGE_REG_DATE?: number;
+  BADGE_REG_DATE?: Date;
   BADGE_OP1_CONTENT?: string;
   BADGE_OP2_CONTENT?: string;
 
+  // tt_badge hasMany tt_badge_condition via BADGE_ID
+  tt_badge_conditions!: tt_badge_condition[];
+  getTt_badge_conditions!: Sequelize.HasManyGetAssociationsMixin<tt_badge_condition>;
+  setTt_badge_conditions!: Sequelize.HasManySetAssociationsMixin<tt_badge_condition, tt_badge_conditionId>;
+  addTt_badge_condition!: Sequelize.HasManyAddAssociationMixin<tt_badge_condition, tt_badge_conditionId>;
+  addTt_badge_conditions!: Sequelize.HasManyAddAssociationsMixin<tt_badge_condition, tt_badge_conditionId>;
+  createTt_badge_condition!: Sequelize.HasManyCreateAssociationMixin<tt_badge_condition>;
+  removeTt_badge_condition!: Sequelize.HasManyRemoveAssociationMixin<tt_badge_condition, tt_badge_conditionId>;
+  removeTt_badge_conditions!: Sequelize.HasManyRemoveAssociationsMixin<tt_badge_condition, tt_badge_conditionId>;
+  hasTt_badge_condition!: Sequelize.HasManyHasAssociationMixin<tt_badge_condition, tt_badge_conditionId>;
+  hasTt_badge_conditions!: Sequelize.HasManyHasAssociationsMixin<tt_badge_condition, tt_badge_conditionId>;
+  countTt_badge_conditions!: Sequelize.HasManyCountAssociationsMixin;
   // tt_badge hasMany tt_user_badge via BADGE_ID
   tt_user_badges!: tt_user_badge[];
   getTt_user_badges!: Sequelize.HasManyGetAssociationsMixin<tt_user_badge>;
@@ -64,8 +77,9 @@ export class tt_badge extends Model<tt_badgeAttributes, tt_badgeCreationAttribut
       comment: "뱃지_이미지_URL"
     },
     BADGE_REG_DATE: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DATE,
       allowNull: true,
+      defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
       comment: "뱃지_출시일"
     },
     BADGE_OP1_CONTENT: {

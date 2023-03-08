@@ -61,13 +61,14 @@ async function getUserBadge(userId:number,user_badgeId:number):Promise<tt_user_b
 async function addUserBadge(userbadge:tt_user_badge):Promise<tt_user_badge>{
   return await tt_user_badge.create(userbadge);
 }
-async function updateUserBadge(badge:tt_user_badge,user_badgeId:number):Promise<tt_user_badge>{
-  const affectedCount = await tt_user_badge.update(badge, { where: { ID:user_badgeId } });
-  return badge;
+async function updateUserBadge(userBadge:tt_user_badge,user_badgeId:number):Promise<tt_user_badge>{
+  await tt_user_badge.update(userBadge, { where: { ID:user_badgeId } });
+  return userBadge;
 }
 async function deleteUserBadge(user_badgeId:number):Promise<void>{
   await tt_user_badge.destroy({where:{ID: user_badgeId}});
 }
+
 
 //tt_badge
 async function getBadges():Promise<tt_badge[]>{

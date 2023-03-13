@@ -2,7 +2,7 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 
 import productService, {
   prodAuthorityErr,
-  prodNotFoundErr,
+  prodNotFoundErr, ProductFilter,
 } from '@src/services/product-service';
 import {IReq, IReqQuery, IRes} from './shared/types';
 import {tt_product, tt_product_category} from '@src/models/init-models';
@@ -19,6 +19,7 @@ import {tt_user_group} from "@src/models/dummy/tt_user_group";
 // Paths
 const paths = {
   basePath: '/products',
+  getByFilter:'/filter',
   getAll: '/all',
   getCategories: '/category',
   getByCategories: '/categories',
@@ -32,6 +33,121 @@ const paths = {
   delete: '/delete/:id',
   updateStatus: '/:id/status',
 } as const;
+/**
+ * @api {post} /products/filter Get All Product List
+ * @apiName GetProduct
+ * @apiGroup Product
+ *
+ * @apiBody {Number} orderDesc 0:false 1:true
+ * @apiBody {string} orderBy  SUBJECT, PRODUCT_PRICE, UPLOAD_TIME, DISTANCE
+ * @apiPermission none
+ *
+ * @apiSuccess {String} Nothing
+ *
+ * @apiParamExample {json} Request-Example:
+ * {
+ *     filter:{
+ *       "latitude": "37.56211",
+ *       "longitude": "126.941069",
+ *       "limit": 30,
+ *       "offset": 0,
+ *       "queryString": "검색어",
+ *       "categories":[1,2,3],
+ *       "priceMin":100,
+ *       "priceMax":10000000,
+ *       "orderBy":PRODUCT_PRICE,
+ *       "orderDesc":0
+ *     }
+ * }
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ * [
+ *     {
+ *         "PRODUCT_ID": 8,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 0,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-26T08:19:55.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 127.074697,
+ *                 37.626356
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 0,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-26T08:19:55.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": [],
+ *         "SELLER_USER": {
+ *             "NICKNAME": "꼬리무123",
+ *             "PROFILE_IMAGE": null,
+ *             "USER_ID": 4
+ *         }
+ *     },
+ *     {
+ *         "PRODUCT_ID": 9,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 1794396811,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-27T05:33:48.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 127.074697,
+ *                 37.626356
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 1794396811,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-27T05:33:48.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": [],
+ *         "SELLER_USER": {
+ *             "NICKNAME": "꼬리무123",
+ *             "PROFILE_IMAGE": null,
+ *             "USER_ID": 4
+ *         }
+ *     }
+ * ]
+ * @apiError ProductNotFound The id of the User was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "ProductNotFound"
+ *     }
+ */
+async function getByFilter(req:IReq<{filter:ProductFilter}>, res:IRes){
+  const {filter} = req.body;
+  const products = await productService.getByFilter(filter);
+  return res.status(HttpStatusCodes.OK).json(products);
+}
 
 /**
  * @api {put} /products/:id/status UpdateStatus
@@ -1320,6 +1436,7 @@ async function getCategories(req: IReq, res: IRes) {
 
 export default {
   paths,
+  getByFilter,
   getAll,
   getCategories,
   getByCategory,

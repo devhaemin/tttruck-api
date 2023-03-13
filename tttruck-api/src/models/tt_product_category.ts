@@ -5,6 +5,7 @@ import type { tt_user, tt_userId } from './tt_user';
 
 export interface tt_product_categoryAttributes {
   PRODUCT_CATEGORY_ID: number;
+  PARENT_CATEGORY_ID: number;
   PRODUCT_CATEGORY_NAME?: string;
   PRODUCT_CATEGORY_PRIORITY?: number;
   VISIBLE_TF?: number;
@@ -25,6 +26,7 @@ export type tt_product_categoryCreationAttributes = Optional<tt_product_category
 
 export class tt_product_category extends Model<tt_product_categoryAttributes, tt_product_categoryCreationAttributes> implements tt_product_categoryAttributes {
   PRODUCT_CATEGORY_ID!: number;
+  PARENT_CATEGORY_ID!: number;
   PRODUCT_CATEGORY_NAME?: string;
   PRODUCT_CATEGORY_PRIORITY?: number;
   VISIBLE_TF?: number;
@@ -49,6 +51,11 @@ export class tt_product_category extends Model<tt_product_categoryAttributes, tt
   hasTt_product!: Sequelize.HasManyHasAssociationMixin<tt_product, tt_productId>;
   hasTt_products!: Sequelize.HasManyHasAssociationsMixin<tt_product, tt_productId>;
   countTt_products!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_product_category belongsTo tt_product_category via PARENT_CATEGORY_ID
+  PARENT_CATEGORY!: tt_product_category;
+  getPARENT_CATEGORY!: Sequelize.BelongsToGetAssociationMixin<tt_product_category>;
+  setPARENT_CATEGORY!: Sequelize.BelongsToSetAssociationMixin<tt_product_category, tt_product_categoryId>;
+  createPARENT_CATEGORY!: Sequelize.BelongsToCreateAssociationMixin<tt_product_category>;
   // tt_product_category belongsTo tt_user via UPDATE_USER_ID
   UPDATE_USER!: tt_user;
   getUPDATE_USER!: Sequelize.BelongsToGetAssociationMixin<tt_user>;
@@ -68,6 +75,14 @@ export class tt_product_category extends Model<tt_product_categoryAttributes, tt
       allowNull: false,
       primaryKey: true,
       comment: "상품 카테고리 ID"
+    },
+    PARENT_CATEGORY_ID: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false,
+      references: {
+        model: 'tt_product_category',
+        key: 'PRODUCT_CATEGORY_ID'
+      }
     },
     PRODUCT_CATEGORY_NAME: {
       type: DataTypes.STRING(100),
@@ -163,6 +178,13 @@ export class tt_product_category extends Model<tt_product_categoryAttributes, tt
         using: "BTREE",
         fields: [
           { name: "UPDATE_USER_ID" },
+        ]
+      },
+      {
+        name: "tt_product_category_tt_product_category_PRODUCT_CATEGORY_ID_fk",
+        using: "BTREE",
+        fields: [
+          { name: "PARENT_CATEGORY_ID" },
         ]
       },
     ]

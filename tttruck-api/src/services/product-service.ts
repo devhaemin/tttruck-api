@@ -1,4 +1,9 @@
-import {tt_product, tt_product_image, tt_user} from '@src/models/init-models';
+import {
+  tt_product,
+  tt_product_category,
+  tt_product_image,
+  tt_user,
+} from '@src/models/init-models';
 import {RouteError} from '@src/declarations/classes';
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import logger from "jet-logger";
@@ -14,18 +19,137 @@ export const prodAuthorityErr = 'Can not modify Product with your authority';
 const DEFAULT_LIMIT = 30;
 const DEFAULT_OFFSET = 0;
 
+export interface ProductFilter {
+  longitude?: string,
+  latitude?: string,
+  offset?: number,
+  limit?: number,
+  queryString?: string,
+  categories?: number[],
+  priceMin?: number,
+  priceMax?: number,
+  orderBy?: string,
+  orderDesc?: boolean,
+}
+
+function getAvailableFilter({
+  longitude = "0",
+  latitude = "0",
+  offset = DEFAULT_OFFSET,
+  limit = DEFAULT_LIMIT,
+  queryString = "",
+  categories = [0],
+  priceMin = 0,
+  priceMax = 100000000000000,
+  orderBy = "UPLOAD_TIME",
+  orderDesc = false,
+}) {
+  return {
+    longitude,
+    latitude,
+    offset,
+    limit,
+    queryString,
+    categories,
+    priceMin,
+    priceMax,
+    orderBy,
+    orderDesc,
+  };
+}
+
 // **** Functions **** //
+async function getByFilter(filter1: ProductFilter): Promise<tt_product[]> {
+  const filter = getAvailableFilter(filter1);
+  const categories = await tt_product_category.findAll({
+    where: {
+      [Op.or]:
+        [{
+          PRODUCT_CATEGORY_ID: {
+            [Op.in]: filter.categories,
+          },
+        },
+        {
+          PARENT_CATEGORY_ID: {
+            [Op.in]: filter.categories,
+          },
+        }],
+    },
+  });
+  if(!categories){
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      "Categories are not found",
+    );
+  }
+  const categoryData = categories.map(category => category.PRODUCT_CATEGORY_ID);
+  const offset = filter.offset || DEFAULT_OFFSET;
+  const limit = filter.limit || DEFAULT_LIMIT;
+  const {longitude, latitude, orderBy, orderDesc, queryString} = filter;
+  const {priceMin, priceMax} = filter;
+  const persists = await tt_product.findAll(
+    {
+      offset: offset,
+      limit: limit,
+      where: {
+        SUBJECT: {
+          [Op.like]: "%" + queryString + "%",
+        },
+        PRODUCT_PRICE: {
+          [Op.between]: [priceMin, priceMax],
+        },
+        PRODUCT_CATEGORY_ID: {
+          [Op.in]: categoryData,
+        },
+      },
+      attributes: {
+        include: [
+          [
+            Sequelize.fn(
+              'ST_Distance',
+              Sequelize.col('LOCATION'),
+              Sequelize.fn('POINT', longitude, latitude),
+            ),
+            'DISTANCE',
+          ],
+        ],
+      },
+      include:
+        [{all: true},
+          {model: tt_product_image, as: "tt_product_images"},
+          {
+            model: tt_user,
+            as: "SELLER_USER",
+            attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
+          }],
+      order: [
+        [
+          orderBy === "DISTANCE" ? Sequelize.literal("DISTANCE") : orderBy,
+          orderDesc ? "DESC" : "ASC"],
+        [{
+          model: tt_product_image,
+          as: "tt_product_images",
+        }, 'PRIORITY', 'ASC']],
+    });
+  if (!persists) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      prodNotFoundErr,
+    );
+  }
+  return persists;
+}
 
 /**
  * Get all products
  */
-async function getAll(longitude: string, latitude: string, offset:number, limit:number ): Promise<tt_product[]> {
+async function getAll(longitude: string, latitude: string, offset: number, limit: number): Promise<tt_product[]> {
   offset = offset || DEFAULT_OFFSET;
   limit = limit || DEFAULT_LIMIT;
   const persists = await tt_product.findAll(
     {
-      offset:offset,
-      limit:limit,
+      offset: offset,
+      limit: limit,
       attributes: {
         include: [
           [
@@ -46,7 +170,10 @@ async function getAll(longitude: string, latitude: string, offset:number, limit:
             attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
           }],
       order: [Sequelize.literal('DISTANCE ASC'),
-        [{model: tt_product_image, as: "tt_product_images"}, 'PRIORITY', 'ASC']],
+        [{
+          model: tt_product_image,
+          as: "tt_product_images",
+        }, 'PRIORITY', 'ASC']],
     });
   if (!persists) {
     throw new RouteError(
@@ -60,12 +187,12 @@ async function getAll(longitude: string, latitude: string, offset:number, limit:
 /**
  * Get products by category
  */
-async function getByCategory(longitude: string, latitude: string, id: number , offset:number, limit:number ): Promise<tt_product[]> {
+async function getByCategory(longitude: string, latitude: string, id: number, offset: number, limit: number): Promise<tt_product[]> {
   offset = offset || DEFAULT_OFFSET;
   limit = limit || DEFAULT_LIMIT;
   const persists = await tt_product.findAll({
-    offset:offset,
-    limit:limit,
+    offset: offset,
+    limit: limit,
     attributes: {
       include: [
         [
@@ -102,13 +229,13 @@ async function getByCategory(longitude: string, latitude: string, id: number , o
  *
  * Get products by categories
  */
-async function getByCategories(longitude: string, latitude: string, categories: number[], offset:number, limit:number ):
+async function getByCategories(longitude: string, latitude: string, categories: number[], offset: number, limit: number):
   Promise<tt_product[]> {
   offset = offset || DEFAULT_OFFSET;
   limit = limit || DEFAULT_LIMIT;
   const persists = await tt_product.findAll({
-    offset:offset,
-    limit:limit,
+    offset: offset,
+    limit: limit,
     attributes: {
       include: [
         [
@@ -153,7 +280,10 @@ async function getById(id: number): Promise<tt_product> {
           as: "SELLER_USER",
           attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
         }],
-    order: [[{model: tt_product_image, as: "tt_product_images"}, 'PRIORITY', 'ASC']],
+    order: [[{
+      model: tt_product_image,
+      as: "tt_product_images",
+    }, 'PRIORITY', 'ASC']],
   });
   if (!persists) {
     throw new RouteError(
@@ -300,6 +430,7 @@ async function _delete(user: tt_user, id: number): Promise<void> {
 // **** Export default **** //
 
 export default {
+  getByFilter,
   getAll,
   getByCategory,
   getByCategories,

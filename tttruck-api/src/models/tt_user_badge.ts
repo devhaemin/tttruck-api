@@ -7,7 +7,7 @@ export interface tt_user_badgeAttributes {
   ID: number;
   USER_ID: number;
   BADGE_ID: number;
-  REG_DATE: string;
+  REG_DATE: Date;
   OP1?: number;
   OP2?: number;
   IS_ACTIVATED?: number;
@@ -15,14 +15,14 @@ export interface tt_user_badgeAttributes {
 
 export type tt_user_badgePk = "ID";
 export type tt_user_badgeId = tt_user_badge[tt_user_badgePk];
-export type tt_user_badgeOptionalAttributes = "ID" | "OP1" | "OP2" | "IS_ACTIVATED";
+export type tt_user_badgeOptionalAttributes = "ID" | "REG_DATE" | "OP1" | "OP2" | "IS_ACTIVATED";
 export type tt_user_badgeCreationAttributes = Optional<tt_user_badgeAttributes, tt_user_badgeOptionalAttributes>;
 
 export class tt_user_badge extends Model<tt_user_badgeAttributes, tt_user_badgeCreationAttributes> implements tt_user_badgeAttributes {
   ID!: number;
   USER_ID!: number;
   BADGE_ID!: number;
-  REG_DATE!: string;
+  REG_DATE!: Date;
   OP1?: number;
   OP2?: number;
   IS_ACTIVATED?: number;
@@ -66,8 +66,9 @@ export class tt_user_badge extends Model<tt_user_badgeAttributes, tt_user_badgeC
       }
     },
     REG_DATE: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
       comment: "출시일"
     },
     OP1: {

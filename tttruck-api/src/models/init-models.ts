@@ -39,6 +39,12 @@ import { tt_trade_log as _tt_trade_log } from "./tt_trade_log";
 import type { tt_trade_logAttributes, tt_trade_logCreationAttributes } from "./tt_trade_log";
 import { tt_trade_review as _tt_trade_review } from "./tt_trade_review";
 import type { tt_trade_reviewAttributes, tt_trade_reviewCreationAttributes } from "./tt_trade_review";
+import { tt_trucker_center as _tt_trucker_center } from "./tt_trucker_center";
+import type { tt_trucker_centerAttributes, tt_trucker_centerCreationAttributes } from "./tt_trucker_center";
+import { tt_trucker_center_image as _tt_trucker_center_image } from "./tt_trucker_center_image";
+import type { tt_trucker_center_imageAttributes, tt_trucker_center_imageCreationAttributes } from "./tt_trucker_center_image";
+import { tt_trucker_center_master as _tt_trucker_center_master } from "./tt_trucker_center_master";
+import type { tt_trucker_center_masterAttributes, tt_trucker_center_masterCreationAttributes } from "./tt_trucker_center_master";
 import { tt_user as _tt_user } from "./tt_user";
 import type { tt_userAttributes, tt_userCreationAttributes } from "./tt_user";
 import { tt_user_badge as _tt_user_badge } from "./tt_user_badge";
@@ -71,6 +77,9 @@ export {
   _tt_talkplus_message as tt_talkplus_message,
   _tt_trade_log as tt_trade_log,
   _tt_trade_review as tt_trade_review,
+  _tt_trucker_center as tt_trucker_center,
+  _tt_trucker_center_image as tt_trucker_center_image,
+  _tt_trucker_center_master as tt_trucker_center_master,
   _tt_user as tt_user,
   _tt_user_badge as tt_user_badge,
   _tt_user_signout as tt_user_signout,
@@ -119,6 +128,12 @@ export type {
   tt_trade_logCreationAttributes,
   tt_trade_reviewAttributes,
   tt_trade_reviewCreationAttributes,
+  tt_trucker_centerAttributes,
+  tt_trucker_centerCreationAttributes,
+  tt_trucker_center_imageAttributes,
+  tt_trucker_center_imageCreationAttributes,
+  tt_trucker_center_masterAttributes,
+  tt_trucker_center_masterCreationAttributes,
   tt_userAttributes,
   tt_userCreationAttributes,
   tt_user_badgeAttributes,
@@ -152,6 +167,9 @@ export function initModels(sequelize: Sequelize) {
   const tt_talkplus_message = _tt_talkplus_message.initModel(sequelize);
   const tt_trade_log = _tt_trade_log.initModel(sequelize);
   const tt_trade_review = _tt_trade_review.initModel(sequelize);
+  const tt_trucker_center = _tt_trucker_center.initModel(sequelize);
+  const tt_trucker_center_image = _tt_trucker_center_image.initModel(sequelize);
+  const tt_trucker_center_master = _tt_trucker_center_master.initModel(sequelize);
   const tt_user = _tt_user.initModel(sequelize);
   const tt_user_badge = _tt_user_badge.initModel(sequelize);
   const tt_user_signout = _tt_user_signout.initModel(sequelize);
@@ -162,6 +180,8 @@ export function initModels(sequelize: Sequelize) {
   tt_badge.hasMany(tt_badge_condition, { as: "tt_badge_conditions", foreignKey: "BADGE_ID"});
   tt_user_badge.belongsTo(tt_badge, { as: "BADGE", foreignKey: "BADGE_ID"});
   tt_badge.hasMany(tt_user_badge, { as: "tt_user_badges", foreignKey: "BADGE_ID"});
+  tt_badge_condition.belongsTo(tt_badge_condition, { as: "PRODUCT_CATEGORY", foreignKey: "PRODUCT_CATEGORY_ID"});
+  tt_badge_condition.hasMany(tt_badge_condition, { as: "tt_badge_conditions", foreignKey: "PRODUCT_CATEGORY_ID"});
   tt_notice_image.belongsTo(tt_notice, { as: "NOTICE", foreignKey: "NOTICE_ID"});
   tt_notice.hasMany(tt_notice_image, { as: "tt_notice_images", foreignKey: "NOTICE_ID"});
   tt_notice.belongsTo(tt_notice_master, { as: "NOTICE_MASTER", foreignKey: "NOTICE_MASTER_ID"});
@@ -180,6 +200,10 @@ export function initModels(sequelize: Sequelize) {
   tt_talkplus_channel.hasMany(tt_talkplus_message, { as: "tt_talkplus_messages", foreignKey: "TALKPLUS_CHANNEL_ID"});
   tt_talkplus_file.belongsTo(tt_talkplus_message, { as: "MESSAGE", foreignKey: "MESSAGE_ID"});
   tt_talkplus_message.hasMany(tt_talkplus_file, { as: "tt_talkplus_files", foreignKey: "MESSAGE_ID"});
+  tt_trucker_center_image.belongsTo(tt_trucker_center, { as: "TRUCKER_CENTER", foreignKey: "TRUCKER_CENTER_ID"});
+  tt_trucker_center.hasMany(tt_trucker_center_image, { as: "tt_trucker_center_images", foreignKey: "TRUCKER_CENTER_ID"});
+  tt_trucker_center.belongsTo(tt_trucker_center_master, { as: "TRUCKER_CENTER_MASTER", foreignKey: "TRUCKER_CENTER_MASTER_ID"});
+  tt_trucker_center_master.hasMany(tt_trucker_center, { as: "tt_trucker_centers", foreignKey: "TRUCKER_CENTER_MASTER_ID"});
   tt_access_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasMany(tt_access_log, { as: "tt_access_logs", foreignKey: "USER_ID"});
   tt_login_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
@@ -214,6 +238,14 @@ export function initModels(sequelize: Sequelize) {
   tt_user.hasMany(tt_trade_log, { as: "BUYER_USER_tt_trade_logs", foreignKey: "BUYER_USER_ID"});
   tt_trade_review.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasMany(tt_trade_review, { as: "tt_trade_reviews", foreignKey: "USER_ID"});
+  tt_trucker_center.belongsTo(tt_user, { as: "POST_USER", foreignKey: "POST_USER_ID"});
+  tt_user.hasMany(tt_trucker_center, { as: "tt_trucker_centers", foreignKey: "POST_USER_ID"});
+  tt_trucker_center.belongsTo(tt_user, { as: "UPDATE_USER", foreignKey: "UPDATE_USER_ID"});
+  tt_user.hasMany(tt_trucker_center, { as: "UPDATE_USER_tt_trucker_centers", foreignKey: "UPDATE_USER_ID"});
+  tt_trucker_center_master.belongsTo(tt_user, { as: "CREATE_USER", foreignKey: "CREATE_USER_ID"});
+  tt_user.hasMany(tt_trucker_center_master, { as: "tt_trucker_center_masters", foreignKey: "CREATE_USER_ID"});
+  tt_trucker_center_master.belongsTo(tt_user, { as: "UPDATE_USER", foreignKey: "UPDATE_USER_ID"});
+  tt_user.hasMany(tt_trucker_center_master, { as: "UPDATE_USER_tt_trucker_center_masters", foreignKey: "UPDATE_USER_ID"});
   tt_user.belongsTo(tt_user, { as: "JOIN_PERMIT_USER", foreignKey: "JOIN_PERMIT_USER_ID"});
   tt_user.hasMany(tt_user, { as: "tt_users", foreignKey: "JOIN_PERMIT_USER_ID"});
   tt_user_badge.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
@@ -252,6 +284,9 @@ export function initModels(sequelize: Sequelize) {
     tt_talkplus_message: tt_talkplus_message,
     tt_trade_log: tt_trade_log,
     tt_trade_review: tt_trade_review,
+    tt_trucker_center: tt_trucker_center,
+    tt_trucker_center_image: tt_trucker_center_image,
+    tt_trucker_center_master: tt_trucker_center_master,
     tt_user: tt_user,
     tt_user_badge: tt_user_badge,
     tt_user_signout: tt_user_signout,

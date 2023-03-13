@@ -15,6 +15,7 @@ import tradeReviewRoutes from "@src/routes/trade-review-routes";
 import chatRoutes from "@src/routes/chat-routes";
 import {paginationCheck} from "@src/routes/shared/paginationCheck";
 import badgeRoutes from "@src/routes/badge-routes";
+import truckerCenterRoutes from "@src/routes/trucker-center-routes";
 // **** Init **** //
 
 const apiRouter = Router(),
@@ -279,6 +280,55 @@ noticeRouter.delete(
   noticeRoutes.delete,
 );
 apiRouter.use(noticeRoutes.paths.basePath, noticeRouter);
+
+// **** Setup TruckerCenter routes **** //
+
+const truckerCenterRouter = Router();
+const truckerCenterImageMulter = getS3ImageMulter('truckercenter/image');
+
+// Get notice categories
+truckerCenterRouter.get(truckerCenterRoutes.paths.getCategories, truckerCenterRoutes.getCategories);
+
+// Get all notices
+truckerCenterRouter.get(truckerCenterRoutes.paths.getAll, truckerCenterRoutes.getAll);
+
+// Get notices by category
+truckerCenterRouter.get(truckerCenterRoutes.paths.getByCategory, truckerCenterRoutes.getByCategory);
+
+// Get notice by ID
+truckerCenterRouter.get(truckerCenterRoutes.paths.getById, truckerCenterRoutes.getById);
+
+// Add a notice
+truckerCenterRouter.post(
+  truckerCenterRoutes.paths.add,
+  adminMw,
+  truckerCenterRoutes.add,
+);
+
+// Update a notice
+truckerCenterRouter.put(
+  truckerCenterRoutes.paths.update,
+  adminMw,
+  truckerCenterRoutes.update,
+);
+
+truckerCenterRouter.post(
+  noticeRoutes.paths.imageUpload,
+  //validate(["productId","number","body"]),
+  adminMw,
+  truckerCenterImageMulter.single('file'),
+  truckerCenterRoutes.imageUpload,
+);
+
+// Delete one notice
+truckerCenterRouter.delete(
+  noticeRoutes.paths.delete,
+  validate(['id', 'number', 'params']),
+  adminMw,
+  truckerCenterRoutes.delete,
+);
+apiRouter.use(truckerCenterRoutes.paths.basePath, truckerCenterRouter);
+
 // **** Setup Product routes **** //
 
 // **** Setup Trade routes **** //

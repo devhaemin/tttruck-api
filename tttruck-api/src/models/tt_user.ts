@@ -12,6 +12,8 @@ import type { tt_talkplus_file, tt_talkplus_fileId } from './tt_talkplus_file';
 import type { tt_talkplus_message, tt_talkplus_messageId } from './tt_talkplus_message';
 import type { tt_trade_log, tt_trade_logId } from './tt_trade_log';
 import type { tt_trade_review, tt_trade_reviewId } from './tt_trade_review';
+import type { tt_trucker_center, tt_trucker_centerId } from './tt_trucker_center';
+import type { tt_trucker_center_master, tt_trucker_center_masterId } from './tt_trucker_center_master';
 import type { tt_user_badge, tt_user_badgeId } from './tt_user_badge';
 import type { tt_user_signout, tt_user_signoutId } from './tt_user_signout';
 import type { tt_user_talkplus, tt_user_talkplusCreationAttributes, tt_user_talkplusId } from './tt_user_talkplus';
@@ -297,6 +299,54 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   hasTt_trade_review!: Sequelize.HasManyHasAssociationMixin<tt_trade_review, tt_trade_reviewId>;
   hasTt_trade_reviews!: Sequelize.HasManyHasAssociationsMixin<tt_trade_review, tt_trade_reviewId>;
   countTt_trade_reviews!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_trucker_center via POST_USER_ID
+  tt_trucker_centers!: tt_trucker_center[];
+  getTt_trucker_centers!: Sequelize.HasManyGetAssociationsMixin<tt_trucker_center>;
+  setTt_trucker_centers!: Sequelize.HasManySetAssociationsMixin<tt_trucker_center, tt_trucker_centerId>;
+  addTt_trucker_center!: Sequelize.HasManyAddAssociationMixin<tt_trucker_center, tt_trucker_centerId>;
+  addTt_trucker_centers!: Sequelize.HasManyAddAssociationsMixin<tt_trucker_center, tt_trucker_centerId>;
+  createTt_trucker_center!: Sequelize.HasManyCreateAssociationMixin<tt_trucker_center>;
+  removeTt_trucker_center!: Sequelize.HasManyRemoveAssociationMixin<tt_trucker_center, tt_trucker_centerId>;
+  removeTt_trucker_centers!: Sequelize.HasManyRemoveAssociationsMixin<tt_trucker_center, tt_trucker_centerId>;
+  hasTt_trucker_center!: Sequelize.HasManyHasAssociationMixin<tt_trucker_center, tt_trucker_centerId>;
+  hasTt_trucker_centers!: Sequelize.HasManyHasAssociationsMixin<tt_trucker_center, tt_trucker_centerId>;
+  countTt_trucker_centers!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_trucker_center via UPDATE_USER_ID
+  UPDATE_USER_tt_trucker_centers!: tt_trucker_center[];
+  getUPDATE_USER_tt_trucker_centers!: Sequelize.HasManyGetAssociationsMixin<tt_trucker_center>;
+  setUPDATE_USER_tt_trucker_centers!: Sequelize.HasManySetAssociationsMixin<tt_trucker_center, tt_trucker_centerId>;
+  addUPDATE_USER_tt_trucker_center!: Sequelize.HasManyAddAssociationMixin<tt_trucker_center, tt_trucker_centerId>;
+  addUPDATE_USER_tt_trucker_centers!: Sequelize.HasManyAddAssociationsMixin<tt_trucker_center, tt_trucker_centerId>;
+  createUPDATE_USER_tt_trucker_center!: Sequelize.HasManyCreateAssociationMixin<tt_trucker_center>;
+  removeUPDATE_USER_tt_trucker_center!: Sequelize.HasManyRemoveAssociationMixin<tt_trucker_center, tt_trucker_centerId>;
+  removeUPDATE_USER_tt_trucker_centers!: Sequelize.HasManyRemoveAssociationsMixin<tt_trucker_center, tt_trucker_centerId>;
+  hasUPDATE_USER_tt_trucker_center!: Sequelize.HasManyHasAssociationMixin<tt_trucker_center, tt_trucker_centerId>;
+  hasUPDATE_USER_tt_trucker_centers!: Sequelize.HasManyHasAssociationsMixin<tt_trucker_center, tt_trucker_centerId>;
+  countUPDATE_USER_tt_trucker_centers!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_trucker_center_master via CREATE_USER_ID
+  tt_trucker_center_masters!: tt_trucker_center_master[];
+  getTt_trucker_center_masters!: Sequelize.HasManyGetAssociationsMixin<tt_trucker_center_master>;
+  setTt_trucker_center_masters!: Sequelize.HasManySetAssociationsMixin<tt_trucker_center_master, tt_trucker_center_masterId>;
+  addTt_trucker_center_master!: Sequelize.HasManyAddAssociationMixin<tt_trucker_center_master, tt_trucker_center_masterId>;
+  addTt_trucker_center_masters!: Sequelize.HasManyAddAssociationsMixin<tt_trucker_center_master, tt_trucker_center_masterId>;
+  createTt_trucker_center_master!: Sequelize.HasManyCreateAssociationMixin<tt_trucker_center_master>;
+  removeTt_trucker_center_master!: Sequelize.HasManyRemoveAssociationMixin<tt_trucker_center_master, tt_trucker_center_masterId>;
+  removeTt_trucker_center_masters!: Sequelize.HasManyRemoveAssociationsMixin<tt_trucker_center_master, tt_trucker_center_masterId>;
+  hasTt_trucker_center_master!: Sequelize.HasManyHasAssociationMixin<tt_trucker_center_master, tt_trucker_center_masterId>;
+  hasTt_trucker_center_masters!: Sequelize.HasManyHasAssociationsMixin<tt_trucker_center_master, tt_trucker_center_masterId>;
+  countTt_trucker_center_masters!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_trucker_center_master via UPDATE_USER_ID
+  UPDATE_USER_tt_trucker_center_masters!: tt_trucker_center_master[];
+  getUPDATE_USER_tt_trucker_center_masters!: Sequelize.HasManyGetAssociationsMixin<tt_trucker_center_master>;
+  setUPDATE_USER_tt_trucker_center_masters!: Sequelize.HasManySetAssociationsMixin<tt_trucker_center_master, tt_trucker_center_masterId>;
+  addUPDATE_USER_tt_trucker_center_master!: Sequelize.HasManyAddAssociationMixin<tt_trucker_center_master, tt_trucker_center_masterId>;
+  addUPDATE_USER_tt_trucker_center_masters!: Sequelize.HasManyAddAssociationsMixin<tt_trucker_center_master, tt_trucker_center_masterId>;
+  createUPDATE_USER_tt_trucker_center_master!: Sequelize.HasManyCreateAssociationMixin<tt_trucker_center_master>;
+  removeUPDATE_USER_tt_trucker_center_master!: Sequelize.HasManyRemoveAssociationMixin<tt_trucker_center_master, tt_trucker_center_masterId>;
+  removeUPDATE_USER_tt_trucker_center_masters!: Sequelize.HasManyRemoveAssociationsMixin<tt_trucker_center_master, tt_trucker_center_masterId>;
+  hasUPDATE_USER_tt_trucker_center_master!: Sequelize.HasManyHasAssociationMixin<tt_trucker_center_master, tt_trucker_center_masterId>;
+  hasUPDATE_USER_tt_trucker_center_masters!: Sequelize.HasManyHasAssociationsMixin<tt_trucker_center_master, tt_trucker_center_masterId>;
+  countUPDATE_USER_tt_trucker_center_masters!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user belongsTo tt_user via JOIN_PERMIT_USER_ID
   JOIN_PERMIT_USER!: tt_user;
   getJOIN_PERMIT_USER!: Sequelize.BelongsToGetAssociationMixin<tt_user>;

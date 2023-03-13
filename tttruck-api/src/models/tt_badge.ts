@@ -8,7 +8,7 @@ export interface tt_badgeAttributes {
   BADGE_SUBJECT?: string;
   BADGE_CONTENT?: string;
   BADGE_FILE_URL?: string;
-  BADGE_REG_DATE?: Date;
+  BADGE_REG_DATE?: number;
   BADGE_OP1_CONTENT?: string;
   BADGE_OP2_CONTENT?: string;
 }
@@ -23,7 +23,7 @@ export class tt_badge extends Model<tt_badgeAttributes, tt_badgeCreationAttribut
   BADGE_SUBJECT?: string;
   BADGE_CONTENT?: string;
   BADGE_FILE_URL?: string;
-  BADGE_REG_DATE?: Date;
+  BADGE_REG_DATE?: number;
   BADGE_OP1_CONTENT?: string;
   BADGE_OP2_CONTENT?: string;
 
@@ -77,9 +77,8 @@ export class tt_badge extends Model<tt_badgeAttributes, tt_badgeCreationAttribut
       comment: "뱃지_이미지_URL"
     },
     BADGE_REG_DATE: {
-      type: DataTypes.DATE,
+      type: DataTypes.INTEGER,
       allowNull: true,
-      defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
       comment: "뱃지_출시일"
     },
     BADGE_OP1_CONTENT: {

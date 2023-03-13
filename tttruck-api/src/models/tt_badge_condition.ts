@@ -1,7 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_badge, tt_badgeId } from './tt_badge';
-import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
 
 export interface tt_badge_conditionAttributes {
   CONDITION_ID: number;
@@ -91,13 +90,6 @@ export class tt_badge_condition extends Model<tt_badge_conditionAttributes, tt_b
         using: "BTREE",
         fields: [
           { name: "BADGE_ID" },
-        ]
-      },
-      {
-        name: "FK_tt_badge_condition_tt_product_category",
-        using: "BTREE",
-        fields: [
-          { name: "PRODUCT_CATEGORY_ID" },
         ]
       },
     ]

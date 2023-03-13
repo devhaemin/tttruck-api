@@ -1,11 +1,11 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
-import type { tt_badge_condition, tt_badge_conditionId } from './tt_badge_condition';
 import type { tt_product, tt_productId } from './tt_product';
 import type { tt_user, tt_userId } from './tt_user';
 
 export interface tt_product_categoryAttributes {
   PRODUCT_CATEGORY_ID: number;
+  PARENT_CATEGORY_ID: number;
   PRODUCT_CATEGORY_NAME?: string;
   PRODUCT_CATEGORY_PRIORITY?: number;
   VISIBLE_TF?: number;
@@ -26,6 +26,7 @@ export type tt_product_categoryCreationAttributes = Optional<tt_product_category
 
 export class tt_product_category extends Model<tt_product_categoryAttributes, tt_product_categoryCreationAttributes> implements tt_product_categoryAttributes {
   PRODUCT_CATEGORY_ID!: number;
+  PARENT_CATEGORY_ID!: number;
   PRODUCT_CATEGORY_NAME?: string;
   PRODUCT_CATEGORY_PRIORITY?: number;
   VISIBLE_TF?: number;
@@ -38,18 +39,6 @@ export class tt_product_category extends Model<tt_product_categoryAttributes, tt
   CREATE_USER_IPv6?: any;
   CREATE_TIME?: Date;
 
-  // tt_product_category hasMany tt_badge_condition via PRODUCT_CATEGORY_ID
-  tt_badge_conditions!: tt_badge_condition[];
-  getTt_badge_conditions!: Sequelize.HasManyGetAssociationsMixin<tt_badge_condition>;
-  setTt_badge_conditions!: Sequelize.HasManySetAssociationsMixin<tt_badge_condition, tt_badge_conditionId>;
-  addTt_badge_condition!: Sequelize.HasManyAddAssociationMixin<tt_badge_condition, tt_badge_conditionId>;
-  addTt_badge_conditions!: Sequelize.HasManyAddAssociationsMixin<tt_badge_condition, tt_badge_conditionId>;
-  createTt_badge_condition!: Sequelize.HasManyCreateAssociationMixin<tt_badge_condition>;
-  removeTt_badge_condition!: Sequelize.HasManyRemoveAssociationMixin<tt_badge_condition, tt_badge_conditionId>;
-  removeTt_badge_conditions!: Sequelize.HasManyRemoveAssociationsMixin<tt_badge_condition, tt_badge_conditionId>;
-  hasTt_badge_condition!: Sequelize.HasManyHasAssociationMixin<tt_badge_condition, tt_badge_conditionId>;
-  hasTt_badge_conditions!: Sequelize.HasManyHasAssociationsMixin<tt_badge_condition, tt_badge_conditionId>;
-  countTt_badge_conditions!: Sequelize.HasManyCountAssociationsMixin;
   // tt_product_category hasMany tt_product via PRODUCT_CATEGORY_ID
   tt_products!: tt_product[];
   getTt_products!: Sequelize.HasManyGetAssociationsMixin<tt_product>;
@@ -62,6 +51,11 @@ export class tt_product_category extends Model<tt_product_categoryAttributes, tt
   hasTt_product!: Sequelize.HasManyHasAssociationMixin<tt_product, tt_productId>;
   hasTt_products!: Sequelize.HasManyHasAssociationsMixin<tt_product, tt_productId>;
   countTt_products!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_product_category belongsTo tt_product_category via PARENT_CATEGORY_ID
+  PARENT_CATEGORY!: tt_product_category;
+  getPARENT_CATEGORY!: Sequelize.BelongsToGetAssociationMixin<tt_product_category>;
+  setPARENT_CATEGORY!: Sequelize.BelongsToSetAssociationMixin<tt_product_category, tt_product_categoryId>;
+  createPARENT_CATEGORY!: Sequelize.BelongsToCreateAssociationMixin<tt_product_category>;
   // tt_product_category belongsTo tt_user via UPDATE_USER_ID
   UPDATE_USER!: tt_user;
   getUPDATE_USER!: Sequelize.BelongsToGetAssociationMixin<tt_user>;
@@ -81,6 +75,14 @@ export class tt_product_category extends Model<tt_product_categoryAttributes, tt
       allowNull: false,
       primaryKey: true,
       comment: "상품 카테고리 ID"
+    },
+    PARENT_CATEGORY_ID: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false,
+      references: {
+        model: 'tt_product_category',
+        key: 'PRODUCT_CATEGORY_ID'
+      }
     },
     PRODUCT_CATEGORY_NAME: {
       type: DataTypes.STRING(100),
@@ -176,6 +178,13 @@ export class tt_product_category extends Model<tt_product_categoryAttributes, tt
         using: "BTREE",
         fields: [
           { name: "UPDATE_USER_ID" },
+        ]
+      },
+      {
+        name: "tt_product_category_tt_product_category_PRODUCT_CATEGORY_ID_fk",
+        using: "BTREE",
+        fields: [
+          { name: "PARENT_CATEGORY_ID" },
         ]
       },
     ]

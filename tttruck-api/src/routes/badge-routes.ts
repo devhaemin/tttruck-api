@@ -3,7 +3,7 @@ import authService from '@src/services/auth-service';
 import EnvVars from '@src/declarations/major/EnvVars';
 import codeUtil from "@src/util/code-util";
 import {IReq, IRes} from './shared/types';
-import {tt_user, tt_user_badge,tt_badge} from "@src/models/init-models";
+import {tt_user_badge,tt_badge} from "@src/models/init-models";
 import {getRandomNicknames} from "@src/util/nick-gen-util";
 import logger from "jet-logger";
 import {S3File} from "@src/routes/shared/awsMultipart";
@@ -29,15 +29,16 @@ const paths = {
   updateBadge: '/update/:badgeId',
   deleteBadge: '/delete/:badgeId',
 } as const;
-async function getBadgeConditions(req:IReq,res:IRes){
-  const badgeConditionList = await badgeService.getBadgeConditions();
-  return res.status(200).json(badgeConditionList);
-}
-async function getBadgeCondition(req:IReq,res:IRes){
-  const badgeConditionId = req.params;
-  const badgeCondition = await badgeService.getBadgeCondition(Number(badgeConditionId));
-  return res.status(200).json(badgeCondition);
-}
+
+// async function getBadgeConditions(req:IReq,res:IRes){
+//   const badgeConditionList = await badgeService.getBadgeConditions();
+//   return res.status(200).json(badgeConditionList);
+// }
+// async function getBadgeCondition(req:IReq,res:IRes){
+//   const badgeConditionId = req.params;
+//   const badgeCondition = await badgeService.getBadgeCondition(Number(badgeConditionId));
+//   return res.status(200).json(badgeCondition);
+// }
 
 // **** Functions **** //
 

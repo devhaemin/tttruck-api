@@ -19,35 +19,35 @@ export const errors = {
   userNotFound :  (user:string) => `"${user}" not found`,
 } as const;
 
-//tt_badge_condition
-async function getBadgeConditions():Promise <tt_badge_condition[]> { 
-  const conditions = await tt_badge_condition.findAll({
-    include:[{model:tt_product_category,as:"PRODUCT_CATEGORY"}],
-  });
-  return conditions;
-}
-async function getBadgeCondition(conditionId:number):
-Promise<tt_badge_condition[]> {
-  const conditions = await tt_badge_condition.findAll({
-    include:[{model:tt_product_category,as:"PRODUCT_CATEGORY"}],
-    where:{
-      ID:conditionId,
-    },
-  });
-  return conditions;
-}
-async function addBadgeCondition(badgeCondtiion:tt_badge_condition):Promise<tt_badge_condition>{
-  const result = await tt_badge_condition.create(badgeCondtiion);
-  return result;
-}
+// //tt_badge_condition
+// async function getBadgeConditions():Promise <tt_badge_condition[]> { 
+//   const conditions = await tt_badge_condition.findAll({
+//     include:[{model:tt_product_category,as:"PRODUCT_CATEGORY"}],
+//   });
+//   return conditions;
+// }
+// async function getBadgeCondition(conditionId:number):
+// Promise<tt_badge_condition[]> {
+//   const conditions = await tt_badge_condition.findAll({
+//     include:[{model:tt_product_category,as:"PRODUCT_CATEGORY"}],
+//     where:{
+//       ID:conditionId,
+//     },
+//   });
+//   return conditions;
+// }
+// async function addBadgeCondition(badgeCondtiion:tt_badge_condition):Promise<tt_badge_condition>{
+//   const result = await tt_badge_condition.create(badgeCondtiion);
+//   return result;
+// }
 
-async function updateBadgeCondition(badgeCondtiion:tt_badge_condition):Promise<tt_badge_condition>{
-  await tt_badge_condition.update(badgeCondtiion,{ where: { ID:badgeCondtiion.ID } });
-  return badgeCondtiion;
-}
-async function deleteBadgeCondition(badgeConditionId:number):Promise<void>{
-  await tt_badge_condition.destroy({where:{ID:badgeConditionId}});
-}
+// async function updateBadgeCondition(badgeCondtiion:tt_badge_condition):Promise<tt_badge_condition>{
+//   await tt_badge_condition.update(badgeCondtiion,{ where: { ID:badgeCondtiion.ID } });
+//   return badgeCondtiion;
+// }
+// async function deleteBadgeCondition(badgeConditionId:number):Promise<void>{
+//   await tt_badge_condition.destroy({where:{ID:badgeConditionId}});
+// }
 //tt_user_badge
 async function getUserBadges(userId:number):Promise<tt_user_badge[]>{
   const badge = await tt_user_badge.findAll({
@@ -131,11 +131,11 @@ async function deleteBadge(id:number):Promise<void>{
 // **** Export default **** //
 export default {
   //tt_badge_condition 관련
-  getBadgeConditions,
-  getBadgeCondition,
-  addBadgeCondition,
-  updateBadgeCondition,
-  deleteBadgeCondition,
+  // getBadgeConditions,
+  // getBadgeCondition,
+  // addBadgeCondition,
+  // updateBadgeCondition,
+  // deleteBadgeCondition,
   //tt_user_badge관련
   getUserBadges,
   getUserBadge,

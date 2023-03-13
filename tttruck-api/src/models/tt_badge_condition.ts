@@ -63,7 +63,8 @@ export class tt_badge_condition extends Model<tt_badge_conditionAttributes, tt_b
     },
     CONDITION_REG_DATE: {
       type: DataTypes.DATE,
-      allowNull: true
+      allowNull: true,
+      defaultValue: Sequelize.Sequelize.fn('current_timestamp')
     }
   }, {
     sequelize,

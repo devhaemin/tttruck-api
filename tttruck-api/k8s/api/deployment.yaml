@@ -19,4 +19,4 @@ spec:
             - containerPort: 3000 # Replace with the port your Express.js app is listening on
           env:
             - name: DB_HOST
-              value: <your-mariadb-service-name> # Replace with the name of your MariaDB service
+              value: mariadb # Replace with the name of your MariaDB service

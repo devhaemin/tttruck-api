@@ -34,8 +34,8 @@ const paths = {
   updateStatus: '/:id/status',
 } as const;
 /**
- * @api {post} /products/filter Get All Product List
- * @apiName GetProduct
+ * @api {post} /products/filter Get Products with filter
+ * @apiName GetProductWithFilter
  * @apiGroup Product
  *
  * @apiBody {Number} orderDesc 0:false 1:true

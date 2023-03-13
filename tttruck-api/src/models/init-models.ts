@@ -174,6 +174,8 @@ export function initModels(sequelize: Sequelize) {
   tt_product.hasMany(tt_trade_log, { as: "tt_trade_logs", foreignKey: "PRODUCT_ID"});
   tt_trade_review.belongsTo(tt_product, { as: "PRODUCT", foreignKey: "PRODUCT_ID"});
   tt_product.hasMany(tt_trade_review, { as: "tt_trade_reviews", foreignKey: "PRODUCT_ID"});
+  tt_badge_condition.belongsTo(tt_product_category, { as: "PRODUCT_CATEGORY", foreignKey: "PRODUCT_CATEGORY_ID"});
+  tt_product_category.hasMany(tt_badge_condition, { as: "tt_badge_conditions", foreignKey: "PRODUCT_CATEGORY_ID"});
   tt_product.belongsTo(tt_product_category, { as: "PRODUCT_CATEGORY", foreignKey: "PRODUCT_CATEGORY_ID"});
   tt_product_category.hasMany(tt_product, { as: "tt_products", foreignKey: "PRODUCT_CATEGORY_ID"});
   tt_talkplus_message.belongsTo(tt_talkplus_channel, { as: "TALKPLUS_CHANNEL", foreignKey: "TALKPLUS_CHANNEL_ID"});

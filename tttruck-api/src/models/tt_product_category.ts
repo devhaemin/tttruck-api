@@ -1,5 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
+import type { tt_badge_condition, tt_badge_conditionId } from './tt_badge_condition';
 import type { tt_product, tt_productId } from './tt_product';
 import type { tt_user, tt_userId } from './tt_user';
 
@@ -37,6 +38,18 @@ export class tt_product_category extends Model<tt_product_categoryAttributes, tt
   CREATE_USER_IPv6?: any;
   CREATE_TIME?: Date;
 
+  // tt_product_category hasMany tt_badge_condition via PRODUCT_CATEGORY_ID
+  tt_badge_conditions!: tt_badge_condition[];
+  getTt_badge_conditions!: Sequelize.HasManyGetAssociationsMixin<tt_badge_condition>;
+  setTt_badge_conditions!: Sequelize.HasManySetAssociationsMixin<tt_badge_condition, tt_badge_conditionId>;
+  addTt_badge_condition!: Sequelize.HasManyAddAssociationMixin<tt_badge_condition, tt_badge_conditionId>;
+  addTt_badge_conditions!: Sequelize.HasManyAddAssociationsMixin<tt_badge_condition, tt_badge_conditionId>;
+  createTt_badge_condition!: Sequelize.HasManyCreateAssociationMixin<tt_badge_condition>;
+  removeTt_badge_condition!: Sequelize.HasManyRemoveAssociationMixin<tt_badge_condition, tt_badge_conditionId>;
+  removeTt_badge_conditions!: Sequelize.HasManyRemoveAssociationsMixin<tt_badge_condition, tt_badge_conditionId>;
+  hasTt_badge_condition!: Sequelize.HasManyHasAssociationMixin<tt_badge_condition, tt_badge_conditionId>;
+  hasTt_badge_conditions!: Sequelize.HasManyHasAssociationsMixin<tt_badge_condition, tt_badge_conditionId>;
+  countTt_badge_conditions!: Sequelize.HasManyCountAssociationsMixin;
   // tt_product_category hasMany tt_product via PRODUCT_CATEGORY_ID
   tt_products!: tt_product[];
   getTt_products!: Sequelize.HasManyGetAssociationsMixin<tt_product>;

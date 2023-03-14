@@ -27,7 +27,54 @@ const paths = {
  * @apiPermission normalUser
  *
  * @apiParam {number} id productId
- *
+ * @apiSuccessExample {json} Success-Response:
+ * [
+    {
+        "TRADE_REVIEW_ID": 31,
+        "PRODUCT_ID": 120,
+        "TRADE_REVIEW_TYPE": null,
+        "USER_ID": null,
+        "RATINGS": 0,
+        "SUBJECT": "안녕하세요 리뷰 제목",
+        "CONTENTS": "판매자 리뷰 내용",
+        "IPv4": null,
+        "IPv6": null,
+        "CREATE_TIME": "2023-03-14T12:14:21.000Z",
+        "UPDATE_TIME": "2023-03-14T12:14:21.000Z",
+        "DELETE_TF": false,
+        "USER": null
+    },
+    {
+        "TRADE_REVIEW_ID": 32,
+        "PRODUCT_ID": 120,
+        "TRADE_REVIEW_TYPE": null,
+        "USER_ID": null,
+        "RATINGS": 0,
+        "SUBJECT": "안녕하세요 리뷰 제목",
+        "CONTENTS": "판매자 리뷰 내용",
+        "IPv4": null,
+        "IPv6": null,
+        "CREATE_TIME": "2023-03-14T12:14:41.000Z",
+        "UPDATE_TIME": "2023-03-14T12:14:41.000Z",
+        "DELETE_TF": false,
+        "USER": null
+    },
+    {
+        "TRADE_REVIEW_ID": 33,
+        "PRODUCT_ID": 120,
+        "TRADE_REVIEW_TYPE": null,
+        "USER_ID": null,
+        "RATINGS": 0,
+        "SUBJECT": "안녕하세요 리뷰 제목",
+        "CONTENTS": "판매자 리뷰 내용",
+        "IPv4": null,
+        "IPv6": null,
+        "CREATE_TIME": "2023-03-14T12:15:07.000Z",
+        "UPDATE_TIME": "2023-03-14T12:44:35.000Z",
+        "DELETE_TF": false,
+        "USER": null
+    }
+]
  */
 async function getByProduct(req: IReq, res: IRes) {
   const productId = Number(req.params.id);
@@ -44,13 +91,13 @@ async function getByProduct(req: IReq, res: IRes) {
  * @apiParamExample {json} Request-Example:
  * {
  *     "PRODUCT_ID":62,
- *     "RATING" : 5,
+ *     "RATINGS" : 5,
  *     "SUBJECT" : "안녕하세요 리뷰 제목",
  *     "CONTENTS": "판매자 리뷰 내용"
  * }
  * @apiSuccessExample {json} Success-Response:
  * {
- *     "RATINGS": 0,
+ *     "RATINGS": 5,
  *     "CREATE_TIME": {
  *         "fn": "current_timestamp",
  *         "args": []
@@ -85,14 +132,14 @@ async function postSeller(req: IReq<tt_trade_review>, res: IRes) {
  * @apiParamExample {json} Request-Example:
  * {
  *     "PRODUCT_ID":62,
- *     "RATING" : 5,
+ *     "RATINGS" : 5,
  *     "SUBJECT" : "안녕하세요 리뷰 제목",
  *     "CONTENTS": "판매자 리뷰 내용"
  * }
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  * {
- *     "RATINGS": 0,
+ *     "RATINGS": 5,
  *     "CREATE_TIME": {
  *         "fn": "current_timestamp",
  *         "args": []
@@ -139,23 +186,34 @@ async function postBuyer(req: IReq<tt_trade_review>, res: IRes) {
 }
 
 /**
- * @api {post} /trade/reviews/buyer/add 판매자 리뷰 추가하기
- * @apiName GetTradeReviewsByProduct
+ * @api {put} /trade/reviews/update 리뷰 수정
+ * @apiName update
  * @apiGroup TradeReview
  * @apiPermission normalUser
- *
- * @apiBody {number} productId=0 상품ID
- * @apiBody {number} rating=5 점수
- * @apiBody {string} SUBJECT 제목
- * @apiBody {string} CONTENTS 내용
- *
+ * @apiParamExample {json} Request-Example:
+ * {
+    "TRADE_REVIEW_ID": 35,
+    "RATINGS" : 2,
+    "SUBJECT" : "TEST 판매자 리뷰 제목",
+    "CONTENT" : "TEST 판매자 리뷰 내용"
+}
+ * @apiSuccessExample {json} Success-Response:
+{
+    "TRADE_REVIEW_ID": 35,
+    "RATINGS": 2,
+    "SUBJECT": "TEST 판매자 리뷰 제목",
+    "CONTENT": "TEST 판매자 리뷰 내용"
+}
  */
-async function update(req: IReq, res: IRes) {
-  return tt_trade_review.findAll();
+async function update(req: IReq<tt_trade_review>, res: IRes) {
+  const tradeReview = req.body;
+  const user = res.locals.user;
+  const result = await tradeReviewService.update(user,tradeReview);
+  return res.status(HttpStatusCodes.OK).json(result).end();
 }
 
 /**
- * @api {delete} /trade/reviews/delete/:id delete product
+ * @api {delete} /trade/reviews/delete/:id Delete tradeReview
  * @apiName DeleteTradeReview
  * @apiGroup TradeReview
  *
@@ -178,9 +236,10 @@ async function update(req: IReq, res: IRes) {
  */
 
 /*async */
-function _delete(req: IReq, res: IRes) {
+async function _delete(req: IReq, res: IRes) {
   const id = +req.params.id;
-  //await productService.delete(res.locals.user, id);
+  const user = res.locals.user;
+  await tradeReviewService.delete(user,id);
   return res.status(HttpStatusCodes.OK).end();
 }
 

@@ -3,14 +3,15 @@ import {RouteError} from '@src/declarations/classes';
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import {IReq, IRes} from "@src/routes/shared/types";
 import {prodNotFoundErr} from "@src/services/product-service";
-
+import {Op, Sequelize} from "sequelize";
 const tradeReviewNotFoundErr = "Can't find the trade review by product id";
-
+import logger from "jet-logger";
+import { tt_user_group } from '@src/models/dummy/tt_user_group';
 // **** Variables **** //
 
 async function getByProduct(productId: number): Promise<tt_trade_review[]> {
   const tradeReviews = await tt_trade_review.findAll({
-    where: {PRODUCT_ID: productId},
+    where: {PRODUCT_ID: productId,DELETE_TF:0},
     include: [{
       model: tt_user, as: "USER", attributes: [
         "USER_ID",
@@ -48,15 +49,19 @@ async function postReview(user: tt_user, tradeReview: tt_trade_review, tradeRevi
   return await tt_trade_review.create(tradeReview);
 }
 
-async function update(): Promise<tt_trade_review[]> {
-  return tt_trade_review.findAll();
+async function update(user: tt_user,tradeReview: tt_trade_review): Promise<tt_trade_review> {
+  const persists = await tt_trade_review.findOne({where:{TRADE_REVIEW_ID:tradeReview.TRADE_REVIEW_ID}});
+  if((persists?.USER_ID == user.USER_ID)||(user.GROUP==tt_user_group.ADMIN) ){
+    await tt_trade_review.update(tradeReview,{where:{TRADE_REVIEW_ID:tradeReview.TRADE_REVIEW_ID}});    
+  }
+  return tradeReview;
 }
 
-/*async */
-function _delete(req: IReq, res: IRes) {
-  const id = +req.params.id;
-  //await productService.delete(res.locals.user, id);
-  return res.status(HttpStatusCodes.OK).end();
+async function _delete(user:tt_user,id:number):Promise <void> {
+  const persists = await tt_trade_review.findByPk(id);
+  if((persists?.USER_ID == user.USER_ID)||(user.GROUP==tt_user_group.ADMIN) ){
+    await tt_trade_review.update({DELETE_TF:1},{where:{TRADE_REVIEW_ID: id}});
+  }
 }
 
 

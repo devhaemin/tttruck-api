@@ -101,6 +101,7 @@ async function getByFilter(filter1: ProductFilter): Promise<tt_product[]> {
         PRODUCT_CATEGORY_ID: {
           [Op.in]: categoryData,
         },
+        DELETE_TF: 0
       },
       attributes: {
         include: [
@@ -174,6 +175,7 @@ async function getAll(longitude: string, latitude: string, offset: number, limit
           model: tt_product_image,
           as: "tt_product_images",
         }, 'PRIORITY', 'ASC']],
+        where:{DELETE_TF:0}
     });
   if (!persists) {
     throw new RouteError(
@@ -205,7 +207,7 @@ async function getByCategory(longitude: string, latitude: string, id: number, of
         ],
       ],
     },
-    where: {$PRODUCT_CATEGORY_ID$: id},
+    where: {$PRODUCT_CATEGORY_ID$: id,DELETE_TF:0},
     include:
       [{model: tt_product_image, as: "tt_product_images"},
         {
@@ -271,19 +273,41 @@ async function getByCategories(longitude: string, latitude: string, categories: 
 /**
  * Get product by ID
  */
-async function getById(id: number): Promise<tt_product> {
-  const persists = await tt_product.findByPk(id, {
+async function getById(id: number): Promise<tt_product[]> {
+  // const persists = await tt_product.findByPk(id, {
+  //   include:
+  //     [{model: tt_product_image, as: "tt_product_images"},
+  //       {
+  //         model: tt_user,
+  //         as: "SELLER_USER",
+  //         attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
+  //       }],
+  //   order: [[{
+  //     model: tt_product_image,
+  //     as: "tt_product_images",
+  //   }, 'PRIORITY', 'ASC']],
+  // });
+  const persists = await tt_product.findAll({
     include:
-      [{model: tt_product_image, as: "tt_product_images"},
-        {
-          model: tt_user,
-          as: "SELLER_USER",
-          attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
-        }],
+    [{model: tt_product_image, as: "tt_product_images"},
+      {
+        model: tt_user,
+        as: "SELLER_USER",
+        attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
+      }],
     order: [[{
       model: tt_product_image,
       as: "tt_product_images",
     }, 'PRIORITY', 'ASC']],
+    where: {
+      [Op.and]:
+        [{
+          PRODUCT_ID:id,
+        },
+        {
+          DELETE_TF:0,
+        }],
+    },
   });
   if (!persists) {
     throw new RouteError(
@@ -422,8 +446,10 @@ async function _delete(user: tt_user, id: number): Promise<void> {
       prodAuthorityErr,
     );
   }
-  // Delete user
-  await tt_product.destroy({where: {PRODUCT_ID: id}});
+  // Delete product soft
+  await tt_product.update({DELETE_TF:1},{where:{PRODUCT_ID: id}});
+
+  // await tt_product.destroy({where: {PRODUCT_ID: id}});
 }
 
 

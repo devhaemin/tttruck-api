@@ -169,6 +169,10 @@ const productRouter = Router();
 const productImageMulter = getS3ImageMulter('product/image');
 
 // Get all products
+productRouter.post(
+  productRoutes.paths.getByFilter,
+  productRoutes.getByFilter);
+
 productRouter.get(
   productRoutes.paths.getAll,
   locationCheck,

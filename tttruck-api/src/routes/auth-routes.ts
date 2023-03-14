@@ -145,7 +145,7 @@ async function generateNickname(req: IReq, res: IRes) {
  * @apiParamExample {json} Request-Example:
  *     {
  *       "phone": "01098810664",
- *       "password": "asdf1234
+ *       "password": "asdf1234"
  *     }
  *
  * @apiSuccessExample {json} Success-Response:

@@ -180,8 +180,6 @@ export function initModels(sequelize: Sequelize) {
   tt_badge.hasMany(tt_badge_condition, { as: "tt_badge_conditions", foreignKey: "BADGE_ID"});
   tt_user_badge.belongsTo(tt_badge, { as: "BADGE", foreignKey: "BADGE_ID"});
   tt_badge.hasMany(tt_user_badge, { as: "tt_user_badges", foreignKey: "BADGE_ID"});
-  tt_badge_condition.belongsTo(tt_badge_condition, { as: "PRODUCT_CATEGORY", foreignKey: "PRODUCT_CATEGORY_ID"});
-  tt_badge_condition.hasMany(tt_badge_condition, { as: "tt_badge_conditions", foreignKey: "PRODUCT_CATEGORY_ID"});
   tt_notice_image.belongsTo(tt_notice, { as: "NOTICE", foreignKey: "NOTICE_ID"});
   tt_notice.hasMany(tt_notice_image, { as: "tt_notice_images", foreignKey: "NOTICE_ID"});
   tt_notice.belongsTo(tt_notice_master, { as: "NOTICE_MASTER", foreignKey: "NOTICE_MASTER_ID"});
@@ -194,6 +192,8 @@ export function initModels(sequelize: Sequelize) {
   tt_product.hasMany(tt_trade_log, { as: "tt_trade_logs", foreignKey: "PRODUCT_ID"});
   tt_trade_review.belongsTo(tt_product, { as: "PRODUCT", foreignKey: "PRODUCT_ID"});
   tt_product.hasMany(tt_trade_review, { as: "tt_trade_reviews", foreignKey: "PRODUCT_ID"});
+  tt_badge_condition.belongsTo(tt_product_category, { as: "PRODUCT_CATEGORY", foreignKey: "PRODUCT_CATEGORY_ID"});
+  tt_product_category.hasMany(tt_badge_condition, { as: "tt_badge_conditions", foreignKey: "PRODUCT_CATEGORY_ID"});
   tt_product.belongsTo(tt_product_category, { as: "PRODUCT_CATEGORY", foreignKey: "PRODUCT_CATEGORY_ID"});
   tt_product_category.hasMany(tt_product, { as: "tt_products", foreignKey: "PRODUCT_CATEGORY_ID"});
   tt_product_category.belongsTo(tt_product_category, { as: "PARENT_CATEGORY", foreignKey: "PARENT_CATEGORY_ID"});

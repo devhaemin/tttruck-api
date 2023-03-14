@@ -167,7 +167,7 @@ async function getBadgeCondition(req:IReq,res:IRes){
 }
 
 /**
- * @api {post} /badge/condition/add Post tt_badge_condition
+ * @api {post} /badge/condition/add Add tt_badge_condition
  * @apiName addBadgeCondition
  * @apiGroup Badge
  * 
@@ -296,7 +296,7 @@ async function deleteBadgeCondition(req:IReq,res:IRes){
 async function getUserBadges(req:IReq,res:IRes){
 
   const userId = res.locals.user.USER_ID;
-  const badgeList = await badgeService.getBadgeList(userId);
+  const badgeList = await badgeService.getUserBadges(Number(userId));
   return res.status(200).json(badgeList).end();
 }
 
@@ -534,19 +534,23 @@ async function getBadge(req:IReq,res:IRes){
  *    {
  *        "BADGE_SUBJECT" : "뱃지 이름",
  *        "BADGE_CONTENT" : "뱃지 내용",
- *        "BADGE_FILE_URL" : "CDN URL"
+ *        "BADGE_FILE_URL" : "활성 시 CDN URL",
+ *        "BADGE_FILE_URL_FALSE" : "비활성 시 CDN URL"
+ *        "BADGE_OP1_CONTENT": "조건1",
+ *        "BADGE_OP2_CONTENT": "조건2"
  *    }
  *}
  * @apiSuccessExample Success-Response:
  * [
  *    {
  *        "BADGE_ID": 3,
- *        "BADGE_SUBJECT": "피노키오",
- *        "BADGE_CONTENT": "22",
- *        "BADGE_FILE_URL": null,
+ *        "BADGE_SUBJECT": "뱃지 이름",
+ *        "BADGE_CONTENT": "뱃지 내용",
+ *        "BADGE_FILE_URL": "활성 시 CDN URL",
+ *        "BADGE_FILE_URL_FALSE": "비활성 시 CDN URL",
  *        "BADGE_REG_DATE": null,
- *        "BADGE_OP1_CONTENT": null,
- *        "BADGE_OP2_CONTENT": null
+ *        "BADGE_OP1_CONTENT": "조건1",
+ *        "BADGE_OP2_CONTENT": "조건2"
  *    }
  *]
  * 
@@ -571,7 +575,10 @@ async function addBadge(req:IReq<{badge: tt_badge}>, res:IRes){
  *     {
  *         "BADGE_SUBJECT" : "뱃지 이름",
  *         "BADGE_CONTENT" : "Update Test",
- *         "BADGE_FILE_URL" : "CDN URL"
+ *         "BADGE_FILE_URL" : "활성 시 CDN URL"
+ *         "BADGE_FILE_URL_FALSE": "비활성 시 CDN URL",
+ *         "BADGE_OP1_CONTENT": "조건1",
+ *         "BADGE_OP2_CONTENT": "조건2" 
  *     }
  * }
  * 
@@ -579,7 +586,10 @@ async function addBadge(req:IReq<{badge: tt_badge}>, res:IRes){
  * {
  *     "BADGE_SUBJECT": "뱃지 이름",
  *     "BADGE_CONTENT": "Update Test",
- *     "BADGE_FILE_URL": "CDN URL"
+ *     "BADGE_FILE_URL": "활성 시 CDN URL"
+ *     "BADGE_FILE_URL_FALSE": "비활성 시 CDN URL",
+ *     "BADGE_OP1_CONTENT": "조건1",
+ *     "BADGE_OP2_CONTENT": "조건2"
  * }
  * 
  */

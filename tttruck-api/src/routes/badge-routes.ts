@@ -3,7 +3,7 @@ import authService from '@src/services/auth-service';
 import EnvVars from '@src/declarations/major/EnvVars';
 import codeUtil from "@src/util/code-util";
 import {IReq, IRes} from './shared/types';
-import {tt_user_badge,tt_badge} from "@src/models/init-models";
+import {tt_user_badge,tt_badge, tt_badge_condition} from "@src/models/init-models";
 import {getRandomNicknames} from "@src/util/nick-gen-util";
 import logger from "jet-logger";
 import {S3File} from "@src/routes/shared/awsMultipart";
@@ -24,23 +24,227 @@ const paths = {
   updateUserBadge: '/userBadge/update/:user_badgeId',
   deleteUserBadge: '/userBadge/delete/:user_badgeId',
   getBadge: '/:badgeId',
-  getBadges: '/',
+  getBadges: '/list',
   addBadge: '/addBadge',
   updateBadge: '/update/:badgeId',
   deleteBadge: '/delete/:badgeId',
+
+  getBadgeConditions: '/condition/list',
+  getBadgeCondition: '/condition/:conditionId',
+  addBadgeCondition: '/condition/add',
+  updateBadgeCondition: '/condition/update/:conditionId',
+  deleteBadgeCondition: '/condition/delete/:conditionId',
+
 } as const;
 
-// async function getBadgeConditions(req:IReq,res:IRes){
-//   const badgeConditionList = await badgeService.getBadgeConditions();
-//   return res.status(200).json(badgeConditionList);
-// }
-// async function getBadgeCondition(req:IReq,res:IRes){
-//   const badgeConditionId = req.params;
-//   const badgeCondition = await badgeService.getBadgeCondition(Number(badgeConditionId));
-//   return res.status(200).json(badgeCondition);
-// }
-
 // **** Functions **** //
+
+/**
+ * @api {get} /badge/condition Get tt_badge_conditions
+ * @apiName getBadgeConditions
+ * @apiGroup Badge
+ * 
+ * @apiPermission adminUser
+ * @apiSuccessExample {json} success-Response:
+[
+    {
+        "CONDITION_ID": 2,
+        "PRODUCT_CATEGORY_ID": 2,
+        "BADGE_ID": 2,
+        "WEIGHT": null,
+        "CONDITION_REG_DATE": "2023-03-13T07:50:30.000Z",
+        "PRODUCT_CATEGORY": {
+            "PRODUCT_CATEGORY_ID": 2,
+            "PARENT_CATEGORY_ID": 0,
+            "PRODUCT_CATEGORY_NAME": "석고보드",
+            "PRODUCT_CATEGORY_PRIORITY": 0,
+            "VISIBLE_TF": true,
+            "UPDATE_USER_ID": 1,
+            "UPDATE_USER_IPv4": null,
+            "UPDATE_USER_IPv6": null,
+            "UPDATE_TIME": "2022-12-23T10:36:36.000Z",
+            "CREATE_USER_ID": 1,
+            "CREATE_USER_IPv4": null,
+            "CREATE_USER_IPv6": null,
+            "CREATE_TIME": "2022-12-22T08:58:48.000Z"
+        },
+        "BADGE": {
+            "BADGE_ID": 2,
+            "BADGE_SUBJECT": "초보환경운동가",
+            "BADGE_CONTENT": null,
+            "BADGE_FILE_URL": null,
+            "BADGE_REG_DATE": null,
+            "BADGE_OP1_CONTENT": null,
+            "BADGE_OP2_CONTENT": null
+        }
+    },
+    {
+        "CONDITION_ID": 3,
+        "PRODUCT_CATEGORY_ID": 5,
+        "BADGE_ID": 3,
+        "WEIGHT": null,
+        "CONDITION_REG_DATE": "2023-03-13T07:50:30.000Z",
+        "PRODUCT_CATEGORY": {
+            "PRODUCT_CATEGORY_ID": 5,
+            "PARENT_CATEGORY_ID": 0,
+            "PRODUCT_CATEGORY_NAME": "타일/석재",
+            "PRODUCT_CATEGORY_PRIORITY": 0,
+            "VISIBLE_TF": true,
+            "UPDATE_USER_ID": 1,
+            "UPDATE_USER_IPv4": null,
+            "UPDATE_USER_IPv6": null,
+            "UPDATE_TIME": "2022-12-29T08:40:00.000Z",
+            "CREATE_USER_ID": 1,
+            "CREATE_USER_IPv4": null,
+            "CREATE_USER_IPv6": null,
+            "CREATE_TIME": "2022-12-22T08:58:48.000Z"
+        },
+        "BADGE": {
+            "BADGE_ID": 3,
+            "BADGE_SUBJECT": "피노키오",
+            "BADGE_CONTENT": "22",
+            "BADGE_FILE_URL": null,
+            "BADGE_REG_DATE": null,
+            "BADGE_OP1_CONTENT": null,
+            "BADGE_OP2_CONTENT": null
+        }
+    }
+]
+*/
+
+async function getBadgeConditions(req:IReq,res:IRes){
+  const badgeConditionList = await badgeService.getBadgeConditions();
+  return res.status(200).json(badgeConditionList);
+}
+
+/**
+ * @api {get} /badge/condition/:conditionId Get tt_badge_condition
+ * @apiName getBadgeCondition
+ * @apiGroup Badge
+ * 
+ * @apiPermission adminUser
+ * @apiParam {number} conditionId URL
+ * @apiSuccessExample {json} success-Response:
+ * [
+    {
+        "CONDITION_ID": 2,
+        "PRODUCT_CATEGORY_ID": 2,
+        "BADGE_ID": 2,
+        "WEIGHT": null,
+        "CONDITION_REG_DATE": "2023-03-13T07:50:30.000Z",
+        "PRODUCT_CATEGORY": {
+            "PRODUCT_CATEGORY_ID": 2,
+            "PARENT_CATEGORY_ID": 0,
+            "PRODUCT_CATEGORY_NAME": "석고보드",
+            "PRODUCT_CATEGORY_PRIORITY": 0,
+            "VISIBLE_TF": true,
+            "UPDATE_USER_ID": 1,
+            "UPDATE_USER_IPv4": null,
+            "UPDATE_USER_IPv6": null,
+            "UPDATE_TIME": "2022-12-23T10:36:36.000Z",
+            "CREATE_USER_ID": 1,
+            "CREATE_USER_IPv4": null,
+            "CREATE_USER_IPv6": null,
+            "CREATE_TIME": "2022-12-22T08:58:48.000Z"
+        },
+        "BADGE": {
+            "BADGE_ID": 2,
+            "BADGE_SUBJECT": "초보환경운동가",
+            "BADGE_CONTENT": null,
+            "BADGE_FILE_URL": null,
+            "BADGE_REG_DATE": null,
+            "BADGE_OP1_CONTENT": null,
+            "BADGE_OP2_CONTENT": null
+        }
+    }
+]
+*/
+
+async function getBadgeCondition(req:IReq,res:IRes){
+  const {conditionId} = req.params;
+  const badgeCondition = await badgeService.getBadgeCondition(Number(conditionId));
+  return res.status(200).json(badgeCondition);
+}
+
+/**
+ * @api {post} /badge/condition/add Post tt_badge_condition
+ * @apiName addBadgeCondition
+ * @apiGroup Badge
+ * 
+ * @apiPermission adminUser
+ * @apiParamExample {json} Request-Example:
+ * {
+    "badgeCondition":{
+        "PRODUCT_CATEGORY_ID":6,
+        "BADGE_ID":1,
+        "WEIGHT" : 300
+    }
+}
+ * @apiSuccessExample {json} success-Response:
+ * {
+    "CONDITION_REG_DATE": {
+        "fn": "current_timestamp",
+        "args": []
+    },
+    "CONDITION_ID": 5,
+    "PRODUCT_CATEGORY_ID": 6,
+    "BADGE_ID": 1,
+    "WEIGHT": 300
+}
+*/
+
+async function addBadgeCondition(req:IReq<{badgeCondition: tt_badge_condition}>,res:IRes){
+  const {badgeCondition} = req.body;
+  const result = await badgeService.addBadgeCondition(badgeCondition);
+  return res.status(HttpStatusCodes.CREATED).json(result).end();
+}
+
+/**
+ * @api {put} /badge/condition/update/:conditionId Update tt_badge_condition
+ * @apiName updateBadgeCondition
+ * @apiGroup Badge
+ * 
+ * @apiPermission adminUser
+ * @apiParam {number} conditionId URL
+ * @apiParamExample {json} Request-Example:
+ * {
+    "badgeCondition":{
+        "PRODUCT_CATEGORY_ID":3,
+        "BADGE_ID":1,
+        "WEIGHT" : 300
+    }
+}
+ * @apiSuccessExample {json} success-Response:
+ * {
+    "PRODUCT_CATEGORY_ID": 3,
+    "BADGE_ID": 1,
+    "WEIGHT": 300
+}
+*/
+
+async function updateBadgeCondition(req:IReq<{badgeCondition: tt_badge_condition}>,res:IRes){
+  const {badgeCondition} = req.body;
+  const {conditionId} = req.params;
+  const result = await badgeService.updateBadgeCondition(badgeCondition,Number(conditionId));
+  return res.status(HttpStatusCodes.CREATED).json(result).end();
+
+}
+
+/**
+ * @api {delete} /badge/condition/delete/:conditionId Delete tt_badge_condition
+ * @apiName deleteBadgeCondition
+ * @apiGroup Badge
+ * @apiParam {number} conditionId URL
+ * @apiPermission adminUser
+ * 
+*/
+
+async function deleteBadgeCondition(req:IReq,res:IRes){
+  const {conditionId} = req.params;
+  const result = await badgeService.deleteBadgeCondition(Number(conditionId));
+  return res.status(200).json(result);
+}
+
 
 /**
  * @api {get} /badge/userBadge/list Get tt_user_badges
@@ -91,13 +295,8 @@ const paths = {
  */
 async function getUserBadges(req:IReq,res:IRes){
 
-  // const userId = res.locals.user.USER_ID;
-  // const badgeList = await badgeService.getBadgeList(Number(userId));
-  // return res.status(200).json(badgeList).end();
-
-  ////Test 용 코드
-  const userId = Number(43);
-  const badgeList = await badgeService.getUserBadges(userId);
+  const userId = res.locals.user.USER_ID;
+  const badgeList = await badgeService.getBadgeList(userId);
   return res.status(200).json(badgeList).end();
 }
 
@@ -145,7 +344,7 @@ async function getUserBadge(req:IReq,res:IRes){
  * @apiName addUserBadge
  * @apiGroup Badge
  *
- * @apiPermission normalUser
+* @apiPermission adminUser
  *
  * @apiParamExample {json} Request-Example:
  * {
@@ -183,7 +382,7 @@ async function addUserBadge(req:IReq<{userBadge: tt_user_badge}>,res:IRes){
  * @apiName updateUserBadge
  * @apiGroup Badge
  *
- * @apiPermission normalUser
+* @apiPermission adminUser
  * 
  * @apiParamExample {json} Request-Example:
  * {
@@ -230,11 +429,11 @@ async function deleteUserBadge(req:IReq, res:IRes){
 }
 
 /**
- * @api {get} /api/v1/badge/ Get tt_badges
+ * @api {get} /api/v1/badge/list Get tt_badges
  * @apiName getBadges
  * @apiGroup Badge
  *
- * @apiPermission normalUser
+ * @apiPermission adminUser
  * 
  * @apiSuccessExample Success-Response:
  * [
@@ -296,7 +495,7 @@ async function getBadges(req:IReq,res:IRes){
  * @apiName getBadge
  * @apiGroup Badge
  *
- * @apiPermission normalUser
+* @apiPermission adminUser
  * 
  * @apiParam {number} badgeId URL
  * 
@@ -422,4 +621,9 @@ export default {
   addBadge,
   updateBadge,
   deleteBadge,
+  getBadgeConditions,
+  getBadgeCondition,
+  addBadgeCondition,
+  updateBadgeCondition,
+  deleteBadgeCondition,
 } as const;

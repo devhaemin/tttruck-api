@@ -1,6 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_badge, tt_badgeId } from './tt_badge';
+import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
 
 export interface tt_badge_conditionAttributes {
   CONDITION_ID: number;
@@ -27,11 +28,11 @@ export class tt_badge_condition extends Model<tt_badge_conditionAttributes, tt_b
   getBADGE!: Sequelize.BelongsToGetAssociationMixin<tt_badge>;
   setBADGE!: Sequelize.BelongsToSetAssociationMixin<tt_badge, tt_badgeId>;
   createBADGE!: Sequelize.BelongsToCreateAssociationMixin<tt_badge>;
-  // tt_badge_condition belongsTo tt_badge_condition via PRODUCT_CATEGORY_ID
-  PRODUCT_CATEGORY!: tt_badge_condition;
-  getPRODUCT_CATEGORY!: Sequelize.BelongsToGetAssociationMixin<tt_badge_condition>;
-  setPRODUCT_CATEGORY!: Sequelize.BelongsToSetAssociationMixin<tt_badge_condition, tt_badge_conditionId>;
-  createPRODUCT_CATEGORY!: Sequelize.BelongsToCreateAssociationMixin<tt_badge_condition>;
+  // tt_badge_condition belongsTo tt_product_category via PRODUCT_CATEGORY_ID
+  PRODUCT_CATEGORY!: tt_product_category;
+  getPRODUCT_CATEGORY!: Sequelize.BelongsToGetAssociationMixin<tt_product_category>;
+  setPRODUCT_CATEGORY!: Sequelize.BelongsToSetAssociationMixin<tt_product_category, tt_product_categoryId>;
+  createPRODUCT_CATEGORY!: Sequelize.BelongsToCreateAssociationMixin<tt_product_category>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_badge_condition {
     return tt_badge_condition.init({
@@ -45,8 +46,8 @@ export class tt_badge_condition extends Model<tt_badge_conditionAttributes, tt_b
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: true,
       references: {
-        model: 'tt_badge_condition',
-        key: 'CONDITION_ID'
+        model: 'tt_product_category',
+        key: 'PRODUCT_CATEGORY_ID'
       }
     },
     BADGE_ID: {
@@ -80,17 +81,17 @@ export class tt_badge_condition extends Model<tt_badge_conditionAttributes, tt_b
         ]
       },
       {
-        name: "FK_tt_badge_condition_CATEGORYID_tt_product_category_CATEGORYID",
-        using: "BTREE",
-        fields: [
-          { name: "PRODUCT_CATEGORY_ID" },
-        ]
-      },
-      {
         name: "FK_tt_badge_condition_BADGE_ID_tt_badge_BADGE_ID",
         using: "BTREE",
         fields: [
           { name: "BADGE_ID" },
+        ]
+      },
+      {
+        name: "FK_tt_badge_condition_CATID_tt_product_category_CATID",
+        using: "BTREE",
+        fields: [
+          { name: "PRODUCT_CATEGORY_ID" },
         ]
       },
     ]

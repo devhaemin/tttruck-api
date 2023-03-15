@@ -17,6 +17,7 @@ import {userNotFoundErr} from "@src/services/user-service";
 import {Model, Op, Sequelize} from "sequelize";
 import {S3File} from "@src/routes/shared/awsMultipart";
 import {prodNotFoundErr} from "@src/services/product-service";
+import badgeUtils from "@src/services/utils/badgeUtils";
 
 // Errors
 export const errors = {
@@ -92,12 +93,17 @@ async function checkBadgeAvailable(user:tt_user):Promise<tt_badge[]>{
   });
 
   const newBadges:tt_badge[] = [];
-  badges.forEach(badge=>{
+  for (const badge of badges) {
+    let isSuccess = true;
     if(badge.tt_user_badges.length >0){
-      return;
+      continue;
     }
     if(badge.BADGE_TYPE !== 0){
-      return;
+      const result = await badgeUtils.checkSpecialBadge(user, badge);
+      if(result){
+        newBadges.push(badge);
+      }
+      continue;
     }
     const badgeConditions = badge.tt_badge_conditions;
     if(!badgeConditions){
@@ -106,7 +112,6 @@ async function checkBadgeAvailable(user:tt_user):Promise<tt_badge[]>{
         "Can't find Condition for optaining badge",
       );
     }
-    let isSuccess = true;
     badgeConditions.forEach(condition=>{
       const categoryId = condition.PRODUCT_CATEGORY_ID;
       const requireWeight = condition.WEIGHT;
@@ -126,14 +131,15 @@ async function checkBadgeAvailable(user:tt_user):Promise<tt_badge[]>{
     if(isSuccess){
       newBadges.push(badge);
     }
-  });
-  newBadges.forEach( async(item)=>{
+  }
+  for (const item of newBadges) {
     await tt_user_badge.create({
       BADGE_ID: item.BADGE_ID,
       USER_ID: user.USER_ID,
       IS_ACTIVATED: 1,
+      REPRESENT_TF: Number(item.BADGE_ID===1),
     });
-  });
+  }
   return newBadges;
 }
 

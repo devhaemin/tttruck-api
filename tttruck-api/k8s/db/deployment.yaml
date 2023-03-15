@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: mariadb
-          image: <your-docker-username>/<your-mariadb-image-name>:<tag>
+          image: doitmin/mariadb:test
           ports:
             - containerPort: 3306 # Replace with the port your MariaDB database is listening on
           env:

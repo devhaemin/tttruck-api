@@ -139,25 +139,14 @@ apiRouter.use(authRoutes.paths.basePath, authRouter);
 const badgeRouter = Router();
 
 badgeRouter.get(badgeRoutes.paths.getUserBadges,normalUserMw,badgeRoutes.getUserBadges);
-badgeRouter.get(badgeRoutes.paths.getUserBadge,normalUserMw,badgeRoutes.getUserBadge);
 badgeRouter.get(badgeRoutes.paths.getBadges,adminMw,badgeRoutes.getBadges);
 badgeRouter.get(badgeRoutes.paths.getBadge,adminMw,badgeRoutes.getBadge);
-badgeRouter.get(badgeRoutes.paths.getBadgeConditions,adminMw,badgeRoutes.getBadgeConditions);
-badgeRouter.get(badgeRoutes.paths.getBadgeCondition,adminMw,badgeRoutes.getBadgeCondition);
-
-
-
-badgeRouter.post(badgeRoutes.paths.addUserBadge,adminMw,badgeRoutes.addUserBadge);
-badgeRouter.put(badgeRoutes.paths.updateUserBadge,adminMw,badgeRoutes.updateUserBadge);
-badgeRouter.delete(badgeRoutes.paths.deleteUserBadge,adminMw,badgeRoutes.deleteUserBadge);
 
 badgeRouter.post(badgeRoutes.paths.addBadge,adminMw,badgeRoutes.addBadge);
+badgeRouter.post(badgeRoutes.paths.checkBadgeAvailable, normalUserMw, badgeRoutes.checkBadgeAvailable);
 badgeRouter.put(badgeRoutes.paths.updateBadge,adminMw,badgeRoutes.updateBadge);
 badgeRouter.delete(badgeRoutes.paths.deleteBadge,adminMw,badgeRoutes.deleteBadge);
 
-badgeRouter.post(badgeRoutes.paths.addBadgeCondition,adminMw,badgeRoutes.addBadgeCondition);
-badgeRouter.put(badgeRoutes.paths.updateBadgeCondition,adminMw,badgeRoutes.updateBadgeCondition);
-badgeRouter.delete(badgeRoutes.paths.deleteBadgeCondition,adminMw,badgeRoutes.deleteBadgeCondition);
 
 apiRouter.use(badgeRoutes.paths.basePath,badgeRouter);
 

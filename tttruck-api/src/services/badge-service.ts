@@ -1,15 +1,16 @@
-import jwtUtil from '@src/util/jwt-util';
-import pwdUtil from '@src/util/pwd-util';
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import {RouteError} from '@src/declarations/classes';
-import {tick} from '@src/declarations/functions';
 import {tt_user} from "@src/models/tt_user";
 // import {tt_badge} from "@src/models/tt_badge";
 // import {tt_user_badge} from "@src/models/tt_user_badge";
-import {S3File} from "@src/routes/shared/awsMultipart";
 import logger from "jet-logger";
-import {tt_user_badge, tt_badge,tt_badge_condition, tt_product_category} from "@src/models/init-models";
+import {
+  tt_badge,
+  tt_badge_condition, tt_trade_log, tt_trade_logAttributes,
+  tt_user_badge,
+} from "@src/models/init-models";
 import {userNotFoundErr} from "@src/services/user-service";
+import {Model, Op, Sequelize} from "sequelize";
 
 // Errors
 export const errors = {
@@ -19,80 +20,120 @@ export const errors = {
   userNotFound :  (user:string) => `"${user}" not found`,
 } as const;
 
-//tt_badge_condition
-async function getBadgeConditions():Promise <tt_badge_condition[]> { 
-  const conditions = await tt_badge_condition.findAll({
-    include:[
-      {model:tt_product_category,as:"PRODUCT_CATEGORY"},
-      {model:tt_badge,as:"BADGE"},
-    ],
-  });
-  return conditions;
-}
-async function getBadgeCondition(conditionId:number):
-Promise<tt_badge_condition[]> {
-  console.log(conditionId);
-  const conditions = await tt_badge_condition.findAll({
-    include:[
-      {model:tt_product_category,as:"PRODUCT_CATEGORY"},
-      {model:tt_badge,as:"BADGE"},
-    ],
-    where:{CONDITION_ID:conditionId}
-  });
-  return conditions;
-}
-async function addBadgeCondition(badgeCondtiion:tt_badge_condition):Promise<tt_badge_condition>{
-  const result = await tt_badge_condition.create(badgeCondtiion);
-  return result;
+interface UserWeightSum extends tt_trade_log{
+  sum:number;
 }
 
-async function updateBadgeCondition(badgeCondtiion:tt_badge_condition,badgeConditionId:number):Promise<tt_badge_condition>{
-  await tt_badge_condition.update(badgeCondtiion,{ where: { CONDITION_ID:badgeConditionId } });
-  return badgeCondtiion;
-}
-async function deleteBadgeCondition(badgeConditionId:number):Promise<void>{
-  await tt_badge_condition.destroy({where:{CONDITION_ID:badgeConditionId}});
-}
-
-async function getUserBadges(userId:number):Promise<tt_user_badge[]>{
-  const badge = await tt_user_badge.findAll({
-    include:[{model:tt_badge,as:"BADGE"}],
-    where:{
-      USER_ID:userId,
-      IS_ACTIVATED:1,
-    },
-  });
-  return badge;
-}
-
-async function getUserBadge(userId:number,user_badgeId:number):Promise<tt_user_badge[]>{
-  const badge = await tt_user_badge.findAll({
-    include:[{model:tt_badge,as:"BADGE"}],
-    where:{
-      USER_ID:userId,
-      ID:user_badgeId,
-    },
-  });
-  if(!badge){
+async function getUserBadges(user:tt_user):Promise<tt_badge[]>{
+  if(!user){
     throw new RouteError(
-      HttpStatusCodes.NOT_FOUND,
+      HttpStatusCodes.UNAUTHORIZED,
       userNotFoundErr,
     );
   }
-  return badge;
+  const badges = await tt_badge.findAll({
+    include:[
+      {
+        model:tt_user_badge,
+        as:"tt_user_badges",
+        on: {
+          "BADGE_ID": {[Op.eq]: Sequelize.col('tt_user_badge.BADGE_ID')},
+        },
+        limit: 1,
+      },
+    ],
+  });
+  return badges;
 }
 
-async function addUserBadge(userbadge:tt_user_badge):Promise<tt_user_badge>{
-  return await tt_user_badge.create(userbadge);
-}
-async function updateUserBadge(userBadge:tt_user_badge,user_badgeId:number):Promise<tt_user_badge>{
-  await tt_user_badge.update(userBadge, { where: { ID:user_badgeId } });
-  return userBadge;
-}
-async function deleteUserBadge(user_badgeId:number):Promise<void>{
-  await tt_user_badge.destroy({where:{ID: user_badgeId}});
-}
+async function checkBadgeAvailable(user:tt_user):Promise<tt_badge[]>{
+  if(!user){
+    throw new RouteError(
+      HttpStatusCodes.UNAUTHORIZED,
+      userNotFoundErr,
+    );
+  }
+  const userTradeLogs = await tt_trade_log.findAll({
+    where:{
+      [Op.or]:[
+        {BUYER_USER_ID:user.USER_ID},
+        {SELLER_USER_ID:user.USER_ID},
+      ],
+    },
+    attributes: [
+      "PRODUCT_CATEGORY_ID",
+      [Sequelize.fn('SUM', Sequelize.col('PRODUCT_WEIGHT')), 'weightSum'],
+    ],
+    group: 'PRODUCT_CATEGORY_ID',
+  });
+  if(!userTradeLogs){
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      "Can't find User Trade Log",
+    );
+  }
+  const badges = await tt_badge.findAll({
+    include:[
+      {
+        model:tt_user_badge,
+        as:"tt_user_badges",
+        on: {
+          "BADGE_ID": {[Op.eq]: Sequelize.col('tt_user_badge.BADGE_ID')},
+        },
+        limit: 1,
+      },
+      {
+        model:tt_badge_condition,
+        as:"tt_badge_conditions",
+      },
+    ],
+  });
 
+  const newBadges:tt_badge[] = [];
+  badges.forEach(badge=>{
+    if(badge.tt_user_badges.length >0){
+      return;
+    }
+    if(badge.BADGE_TYPE !== 0){
+      return;
+    }
+    const badgeConditions = badge.tt_badge_conditions;
+    if(!badgeConditions){
+      throw new RouteError(
+        HttpStatusCodes.NOT_FOUND,
+        "Can't find Condition for optaining badge",
+      );
+    }
+    let isSuccess = true;
+    badgeConditions.forEach(condition=>{
+      const categoryId = condition.PRODUCT_CATEGORY_ID;
+      const requireWeight = condition.WEIGHT;
+      let categoryExist = false;
+      userTradeLogs.forEach(tradeLog=>{
+        if(tradeLog.dataValues.PRODUCT_CATEGORY_ID === categoryId){
+          categoryExist = true;
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          if( requireWeight > tradeLog.dataValues.weightSum ){
+            isSuccess = false;
+          }
+        }
+      });
+      isSuccess = isSuccess && categoryExist;
+    });
+    if(isSuccess){
+      newBadges.push(badge);
+    }
+  });
+  newBadges.forEach( async(item)=>{
+    await tt_user_badge.create({
+      BADGE_ID: item.BADGE_ID,
+      USER_ID: user.USER_ID,
+      IS_ACTIVATED: 1,
+    });
+  });
+  return newBadges;
+}
 
 //tt_badge
 async function getBadges():Promise<tt_badge[]>{
@@ -118,21 +159,11 @@ async function deleteBadge(id:number):Promise<void>{
 
 // **** Export default **** //
 export default {
-  getBadgeConditions,
-  getBadgeCondition,
-  addBadgeCondition,
-  updateBadgeCondition,
-  deleteBadgeCondition,
-  //tt_user_badge관련
   getUserBadges,
-  getUserBadge,
-  addUserBadge,
-  updateUserBadge,
-  deleteUserBadge,
-  //tt_badge관련
   getBadges,
   getBadge,
   addBadge,
   updateBadge,
   deleteBadge,
+  checkBadgeAvailable,
 } as const;

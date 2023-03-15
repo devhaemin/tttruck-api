@@ -10,7 +10,7 @@ ENV MYSQL_USER tttruck
 ENV MYSQL_PASSWORD haemin1234!
 
 # Copy the database initialization script to the container
-COPY mydatabase.sql /docker-entrypoint-initdb.d/
+COPY tttruck-db.sql /docker-entrypoint-initdb.d/
 
 # Expose the port the database will listen on
 EXPOSE 3306

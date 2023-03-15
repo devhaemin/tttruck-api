@@ -6,6 +6,7 @@ import type { tt_user, tt_userId } from './tt_user';
 export interface tt_trade_logAttributes {
   TRADE_ID: number;
   PRODUCT_ID?: number;
+  PRODUCT_CATEGORY_ID: number;
   SELLER_USER_ID: number;
   BUYER_USER_ID: number;
   PRODUCT_PRICE?: number;
@@ -23,6 +24,7 @@ export type tt_trade_logCreationAttributes = Optional<tt_trade_logAttributes, tt
 export class tt_trade_log extends Model<tt_trade_logAttributes, tt_trade_logCreationAttributes> implements tt_trade_logAttributes {
   TRADE_ID!: number;
   PRODUCT_ID?: number;
+  PRODUCT_CATEGORY_ID!: number;
   SELLER_USER_ID!: number;
   BUYER_USER_ID!: number;
   PRODUCT_PRICE?: number;
@@ -62,6 +64,10 @@ export class tt_trade_log extends Model<tt_trade_logAttributes, tt_trade_logCrea
         model: 'tt_product',
         key: 'PRODUCT_ID'
       }
+    },
+    PRODUCT_CATEGORY_ID: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false
     },
     SELLER_USER_ID: {
       type: DataTypes.BIGINT.UNSIGNED,

@@ -7,20 +7,20 @@ export interface tt_badge_conditionAttributes {
   CONDITION_ID: number;
   PRODUCT_CATEGORY_ID?: number;
   BADGE_ID?: number;
-  WEIGHT?: number;
+  WEIGHT: number;
   CONDITION_REG_DATE?: Date;
 }
 
 export type tt_badge_conditionPk = "CONDITION_ID";
 export type tt_badge_conditionId = tt_badge_condition[tt_badge_conditionPk];
-export type tt_badge_conditionOptionalAttributes = "CONDITION_ID" | "PRODUCT_CATEGORY_ID" | "BADGE_ID" | "WEIGHT" | "CONDITION_REG_DATE";
+export type tt_badge_conditionOptionalAttributes = "CONDITION_ID" | "PRODUCT_CATEGORY_ID" | "BADGE_ID" | "CONDITION_REG_DATE";
 export type tt_badge_conditionCreationAttributes = Optional<tt_badge_conditionAttributes, tt_badge_conditionOptionalAttributes>;
 
 export class tt_badge_condition extends Model<tt_badge_conditionAttributes, tt_badge_conditionCreationAttributes> implements tt_badge_conditionAttributes {
   CONDITION_ID!: number;
   PRODUCT_CATEGORY_ID?: number;
   BADGE_ID?: number;
-  WEIGHT?: number;
+  WEIGHT!: number;
   CONDITION_REG_DATE?: Date;
 
   // tt_badge_condition belongsTo tt_badge via BADGE_ID
@@ -60,7 +60,7 @@ export class tt_badge_condition extends Model<tt_badge_conditionAttributes, tt_b
     },
     WEIGHT: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: false
     },
     CONDITION_REG_DATE: {
       type: DataTypes.DATE,

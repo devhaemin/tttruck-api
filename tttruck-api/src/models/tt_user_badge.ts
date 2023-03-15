@@ -11,11 +11,12 @@ export interface tt_user_badgeAttributes {
   OP1?: number;
   OP2?: number;
   IS_ACTIVATED?: number;
+  REPRESENT_TF: number;
 }
 
 export type tt_user_badgePk = "ID";
 export type tt_user_badgeId = tt_user_badge[tt_user_badgePk];
-export type tt_user_badgeOptionalAttributes = "ID" | "REG_DATE" | "OP1" | "OP2" | "IS_ACTIVATED";
+export type tt_user_badgeOptionalAttributes = "ID" | "REG_DATE" | "OP1" | "OP2" | "IS_ACTIVATED" | "REPRESENT_TF";
 export type tt_user_badgeCreationAttributes = Optional<tt_user_badgeAttributes, tt_user_badgeOptionalAttributes>;
 
 export class tt_user_badge extends Model<tt_user_badgeAttributes, tt_user_badgeCreationAttributes> implements tt_user_badgeAttributes {
@@ -26,6 +27,7 @@ export class tt_user_badge extends Model<tt_user_badgeAttributes, tt_user_badgeC
   OP1?: number;
   OP2?: number;
   IS_ACTIVATED?: number;
+  REPRESENT_TF!: number;
 
   // tt_user_badge belongsTo tt_badge via BADGE_ID
   BADGE!: tt_badge;
@@ -85,6 +87,11 @@ export class tt_user_badge extends Model<tt_user_badgeAttributes, tt_user_badgeC
       type: DataTypes.BOOLEAN,
       allowNull: true,
       comment: "활성화 여부"
+    },
+    REPRESENT_TF: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     sequelize,
@@ -97,6 +104,15 @@ export class tt_user_badge extends Model<tt_user_badgeAttributes, tt_user_badgeC
         using: "BTREE",
         fields: [
           { name: "ID" },
+        ]
+      },
+      {
+        name: "tt_user_badge_pk",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "USER_ID" },
+          { name: "BADGE_ID" },
         ]
       },
       {

@@ -4,7 +4,7 @@ import type { tt_badge, tt_badgeId } from './tt_badge';
 import type { tt_user, tt_userId } from './tt_user';
 
 export interface tt_user_badgeAttributes {
-  ID: number;
+  USER_BADGE_ID: number;
   USER_ID: number;
   BADGE_ID: number;
   REG_DATE: Date;
@@ -14,13 +14,13 @@ export interface tt_user_badgeAttributes {
   REPRESENT_TF: number;
 }
 
-export type tt_user_badgePk = "ID";
+export type tt_user_badgePk = "USER_BADGE_ID";
 export type tt_user_badgeId = tt_user_badge[tt_user_badgePk];
-export type tt_user_badgeOptionalAttributes = "ID" | "REG_DATE" | "OP1" | "OP2" | "IS_ACTIVATED" | "REPRESENT_TF";
+export type tt_user_badgeOptionalAttributes = "USER_BADGE_ID" | "REG_DATE" | "OP1" | "OP2" | "IS_ACTIVATED" | "REPRESENT_TF";
 export type tt_user_badgeCreationAttributes = Optional<tt_user_badgeAttributes, tt_user_badgeOptionalAttributes>;
 
 export class tt_user_badge extends Model<tt_user_badgeAttributes, tt_user_badgeCreationAttributes> implements tt_user_badgeAttributes {
-  ID!: number;
+  USER_BADGE_ID!: number;
   USER_ID!: number;
   BADGE_ID!: number;
   REG_DATE!: Date;
@@ -42,7 +42,7 @@ export class tt_user_badge extends Model<tt_user_badgeAttributes, tt_user_badgeC
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_user_badge {
     return tt_user_badge.init({
-    ID: {
+    USER_BADGE_ID: {
       autoIncrement: true,
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
@@ -103,7 +103,7 @@ export class tt_user_badge extends Model<tt_user_badgeAttributes, tt_user_badgeC
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "ID" },
+          { name: "USER_BADGE_ID" },
         ]
       },
       {

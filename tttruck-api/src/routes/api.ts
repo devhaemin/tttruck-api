@@ -137,6 +137,7 @@ apiRouter.use(authRoutes.paths.basePath, authRouter);
 // **** Setup badge routes **** //
 
 const badgeRouter = Router();
+const badgeImageMulter = getS3ImageMulter('badge/image');
 
 badgeRouter.get(badgeRoutes.paths.getUserBadges,normalUserMw,badgeRoutes.getUserBadges);
 badgeRouter.get(badgeRoutes.paths.getBadges,adminMw,badgeRoutes.getBadges);
@@ -148,6 +149,19 @@ badgeRouter.post(badgeRoutes.paths.checkBadgeAvailable, normalUserMw, badgeRoute
 badgeRouter.put(badgeRoutes.paths.updateBadge,adminMw,badgeRoutes.updateBadge);
 badgeRouter.delete(badgeRoutes.paths.deleteBadge,adminMw,badgeRoutes.deleteBadge);
 
+
+badgeRouter.post(
+  badgeRoutes.paths.setActiveImage,
+  adminMw,
+  badgeImageMulter.single('file'),
+  badgeRoutes.setActiveImage,
+);
+badgeRouter.post(
+  badgeRoutes.paths.setFalseImage,
+  adminMw,
+  badgeImageMulter.single('file'),
+  badgeRoutes.setFalseImage,
+);
 
 apiRouter.use(badgeRoutes.paths.basePath,badgeRouter);
 

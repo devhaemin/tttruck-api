@@ -1,6 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_access_log, tt_access_logId } from './tt_access_log';
+import type { tt_badge, tt_badgeId } from './tt_badge';
 import type { tt_login_log, tt_login_logId } from './tt_login_log';
 import type { tt_nickname_log, tt_nickname_logId } from './tt_nickname_log';
 import type { tt_notice, tt_noticeId } from './tt_notice';
@@ -107,6 +108,18 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   hasTt_access_log!: Sequelize.HasManyHasAssociationMixin<tt_access_log, tt_access_logId>;
   hasTt_access_logs!: Sequelize.HasManyHasAssociationsMixin<tt_access_log, tt_access_logId>;
   countTt_access_logs!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_badge via UPDATE_USER_ID
+  tt_badges!: tt_badge[];
+  getTt_badges!: Sequelize.HasManyGetAssociationsMixin<tt_badge>;
+  setTt_badges!: Sequelize.HasManySetAssociationsMixin<tt_badge, tt_badgeId>;
+  addTt_badge!: Sequelize.HasManyAddAssociationMixin<tt_badge, tt_badgeId>;
+  addTt_badges!: Sequelize.HasManyAddAssociationsMixin<tt_badge, tt_badgeId>;
+  createTt_badge!: Sequelize.HasManyCreateAssociationMixin<tt_badge>;
+  removeTt_badge!: Sequelize.HasManyRemoveAssociationMixin<tt_badge, tt_badgeId>;
+  removeTt_badges!: Sequelize.HasManyRemoveAssociationsMixin<tt_badge, tt_badgeId>;
+  hasTt_badge!: Sequelize.HasManyHasAssociationMixin<tt_badge, tt_badgeId>;
+  hasTt_badges!: Sequelize.HasManyHasAssociationsMixin<tt_badge, tt_badgeId>;
+  countTt_badges!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user hasMany tt_login_log via USER_ID
   tt_login_logs!: tt_login_log[];
   getTt_login_logs!: Sequelize.HasManyGetAssociationsMixin<tt_login_log>;

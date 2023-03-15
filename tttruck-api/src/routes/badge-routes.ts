@@ -13,6 +13,8 @@ import badgeService from '@src/services/badge-service';
 import { RouteError } from '@src/declarations/classes';
 import { userNotFoundErr } from '@src/services/user-service';
 import {Op, Sequelize} from "sequelize";
+import productService from "@src/services/product-service";
+import {getClientIP} from "@src/util/ip-util";
 
 // **** Variables **** //
 
@@ -27,6 +29,8 @@ const paths = {
   checkBadgeAvailable: '/obtain',
   setRepresentBadge: '/represent/:id',
   getBadge: '/:badgeId',
+  setActiveImage: '/image/active',
+  setFalseImage: '/image/false',
 } as const;
 
 // **** Functions **** //
@@ -63,7 +67,7 @@ const paths = {
  *         "BADGE_REG_DATE": null,
  *         "tt_user_badges": [
  *             {
- *                 "ID": 9,
+ *                 "USER_BADGE_ID": 9,
  *                 "USER_ID": 26,
  *                 "BADGE_ID": 2,
  *                 "REG_DATE": "2023-03-15T14:23:56.000Z",
@@ -85,7 +89,7 @@ async function getUserBadges(req:IReq,res:IRes){
 }
 
 /**
- * @api {get} /api/v1/badge/list Get tt_badges
+ * @api {get} /badge/list Get tt_badges
  * @apiName getBadges
  * @apiGroup Badge
  *
@@ -147,7 +151,7 @@ async function getBadges(req:IReq,res:IRes){
 }
 
 /**
- * @api {get} /api/v1/badge/:badgeId Get tt_badge
+ * @api {get} /badge/:badgeId Get tt_badge
  * @apiName getBadge
  * @apiGroup Badge
  *
@@ -179,7 +183,7 @@ async function getBadge(req:IReq,res:IRes){
 
 
 /**
- * @api {post} /api/v1/badge/obtain Request Obtain Normal Scenario Badges
+ * @api {post} /badge/obtain Request Obtain Normal Scenario Badges
  * @apiName obtainBadge
  * @apiGroup Badge
  *
@@ -230,7 +234,7 @@ async function checkBadgeAvailable(req:IReq, res:IRes){
   return res.status(HttpStatusCodes.OK).json(result).end();
 }
 /**
-* @api {put} /api/v1/badge/represent/:id Set Represent UserBadge
+* @api {put} /badge/represent/:id Set Represent UserBadge
 * @apiName setRepresentBadge
 * @apiGroup Badge
 *
@@ -255,14 +259,14 @@ async function setRepresentBadge(req:IReq, res:IRes){
     const userBadge = badges[i];
     if(userBadge){
       await userBadge.update({
-        REPRESENT_TF : Number(userBadge.ID === userBadgeId),
+        REPRESENT_TF : Number(userBadge.USER_BADGE_ID === userBadgeId),
       });
     }
   }
   return res.status(HttpStatusCodes.OK).end();
 }
 /**
- * @api {post} /api/v1/badge/addBadge Add tt_badge
+ * @api {post} /badge/addBadge Add tt_badge
  * @apiName addBadge
  * @apiGroup Badge
  *
@@ -303,7 +307,7 @@ async function addBadge(req:IReq<{badge: tt_badge}>, res:IRes){
 }
 
 /**
- * @api {put} /api/v1/badge/update/:badgeId Update tt_badge
+ * @api {put} /badge/update/:badgeId Update tt_badge
  * @apiName updateBadge
  * @apiGroup Badge
  *
@@ -343,7 +347,7 @@ async function updateBadge(req:IReq<{badge: tt_badge}>, res:IRes){
 }
 
 /**
- * @api {delete} /api/v1/badge/delete/:badgeId Delete tt_badge
+ * @api {delete} /badge/delete/:badgeId Delete tt_badge
  * @apiName deleteBadge
  * @apiGroup Badge
  *
@@ -357,6 +361,68 @@ async function deleteBadge(req:IReq, res:IRes){
   const result = await badgeService.deleteBadge(Number(badgeId));
   return res.status(HttpStatusCodes.ACCEPTED).json(result).end();
 }
+
+
+/**
+ * @api {post} /badge/image/active Set Active Image for Badge
+ * @apiName SetBadgeActiveImage
+ * @apiGroup Badge
+ *
+ * @apiPermission adminUser
+ *
+ * @apiBody Number badgeId 상품 ID 값
+ * @apiBody File file 상품에 추가할 이미지
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ * {
+ *
+ * }
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "BadgeNotFound"
+ *     }
+ */
+async function setActiveImage(req: IReq<{ badgeId: number }>, res: IRes) {
+  const {badgeId} = req.body;
+  const file = req.file as S3File;
+  const result =
+    await badgeService.setActiveImage(badgeId, file, res.locals.user, getClientIP(req));
+  return res.status(HttpStatusCodes.CREATED).json(result).end();
+}
+
+/**
+ * @api {post} /badge/image/false Set Active Image for Badge
+ * @apiName SetBadgeActiveImage
+ * @apiGroup Badge
+ *
+ * @apiPermission adminUser
+ *
+ * @apiBody Number badgeId 상품 ID 값
+ * @apiBody File file 상품에 추가할 이미지
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ * {
+ *
+ * }
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "BadgeNotFound"
+ *     }
+ */
+async function setFalseImage(req: IReq<{ badgeId: number }>, res: IRes) {
+  const {badgeId} = req.body;
+  const file = req.file as S3File;
+  const result =
+    await badgeService.setActiveImage(badgeId, file, res.locals.user, getClientIP(req));
+  return res.status(HttpStatusCodes.CREATED).json(result).end();
+}
+
 // **** Export default **** //
 
 export default {
@@ -369,4 +435,6 @@ export default {
   deleteBadge,
   checkBadgeAvailable,
   setRepresentBadge,
+  setActiveImage,
+  setFalseImage,
 } as const;

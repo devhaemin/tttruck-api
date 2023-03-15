@@ -1,6 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_badge_condition, tt_badge_conditionId } from './tt_badge_condition';
+import type { tt_user, tt_userId } from './tt_user';
 import type { tt_user_badge, tt_user_badgeId } from './tt_user_badge';
 
 export interface tt_badgeAttributes {
@@ -12,11 +13,13 @@ export interface tt_badgeAttributes {
   BADGE_IMAGE_URL?: string;
   BADGE_IMAGE_URL_FALSE?: string;
   BADGE_REG_DATE?: Date;
+  UPDATE_USER_ID?: number;
+  UPDATE_USER_IPv4?: number;
 }
 
 export type tt_badgePk = "BADGE_ID";
 export type tt_badgeId = tt_badge[tt_badgePk];
-export type tt_badgeOptionalAttributes = "BADGE_ID" | "BADGE_TYPE" | "BADGE_SUBJECT" | "BADGE_CONTENT" | "BADGE_CONDITION_CONTENT" | "BADGE_IMAGE_URL" | "BADGE_IMAGE_URL_FALSE" | "BADGE_REG_DATE";
+export type tt_badgeOptionalAttributes = "BADGE_ID" | "BADGE_TYPE" | "BADGE_SUBJECT" | "BADGE_CONTENT" | "BADGE_CONDITION_CONTENT" | "BADGE_IMAGE_URL" | "BADGE_IMAGE_URL_FALSE" | "BADGE_REG_DATE" | "UPDATE_USER_ID" | "UPDATE_USER_IPv4";
 export type tt_badgeCreationAttributes = Optional<tt_badgeAttributes, tt_badgeOptionalAttributes>;
 
 export class tt_badge extends Model<tt_badgeAttributes, tt_badgeCreationAttributes> implements tt_badgeAttributes {
@@ -28,6 +31,8 @@ export class tt_badge extends Model<tt_badgeAttributes, tt_badgeCreationAttribut
   BADGE_IMAGE_URL?: string;
   BADGE_IMAGE_URL_FALSE?: string;
   BADGE_REG_DATE?: Date;
+  UPDATE_USER_ID?: number;
+  UPDATE_USER_IPv4?: number;
 
   // tt_badge hasMany tt_badge_condition via BADGE_ID
   tt_badge_conditions!: tt_badge_condition[];
@@ -53,6 +58,11 @@ export class tt_badge extends Model<tt_badgeAttributes, tt_badgeCreationAttribut
   hasTt_user_badge!: Sequelize.HasManyHasAssociationMixin<tt_user_badge, tt_user_badgeId>;
   hasTt_user_badges!: Sequelize.HasManyHasAssociationsMixin<tt_user_badge, tt_user_badgeId>;
   countTt_user_badges!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_badge belongsTo tt_user via UPDATE_USER_ID
+  UPDATE_USER!: tt_user;
+  getUPDATE_USER!: Sequelize.BelongsToGetAssociationMixin<tt_user>;
+  setUPDATE_USER!: Sequelize.BelongsToSetAssociationMixin<tt_user, tt_userId>;
+  createUPDATE_USER!: Sequelize.BelongsToCreateAssociationMixin<tt_user>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof tt_badge {
     return tt_badge.init({
@@ -98,6 +108,18 @@ export class tt_badge extends Model<tt_badgeAttributes, tt_badgeCreationAttribut
       allowNull: true,
       defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
       comment: "뱃지_출시일"
+    },
+    UPDATE_USER_ID: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: true,
+      references: {
+        model: 'tt_user',
+        key: 'USER_ID'
+      }
+    },
+    UPDATE_USER_IPv4: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true
     }
   }, {
     sequelize,
@@ -110,6 +132,13 @@ export class tt_badge extends Model<tt_badgeAttributes, tt_badgeCreationAttribut
         using: "BTREE",
         fields: [
           { name: "BADGE_ID" },
+        ]
+      },
+      {
+        name: "tt_badge_tt_user_null_fk",
+        using: "BTREE",
+        fields: [
+          { name: "UPDATE_USER_ID" },
         ]
       },
     ]

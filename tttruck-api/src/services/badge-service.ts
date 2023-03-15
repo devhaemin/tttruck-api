@@ -6,11 +6,17 @@ import {tt_user} from "@src/models/tt_user";
 import logger from "jet-logger";
 import {
   tt_badge,
-  tt_badge_condition, tt_trade_log, tt_trade_logAttributes,
+  tt_badge_condition,
+  tt_product,
+  tt_product_image,
+  tt_trade_log,
+  tt_trade_logAttributes,
   tt_user_badge,
 } from "@src/models/init-models";
 import {userNotFoundErr} from "@src/services/user-service";
 import {Model, Op, Sequelize} from "sequelize";
+import {S3File} from "@src/routes/shared/awsMultipart";
+import {prodNotFoundErr} from "@src/services/product-service";
 
 // Errors
 export const errors = {
@@ -152,7 +158,46 @@ async function updateBadge(badge:tt_badge,badgeId:number):Promise<tt_badge>{
 async function deleteBadge(id:number):Promise<void>{
   await tt_badge.destroy({where:{BADGE_ID: id}});
 }
-
+async function setActiveImage(badgeId: number, file: S3File | null, user: tt_user, ip: number) {
+  const badge = await tt_badge.findByPk(badgeId);
+  if (!badge) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      "badgeNotFoundErr",
+    );
+  }
+  if (!file) {
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      "AWS API Connection error.",
+    );
+  }
+  //badge.UPDATE_USER_IPv4 = ip;
+  //badge.UPDATE_USER_ID = user.USER_ID;
+  return badge.update({
+    BADGE_IMAGE_URL:file.key,
+  });
+}
+async function setFalseImage(badgeId: number, file: S3File | null, user: tt_user, ip: number) {
+  const badge = await tt_badge.findByPk(badgeId);
+  if (!badge) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      "badgeNotFoundErr",
+    );
+  }
+  if (!file) {
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      "AWS API Connection error.",
+    );
+  }
+  badge.UPDATE_USER_IPv4 = ip;
+  badge.UPDATE_USER_ID = user.USER_ID;
+  return badge.update({
+    BADGE_IMAGE_URL_FALSE:file.key,
+  });
+}
 // **** Export default **** //
 export default {
   getUserBadges,
@@ -162,4 +207,6 @@ export default {
   updateBadge,
   deleteBadge,
   checkBadgeAvailable,
+  setActiveImage,
+  setFalseImage,
 } as const;

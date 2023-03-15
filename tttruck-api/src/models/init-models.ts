@@ -208,6 +208,8 @@ export function initModels(sequelize: Sequelize) {
   tt_trucker_center_master.hasMany(tt_trucker_center, { as: "tt_trucker_centers", foreignKey: "TRUCKER_CENTER_MASTER_ID"});
   tt_access_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasMany(tt_access_log, { as: "tt_access_logs", foreignKey: "USER_ID"});
+  tt_badge.belongsTo(tt_user, { as: "UPDATE_USER", foreignKey: "UPDATE_USER_ID"});
+  tt_user.hasMany(tt_badge, { as: "tt_badges", foreignKey: "UPDATE_USER_ID"});
   tt_login_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasMany(tt_login_log, { as: "tt_login_logs", foreignKey: "USER_ID"});
   tt_nickname_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});

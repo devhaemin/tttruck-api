@@ -39,8 +39,8 @@ async function getUserBadges(user:tt_user):Promise<tt_badge[]>{
       {
         model:tt_user_badge,
         as:"tt_user_badges",
-        on: {
-          "USER_ID": user.USER_ID,
+        where: {
+          USER_ID: user.USER_ID,
         },
         limit: 1,
       },
@@ -80,7 +80,7 @@ async function checkBadgeAvailable(user:tt_user):Promise<tt_badge[]>{
       {
         model:tt_user_badge,
         as:"tt_user_badges",
-        on: {
+        where: {
           "USER_ID": user.USER_ID,
         },
         limit: 1,

@@ -40,38 +40,41 @@ const paths = {
  *
  * @apiSuccessExample {json} success-Response:
  * [
+ *     [
  *     {
  *         "BADGE_ID": 1,
+ *         "BADGE_TYPE": 1,
  *         "BADGE_SUBJECT": "지구환경노조가입",
  *         "BADGE_CONTENT": "11",
- *         "BADGE_FILE_URL": null,
- *         "BADGE_FILE_URL_FALSE": null,
+ *         "BADGE_CONDITION_CONTENT": null,
+ *         "BADGE_IMAGE_URL": null,
+ *         "BADGE_IMAGE_URL_FALSE": null,
  *         "BADGE_REG_DATE": null,
- *         "BADGE_OP1_CONTENT": null,
- *         "BADGE_OP2_CONTENT": null,
  *         "tt_user_badges": []
  *     },
  *     {
- *         "BADGE_ID": 15,
- *         "BADGE_SUBJECT": "맥카츄",
+ *         "BADGE_ID": 2,
+ *         "BADGE_TYPE": 0,
+ *         "BADGE_SUBJECT": "초보환경운동가",
  *         "BADGE_CONTENT": null,
- *         "BADGE_FILE_URL": null,
- *         "BADGE_FILE_URL_FALSE": null,
+ *         "BADGE_CONDITION_CONTENT": null,
+ *         "BADGE_IMAGE_URL": null,
+ *         "BADGE_IMAGE_URL_FALSE": null,
  *         "BADGE_REG_DATE": null,
- *         "BADGE_OP1_CONTENT": null,
- *         "BADGE_OP2_CONTENT": null,
  *         "tt_user_badges": [
  *             {
- *                 "ID": 2,
+ *                 "ID": 9,
  *                 "USER_ID": 26,
- *                 "BADGE_ID": 15,
- *                 "REG_DATE": "2023-03-14T04:47:41.000Z",
- *                 "OP1": true,
- *                 "OP2": true,
- *                 "IS_ACTIVATED": true
+ *                 "BADGE_ID": 2,
+ *                 "REG_DATE": "2023-03-15T14:23:56.000Z",
+ *                 "OP1": null,
+ *                 "OP2": null,
+ *                 "IS_ACTIVATED": true,
+ *                 "REPRESENT_TF": false
  *             }
  *         ]
  *     }
+ *  ...
  * ]
  */
 async function getUserBadges(req:IReq,res:IRes){
@@ -190,11 +193,10 @@ async function getBadge(req:IReq,res:IRes){
  *         "BADGE_TYPE": 0,
  *         "BADGE_SUBJECT": "초보환경운동가",
  *         "BADGE_CONTENT": null,
- *         "BADGE_FILE_URL": null,
- *         "BADGE_FILE_URL_FALSE": null,
+ *         "BADGE_CONDITION_CONTENT": null,
+ *         "BADGE_IMAGE_URL": null,
+ *         "BADGE_IMAGE_URL_FALSE": null,
  *         "BADGE_REG_DATE": null,
- *         "BADGE_OP1_CONTENT": null,
- *         "BADGE_OP2_CONTENT": null,
  *         "tt_badge_conditions": [],
  *         "tt_user_badges": []
  *     },
@@ -203,11 +205,10 @@ async function getBadge(req:IReq,res:IRes){
  *         "BADGE_TYPE": 0,
  *         "BADGE_SUBJECT": "피노키오",
  *         "BADGE_CONTENT": "22",
- *         "BADGE_FILE_URL": null,
- *         "BADGE_FILE_URL_FALSE": null,
+ *         "BADGE_CONDITION_CONTENT": null,
+ *         "BADGE_IMAGE_URL": null,
+ *         "BADGE_IMAGE_URL_FALSE": null,
  *         "BADGE_REG_DATE": null,
- *         "BADGE_OP1_CONTENT": null,
- *         "BADGE_OP2_CONTENT": null,
  *         "tt_badge_conditions": [
  *             {
  *                 "CONDITION_ID": 4,

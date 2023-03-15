@@ -8,16 +8,15 @@ export interface tt_badgeAttributes {
   BADGE_TYPE: number;
   BADGE_SUBJECT?: string;
   BADGE_CONTENT?: string;
-  BADGE_FILE_URL?: string;
-  BADGE_FILE_URL_FALSE?: string;
+  BADGE_CONDITION_CONTENT?: string;
+  BADGE_IMAGE_URL?: string;
+  BADGE_IMAGE_URL_FALSE?: string;
   BADGE_REG_DATE?: Date;
-  BADGE_OP1_CONTENT?: string;
-  BADGE_OP2_CONTENT?: string;
 }
 
 export type tt_badgePk = "BADGE_ID";
 export type tt_badgeId = tt_badge[tt_badgePk];
-export type tt_badgeOptionalAttributes = "BADGE_ID" | "BADGE_TYPE" | "BADGE_SUBJECT" | "BADGE_CONTENT" | "BADGE_FILE_URL" | "BADGE_FILE_URL_FALSE" | "BADGE_REG_DATE" | "BADGE_OP1_CONTENT" | "BADGE_OP2_CONTENT";
+export type tt_badgeOptionalAttributes = "BADGE_ID" | "BADGE_TYPE" | "BADGE_SUBJECT" | "BADGE_CONTENT" | "BADGE_CONDITION_CONTENT" | "BADGE_IMAGE_URL" | "BADGE_IMAGE_URL_FALSE" | "BADGE_REG_DATE";
 export type tt_badgeCreationAttributes = Optional<tt_badgeAttributes, tt_badgeOptionalAttributes>;
 
 export class tt_badge extends Model<tt_badgeAttributes, tt_badgeCreationAttributes> implements tt_badgeAttributes {
@@ -25,11 +24,10 @@ export class tt_badge extends Model<tt_badgeAttributes, tt_badgeCreationAttribut
   BADGE_TYPE!: number;
   BADGE_SUBJECT?: string;
   BADGE_CONTENT?: string;
-  BADGE_FILE_URL?: string;
-  BADGE_FILE_URL_FALSE?: string;
+  BADGE_CONDITION_CONTENT?: string;
+  BADGE_IMAGE_URL?: string;
+  BADGE_IMAGE_URL_FALSE?: string;
   BADGE_REG_DATE?: Date;
-  BADGE_OP1_CONTENT?: string;
-  BADGE_OP2_CONTENT?: string;
 
   // tt_badge hasMany tt_badge_condition via BADGE_ID
   tt_badge_conditions!: tt_badge_condition[];
@@ -77,17 +75,22 @@ export class tt_badge extends Model<tt_badgeAttributes, tt_badgeCreationAttribut
       comment: "뱃지_제목"
     },
     BADGE_CONTENT: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(500),
       allowNull: true,
       comment: "뱃지_내용"
     },
-    BADGE_FILE_URL: {
-      type: DataTypes.STRING(255),
+    BADGE_CONDITION_CONTENT: {
+      type: DataTypes.STRING(500),
+      allowNull: true,
+      comment: "뱃지_조건1"
+    },
+    BADGE_IMAGE_URL: {
+      type: DataTypes.STRING(500),
       allowNull: true,
       comment: "뱃지_이미지_URL"
     },
-    BADGE_FILE_URL_FALSE: {
-      type: DataTypes.STRING(255),
+    BADGE_IMAGE_URL_FALSE: {
+      type: DataTypes.STRING(500),
       allowNull: true
     },
     BADGE_REG_DATE: {
@@ -95,16 +98,6 @@ export class tt_badge extends Model<tt_badgeAttributes, tt_badgeCreationAttribut
       allowNull: true,
       defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
       comment: "뱃지_출시일"
-    },
-    BADGE_OP1_CONTENT: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-      comment: "뱃지_조건1"
-    },
-    BADGE_OP2_CONTENT: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-      comment: "뱃지_조건2"
     }
   }, {
     sequelize,

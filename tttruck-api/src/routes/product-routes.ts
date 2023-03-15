@@ -22,6 +22,7 @@ const paths = {
   getByFilter:'/filter',
   getAll: '/all',
   getCategories: '/category',
+  getMinMaxPrice: '/price/minmax',
   getByCategories: '/categories',
   getByCategory: '/category/:id',
   getById: '/:id',
@@ -34,8 +35,8 @@ const paths = {
   updateStatus: '/:id/status',
 } as const;
 /**
- * @api {post} /products/filter Get Products with filter
- * @apiName GetProductWithFilter
+ * @api {post} /products/filter Request Products with filter
+ * @apiName RequestProductsWithFilter
  * @apiGroup Product
  *
  * @apiBody {Number} orderDesc 0:false 1:true
@@ -147,6 +148,111 @@ async function getByFilter(req:IReq<{filter:ProductFilter}>, res:IRes){
   const {filter} = req.body;
   const products = await productService.getByFilter(filter);
   return res.status(HttpStatusCodes.OK).json(products);
+}
+/**
+ * @api {post} /products/price/minmax Request MinMaxPrice with filter
+ * @apiName RequestMinMaxPriceWithFilter
+ * @apiGroup Product
+ *
+ * @apiPermission none
+ *
+ * @apiSuccess {String} Nothing
+ *
+ * @apiParamExample {json} Request-Example:
+ * {
+ *     filter:{
+ *       "queryString": "검색어",
+ *       "categories":[1,2,3]
+ *     }
+ * }
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ * [
+ *     {
+ *         "PRODUCT_ID": 8,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 0,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-26T08:19:55.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 127.074697,
+ *                 37.626356
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 0,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-26T08:19:55.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": [],
+ *         "SELLER_USER": {
+ *             "NICKNAME": "꼬리무123",
+ *             "PROFILE_IMAGE": null,
+ *             "USER_ID": 4
+ *         }
+ *     },
+ *     {
+ *         "PRODUCT_ID": 9,
+ *         "SUBJECT": "SUBJECT 1",
+ *         "PRIORITY": 1,
+ *         "PRODUCT_CATEGORY_ID": 1,
+ *         "PRODUCT_PRICE": 30000,
+ *         "PRODUCT_SIZE": "1024x1024",
+ *         "PRODUCT_WEIGHT": 500,
+ *         "CONTENTS": "CONTENTS 1",
+ *         "SELLER_USER_ID": 4,
+ *         "SELLER_USER_IPv4": 1794396811,
+ *         "SELLER_USER_IPv6": null,
+ *         "UPLOAD_TIME": "2022-12-27T05:33:48.000Z",
+ *         "TAG": "TAG 1",
+ *         "ADDRESS": "ADDRESS 1",
+ *         "LATITUDE": "37.626356",
+ *         "LONGITUDE": "127.074697",
+ *         "LOCATION": {
+ *             "type": "Point",
+ *             "coordinates": [
+ *                 127.074697,
+ *                 37.626356
+ *             ]
+ *         },
+ *         "UPDATE_USER_ID": 4,
+ *         "UPDATE_USER_IPv4": 1794396811,
+ *         "UPDATE_USER_IPv6": null,
+ *         "UPDATE_DATE": "2022-12-27T05:33:48.000Z",
+ *         "DISTANCE": null,
+ *         "tt_product_images": [],
+ *         "SELLER_USER": {
+ *             "NICKNAME": "꼬리무123",
+ *             "PROFILE_IMAGE": null,
+ *             "USER_ID": 4
+ *         }
+ *     }
+ * ]
+ * @apiError ProductNotFound The id of the User was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "ProductNotFound"
+ *     }
+ */
+async function getMinMaxPrice(req:IReq<{filter:ProductFilter}>, res:IRes){
+  const {filter} = req.body;
+  const product = await productService.getMinMaxPrice(filter);
+  return res.status(HttpStatusCodes.OK).json(product);
 }
 
 /**
@@ -1448,5 +1554,6 @@ export default {
   update,
   delete: _delete,
   getByCategories,
+  getMinMaxPrice,
   updateStatus,
 } as const;

@@ -163,6 +163,10 @@ productRouter.post(
   productRoutes.paths.getByFilter,
   productRoutes.getByFilter);
 
+productRouter.post(
+  productRoutes.paths.getMinMaxPrice,
+  productRoutes.getMinMaxPrice);
+
 productRouter.get(
   productRoutes.paths.getAll,
   locationCheck,

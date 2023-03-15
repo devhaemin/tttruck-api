@@ -58,8 +58,7 @@ function getAvailableFilter({
   };
 }
 
-// **** Functions **** //
-async function getByFilter(filter1: ProductFilter): Promise<tt_product[]> {
+async function getMinMaxPrice(filter1: ProductFilter): Promise<tt_product> {
   const filter = getAvailableFilter(filter1);
   const categories = await tt_product_category.findAll({
     where: {
@@ -76,7 +75,57 @@ async function getByFilter(filter1: ProductFilter): Promise<tt_product[]> {
         }],
     },
   });
-  if(!categories){
+  if (!categories) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      "Categories are not found",
+    );
+  }
+  const categoryData = categories.map(category => category.PRODUCT_CATEGORY_ID);
+  const {queryString} = filter;
+  const persists = await tt_product.findOne(
+    {
+      where: {
+        SUBJECT: {
+          [Op.like]: "%" + queryString + "%",
+        },
+        PRODUCT_CATEGORY_ID: {
+          [Op.in]: categoryData,
+        },
+      },
+      attributes: [
+        [Sequelize.fn('min', Sequelize.col('PRODUCT_PRICE')), 'MIN_PRICE'],
+        [Sequelize.fn('max', Sequelize.col('PRODUCT_PRICE')), 'MAX_PRICE'],
+      ],
+    });
+  if (!persists) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      prodNotFoundErr,
+    );
+  }
+  return persists;
+}
+
+// **** Functions **** //
+async function getByFilter(filter1: ProductFilter): Promise<tt_product[]> {
+  const filter = getAvailableFilter(filter1);
+  const categories = await tt_product_category.findAll({
+    where: {
+      [Op.or]:
+        [{
+          PRODUCT_CATEGORY_ID: {
+            [Op.in]: filter.categories,
+          },
+        },
+          {
+            PARENT_CATEGORY_ID: {
+              [Op.in]: filter.categories,
+            },
+          }],
+    },
+  });
+  if (!categories) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
       "Categories are not found",
@@ -439,6 +488,7 @@ export default {
   setImageOrder,
   updateOne,
   uploadImage,
+  getMinMaxPrice,
   delete: _delete,
   deleteImage,
 } as const;

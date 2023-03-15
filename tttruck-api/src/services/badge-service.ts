@@ -20,10 +20,6 @@ export const errors = {
   userNotFound :  (user:string) => `"${user}" not found`,
 } as const;
 
-interface UserWeightSum extends tt_trade_log{
-  sum:number;
-}
-
 async function getUserBadges(user:tt_user):Promise<tt_badge[]>{
   if(!user){
     throw new RouteError(
@@ -37,7 +33,7 @@ async function getUserBadges(user:tt_user):Promise<tt_badge[]>{
         model:tt_user_badge,
         as:"tt_user_badges",
         on: {
-          "BADGE_ID": {[Op.eq]: Sequelize.col('tt_user_badge.BADGE_ID')},
+          "USER_ID": user.USER_ID,
         },
         limit: 1,
       },

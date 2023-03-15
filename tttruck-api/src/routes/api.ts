@@ -141,6 +141,7 @@ const badgeRouter = Router();
 badgeRouter.get(badgeRoutes.paths.getUserBadges,normalUserMw,badgeRoutes.getUserBadges);
 badgeRouter.get(badgeRoutes.paths.getBadges,adminMw,badgeRoutes.getBadges);
 badgeRouter.get(badgeRoutes.paths.getBadge,adminMw,badgeRoutes.getBadge);
+badgeRouter.put(badgeRoutes.paths.setRepresentBadge, normalUserMw, badgeRoutes.setRepresentBadge);
 
 badgeRouter.post(badgeRoutes.paths.addBadge,adminMw,badgeRoutes.addBadge);
 badgeRouter.post(badgeRoutes.paths.checkBadgeAvailable, normalUserMw, badgeRoutes.checkBadgeAvailable);

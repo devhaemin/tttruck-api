@@ -12,6 +12,7 @@ import pwdUtil from "@src/util/pwd-util";
 import badgeService from '@src/services/badge-service';
 import { RouteError } from '@src/declarations/classes';
 import { userNotFoundErr } from '@src/services/user-service';
+import {Op, Sequelize} from "sequelize";
 
 // **** Variables **** //
 
@@ -19,12 +20,13 @@ import { userNotFoundErr } from '@src/services/user-service';
 const paths = {
   basePath: '/badge',
   getUserBadges: '/userBadge/list',
-  getBadge: '/:badgeId',
   getBadges: '/list',
   addBadge: '/addBadge',
   updateBadge: '/update/:badgeId',
   deleteBadge: '/delete/:badgeId',
   checkBadgeAvailable: '/obtain',
+  setRepresentBadge: '/represent/:id',
+  getBadge: '/:badgeId',
 } as const;
 
 // **** Functions **** //
@@ -226,7 +228,38 @@ async function checkBadgeAvailable(req:IReq, res:IRes){
   const result = await badgeService.checkBadgeAvailable(user);
   return res.status(HttpStatusCodes.OK).json(result).end();
 }
-
+/**
+* @api {put} /api/v1/badge/represent/:id Set Represent UserBadge
+* @apiName setRepresentBadge
+* @apiGroup Badge
+*
+* @apiPermission normalUser
+*
+*
+* @apiSuccessExample Success-Response:
+* [
+*
+* ]
+*
+*/
+async function setRepresentBadge(req:IReq, res:IRes){
+  const userBadgeId = Number(req.params.id);
+  const user = res.locals.user;
+  const badges = await tt_user_badge.findAll({
+    where:{
+      USER_ID : user.USER_ID,
+    },
+  });
+  for(let i =0; i< badges.length; ++i){
+    const userBadge = badges[i];
+    if(userBadge){
+      await userBadge.update({
+        REPRESENT_TF : Number(userBadge.ID === userBadgeId),
+      });
+    }
+  }
+  return res.status(HttpStatusCodes.OK).end();
+}
 /**
  * @api {post} /api/v1/badge/addBadge Add tt_badge
  * @apiName addBadge
@@ -334,4 +367,5 @@ export default {
   updateBadge,
   deleteBadge,
   checkBadgeAvailable,
+  setRepresentBadge,
 } as const;

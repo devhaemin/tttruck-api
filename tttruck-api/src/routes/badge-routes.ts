@@ -82,7 +82,6 @@ const paths = {
  * ]
  */
 async function getUserBadges(req:IReq,res:IRes){
-
   const user = res.locals.user;
   const badgeList = await badgeService.getUserBadges(user);
   return res.status(200).json(badgeList).end();
@@ -419,7 +418,7 @@ async function setFalseImage(req: IReq<{ badgeId: number }>, res: IRes) {
   const {badgeId} = req.body;
   const file = req.file as S3File;
   const result =
-    await badgeService.setActiveImage(badgeId, file, res.locals.user, getClientIP(req));
+    await badgeService.setFalseImage(badgeId, file, res.locals.user, getClientIP(req));
   return res.status(HttpStatusCodes.CREATED).json(result).end();
 }
 

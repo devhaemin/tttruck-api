@@ -33,6 +33,8 @@
     "@types/crypto-js": "^4.1.1",
     "@types/multer-s3": "^3.0.0",
     "@types/node-fetch": "^2.6.2",
+    "@types/sharp": "^0.31.1",
+    "axios": "^1.3.4",
     "bcrypt": "^5.1.0",
     "command-line-args": "^5.2.1",
     "cookie-parser": "^1.4.6",
@@ -54,7 +56,8 @@
     "mysql2": "^2.3.3",
     "sequelize": "^6.27.0",
     "sequelize-auto": "^0.8.8",
-    "sequelize-cli": "^6.5.2"
+    "sequelize-cli": "^6.5.2",
+    "sharp": "^0.31.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

@@ -16,10 +16,22 @@ import chatRoutes from "@src/routes/chat-routes";
 import {paginationCheck} from "@src/routes/shared/paginationCheck";
 import badgeRoutes from "@src/routes/badge-routes";
 import truckerCenterRoutes from "@src/routes/trucker-center-routes";
+import imageRoutes from "@src/routes/image-routes";
 // **** Init **** //
 
 const apiRouter = Router(),
   validate = jetValidator();
+
+const imageRouter = Router();
+
+imageRouter.get(
+  imageRoutes.paths.getResizedImage,
+  imageRoutes.getResizedImage,
+);
+apiRouter.use(
+  imageRoutes.paths.basePath,
+  imageRouter,
+);
 
 const chatRouter = Router();
 const chatImageMulter = getS3ImageMulter('chat/image');

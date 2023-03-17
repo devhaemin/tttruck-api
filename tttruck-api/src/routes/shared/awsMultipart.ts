@@ -1,4 +1,4 @@
-import {S3Client} from '@aws-sdk/client-s3';
+import {PutObjectCommand, S3Client} from '@aws-sdk/client-s3';
 import path from "path";
 import multer = require("multer");
 import multerS3 = require("multer-s3");
@@ -75,4 +75,19 @@ export function getS3ImageMulter(dirPath: string): multer.Multer {
     //* 용량 제한
     limits: {fileSize: 1* 1024 * 1024 * 1024},
   });
+}
+export async function uploadImage(buffer:Buffer, key:string) {
+  const params = {
+    Bucket: bucket,
+    Key: key,
+    Body: buffer,
+    ACL: "public-read",
+    ContentType: `image/png`,
+    Metadata: {
+      "x-amz-meta-my-key": "resized",
+    },
+  };
+  const result = await s3.send(new PutObjectCommand(params));
+  console.log(`Succesfully uploaded to ${key}, returned Key`);
+  return key;
 }

@@ -13,7 +13,7 @@ const paths = {
 } as const;
 
 /**
- * @api {GetResizedImage} /image/get Get Resized Image
+ * @api {Get} /image/get Get Resized Image
  * @apiName GetResizedImage
  * @apiGroup Image
  * @apiPermission none

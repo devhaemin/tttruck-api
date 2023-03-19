@@ -94,8 +94,8 @@ async function getMinMaxPrice(filter1: ProductFilter): Promise<tt_product> {
         },
       },
       attributes: [
-        [Sequelize.fn('min', Sequelize.col('PRODUCT_PRICE'), 0), 'MIN_PRICE'],
-        [Sequelize.fn('max', Sequelize.col('PRODUCT_PRICE'), 0), 'MAX_PRICE'],
+        [Sequelize.fn('min', Sequelize.col('PRODUCT_PRICE')), 'MIN_PRICE'],
+        [Sequelize.fn('max', Sequelize.col('PRODUCT_PRICE')), 'MAX_PRICE'],
       ],
     });
   if (!persists) {

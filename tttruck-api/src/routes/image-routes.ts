@@ -2,6 +2,7 @@ import {IReqQuery, IRes} from './shared/types';
 import {uploadImage} from "@src/routes/shared/awsMultipart";
 import sharp from "sharp";
 import axios from "axios";
+import logger from "jet-logger";
 
 // **** Variables **** //
 
@@ -30,9 +31,19 @@ const paths = {
 async function getResizedImage(req: IReqQuery<{ key: string, width: string, height: string }>, res: IRes) {
 
   const key = req.query.key;
-  const width = req.query.width ? Number(req.query.width) : 256;
-  const height = req.query.height ? Number(req.query.height) : 256;
   const imageUrl = cdnPath + key;
+
+  if (!req.query.width || !req.query.height) {
+    const original = (await axios({
+      url: imageUrl,
+      responseType: "arraybuffer",
+    })).data as Buffer;
+    return sharp(original)
+      .withMetadata()
+      .pipe(res);
+  }
+  const width = Number(req.query.width);
+  const height = Number(req.query.height);
   const cacheUrl = cdnPath + "resizedCache/" + String(width) + "x" + String(height) + "/" + key;
   try {
     const checkCache = (await axios({
@@ -43,14 +54,13 @@ async function getResizedImage(req: IReqQuery<{ key: string, width: string, heig
       .withMetadata()
       .pipe(res);
   } catch (err) {
-    console.log(err);
+    logger.err(err);
   }
 
   const input = (await axios({
     url: imageUrl,
     responseType: "arraybuffer",
   })).data as Buffer;
-  //const composite = (await axios({ url: "https://somewhere.com/another-image.png", responseType: "arraybuffer" })).data as Buffer;
 
   const resizedImage = await sharp(input)
     .resize(width, height)

@@ -32,7 +32,7 @@ async function getResizedImage(req: IReqQuery<{ key: string, width: string, heig
 
   const key = req.query.key;
   const imageUrl = cdnPath + key;
-
+  res.set("Content-Type", "image/jpeg");
   if (!req.query.width || !req.query.height) {
     const original = (await axios({
       url: imageUrl,

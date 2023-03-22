@@ -122,6 +122,15 @@ authRouter.post(
   authRoutes.phoneRequestAuth,
 );
 authRouter.post(
+  authRoutes.paths.phoneRequestPwAuth,
+  validate('phone'),
+  authRoutes.phoneRequestPwAuth,
+);
+authRouter.post(
+  authRoutes.paths.phonePwCheckAuth,
+  authRoutes.phonePwCheckAuth,
+);
+authRouter.post(
   authRoutes.paths.phoneCheckAuth,
   authRoutes.phoneCheckAuth,
 );

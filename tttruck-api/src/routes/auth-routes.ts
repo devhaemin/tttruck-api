@@ -21,6 +21,8 @@ const paths = {
   phoneCheckAuth: '/phone/checkAuth',
   tokenLogin: '/tokenLogin',
   logout: '/logout',
+  phoneRequestPwAuth: '/phone/requestPwAuth',
+  phonePwCheckAuth: '/phone/checkPwAuth',
   signup: '/signup',
   profileImageUpload: '/profile/image',
   updateProfile: '/profile',
@@ -51,6 +53,52 @@ interface ISignUpReq extends tt_user {
 
 interface IPhoneAuthReq {
   phone: string,
+}
+/**
+ * @api {post} /auth/phone/checkPwAuth Check PhonePwAuth SMS (비밀번호 찾기용)
+ * @apiName PhonePwAuthCheck
+ * @apiGroup Auth
+ * @apiPermission none
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "PHONE" : "01098810664",
+ *       "PHONE_AUTH_CODE" : "123456",
+ *     }
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {}
+ *
+ */
+
+async function phonePwCheckAuth(req: IReq<{ PHONE: string, PHONE_AUTH_CODE: string }>, res: IRes) {
+  const {PHONE, PHONE_AUTH_CODE} = req.body;
+  const userToken = await authService.checkPhonePwAuth(PHONE, PHONE_AUTH_CODE);
+  return res.status(HttpStatusCodes.OK).json(userToken).end();
+}
+
+/**
+ * @api {post} /auth/phone/requestPwAuth Request PhoneAuth SMS (비밀번호 찾기용)
+ * @apiName PhoneAuthRequestPw
+ * @apiGroup Auth
+ * @apiPermission none
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "phone" : "01098810664"
+ *     }
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {}
+ *
+ */
+
+async function phoneRequestPwAuth(req: IReq<IPhoneAuthReq>, res: IRes) {
+  const authCode = codeUtil.randomDigits(6);
+  await authService.addPhonePwAuth(authCode, req.body.phone);
+  return res.status(HttpStatusCodes.OK).end();
 }
 
 // **** Functions **** //
@@ -291,8 +339,8 @@ async function signup(req: IReq<ISignUpReq>, res: IRes) {
 
 async function phoneCheckAuth(req: IReq<{ PHONE: string, PHONE_AUTH_CODE: string }>, res: IRes) {
   const {PHONE, PHONE_AUTH_CODE} = req.body;
-  const phoneAuth = await authService.checkPhoneAuth(PHONE, PHONE_AUTH_CODE);
-  return res.status(HttpStatusCodes.OK).json(phoneAuth).end();
+  const userToken = await authService.checkPhonePwAuth(PHONE, PHONE_AUTH_CODE);
+  return res.status(HttpStatusCodes.OK).json(userToken).end();
 }
 
 /**
@@ -443,11 +491,13 @@ function logout(_: IReq, res: IRes) {
 export default {
   paths,
   tokenLogin,
+  phoneRequestPwAuth,
   login,
   logout,
   generateNickname,
   phoneCheckAuth,
   phoneRequestAuth,
+  phonePwCheckAuth,
   updateProfile,
   profileImageUpload,
   resetPassword,

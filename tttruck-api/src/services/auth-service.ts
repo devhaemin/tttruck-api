@@ -53,6 +53,30 @@ async function uploadProfileImage(file: S3File | null, user: tt_user) {
   user.PROFILE_IMAGE = file.key;
   return await tt_user.update({PROFILE_IMAGE:file.key}, {where: {USER_ID: user.USER_ID}});
 }
+async function addPhonePwAuth(code: string, phone: string): Promise<tt_phone_auth> {
+  const persists = await tt_user.findAll({where: {PHONE: phone}});
+  if (persists && persists.length === 0) {
+    throw new RouteError(
+      HttpStatusCodes.ALREADY_REPORTED,
+      "가입되지 않은 번호입니다.",
+    );
+  }
+  const sendSMS = await sendPhoneAuthSMS(code, phone);
+  const nCloudRes = sendSMS.parsedBody;
+  if (!nCloudRes) {
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      "NaverCloud API return nothing.",
+    );
+  }
+  if (nCloudRes.error) {
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      nCloudRes.error.message + " / " + nCloudRes.error.details,
+    );
+  }
+  return tt_phone_auth.create({PHONE_AUTH_CODE: code, PHONE: phone});
+}
 
 async function setPhoneAuth(code: string, phone: string): Promise<tt_phone_auth> {
   const persists = await tt_user.findAll({where: {PHONE: phone}});
@@ -79,6 +103,45 @@ async function setPhoneAuth(code: string, phone: string): Promise<tt_phone_auth>
   return tt_phone_auth.create({PHONE_AUTH_CODE: code, PHONE: phone});
 }
 
+
+async function checkPhonePwAuth(PHONE: string, PHONE_AUTH_CODE: string): Promise<tt_user> {
+  const phoneAuth = await tt_phone_auth.findOne({
+    where: {$PHONE$: PHONE},
+    order: [['AUTH_ID', 'DESC']],
+  });
+  if (!PHONE_AUTH_CODE) {
+    throw new RouteError(
+      HttpStatusCodes.BAD_REQUEST,
+      "code required not found",
+    );
+  }
+  if (!phoneAuth || phoneAuth.EXPIRED_TIME < new Date()) {
+    logger.info(phoneAuth?.PHONE_AUTH_CODE);
+    throw new RouteError(
+      HttpStatusCodes.UNAUTHORIZED,
+      "인증 코드가 만료되었습니다.",
+    );
+  }
+  if (
+    PHONE_AUTH_CODE !== phoneAuth.PHONE_AUTH_CODE) {
+    throw new RouteError(
+      HttpStatusCodes.UNAUTHORIZED,
+      errors.notCorrectCode(PHONE_AUTH_CODE),
+    );
+  }
+  const userInfo = await tt_user.findOne({
+    where: {$PHONE$: PHONE},
+    attributes: ['ACCESSTOKEN'],
+  });
+  if(!userInfo){
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      "해당하는 사용자를 찾을 수 없습니다.",
+    );
+  }
+  return userInfo;
+}
+
 async function checkPhoneAuth(PHONE: string, PHONE_AUTH_CODE: string): Promise<tt_phone_auth> {
   const phoneAuth = await tt_phone_auth.findOne({
     where: {$PHONE$: PHONE},
@@ -91,7 +154,7 @@ async function checkPhoneAuth(PHONE: string, PHONE_AUTH_CODE: string): Promise<t
     );
   }
   if (!phoneAuth || phoneAuth.EXPIRED_TIME < new Date()) {
-    logger.info(phoneAuth?.PHONE_AUTH_CODE)
+    logger.info(phoneAuth?.PHONE_AUTH_CODE);
     throw new RouteError(
       HttpStatusCodes.UNAUTHORIZED,
       "인증 코드가 만료되었습니다.",
@@ -169,6 +232,8 @@ export default {
   setPhoneAuth,
   getJwtUser,
   getUserWithTalkplus,
+  addPhonePwAuth,
   uploadProfileImage,
   checkPhoneAuth,
+  checkPhonePwAuth,
 } as const;

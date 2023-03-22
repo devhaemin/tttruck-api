@@ -339,7 +339,7 @@ async function signup(req: IReq<ISignUpReq>, res: IRes) {
 
 async function phoneCheckAuth(req: IReq<{ PHONE: string, PHONE_AUTH_CODE: string }>, res: IRes) {
   const {PHONE, PHONE_AUTH_CODE} = req.body;
-  const userToken = await authService.checkPhonePwAuth(PHONE, PHONE_AUTH_CODE);
+  const userToken = await authService.checkPhoneAuth(PHONE, PHONE_AUTH_CODE);
   return res.status(HttpStatusCodes.OK).json(userToken).end();
 }
 

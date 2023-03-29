@@ -331,7 +331,11 @@ async function getByCategories(longitude: string, latitude: string, categories: 
  * Get product by ID
  */
 async function getById(id: number): Promise<tt_product> {
-  const persists = await tt_product.findByPk(id, {
+  const persists = await tt_product.findAll({
+    where:{
+      PRODUCT_ID: id,
+      DELETE_TF : 0,
+    },
     include:
       [{model: tt_product_image, as: "tt_product_images"},
         {
@@ -344,13 +348,13 @@ async function getById(id: number): Promise<tt_product> {
       as: "tt_product_images",
     }, 'PRIORITY', 'ASC']],
   });
-  if (!persists) {
+  if (!persists || !persists[0]) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
       prodNotFoundErr,
     );
   }
-  return persists;
+  return persists[0];
 }
 
 /**

@@ -1,5 +1,5 @@
 # Use an official MariaDB runtime as a parent image
-FROM mariadb:10.5
+FROM mariadb:10.6.12
 
 # Set the root password
 ENV MYSQL_ROOT_PASSWORD haemin1234!

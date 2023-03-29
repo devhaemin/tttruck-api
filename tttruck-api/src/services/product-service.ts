@@ -68,11 +68,11 @@ async function getMinMaxPrice(filter1: ProductFilter): Promise<tt_product> {
             [Op.in]: filter.categories,
           },
         },
-        {
-          PARENT_CATEGORY_ID: {
-            [Op.in]: filter.categories,
-          },
-        }],
+          {
+            PARENT_CATEGORY_ID: {
+              [Op.in]: filter.categories,
+            },
+          }],
     },
   });
   if (!categories) {
@@ -141,6 +141,7 @@ async function getByFilter(filter1: ProductFilter): Promise<tt_product[]> {
       offset: offset,
       limit: limit,
       where: {
+        DELETE_TF: 0,
         SUBJECT: {
           [Op.like]: "%" + queryString + "%",
         },
@@ -199,6 +200,9 @@ async function getAll(longitude: string, latitude: string, offset: number, limit
     {
       offset: offset,
       limit: limit,
+      where: {
+        DELETE_TF: 0,
+      },
       attributes: {
         include: [
           [
@@ -254,7 +258,10 @@ async function getByCategory(longitude: string, latitude: string, id: number, of
         ],
       ],
     },
-    where: {$PRODUCT_CATEGORY_ID$: id},
+    where: {
+      $PRODUCT_CATEGORY_ID$: id,
+      DELETE_TF: 0,
+    },
     include:
       [{model: tt_product_image, as: "tt_product_images"},
         {
@@ -297,7 +304,10 @@ async function getByCategories(longitude: string, latitude: string, categories: 
         ],
       ],
     },
-    where: {$PRODUCT_CATEGORY_ID$: {[Op.in]: categories}},
+    where: {
+      $PRODUCT_CATEGORY_ID$: {[Op.in]: categories},
+      DELETE_TF: 0,
+    },
     include:
       [{model: tt_product_image, as: "tt_product_images"},
         {
@@ -459,7 +469,7 @@ async function deleteImage(user: tt_user, id: number): Promise<void> {
  */
 async function _delete(user: tt_user, id: number): Promise<void> {
   const persists = await tt_product.findAll({where: {PRODUCT_ID: id}});
-  if (!persists) {
+  if (!persists || persists.length === 0) {
     throw new RouteError(
       HttpStatusCodes.NOT_FOUND,
       prodNotFoundErr,
@@ -472,7 +482,11 @@ async function _delete(user: tt_user, id: number): Promise<void> {
     );
   }
   // Delete user
-  await tt_product.destroy({where: {PRODUCT_ID: id}});
+  await tt_product.update(
+    {DELETE_TF: 1},
+    {
+      where: {PRODUCT_ID: id},
+    });
 }
 
 

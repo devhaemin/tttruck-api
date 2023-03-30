@@ -22,6 +22,22 @@ async function getAll(): Promise<tt_notice[]> {
     {
       include:
         [{model: tt_notice_image, as: "tt_notice_images"}],
+      where:{DISPLAY_TF:1},
+    });
+  if (!persists) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      noticeNotFoundErr,
+    );
+  }
+  return persists;
+}
+
+async function getAllByAdmin():Promise<tt_notice[]>{
+  const persists = await tt_notice.findAll(
+    {
+      include:
+        [{model: tt_notice_image, as: "tt_notice_images"}],
     });
   if (!persists) {
     throw new RouteError(
@@ -155,6 +171,7 @@ async function _delete(user: tt_user, id: number): Promise<void> {
 
 export default {
   getAll,
+  getAllByAdmin,
   getByCategory,
   getById,
   addOne,

@@ -5,10 +5,12 @@ import {IReq, IRes} from './shared/types';
 import {
   tt_notice,
   tt_notice_master,
+  tt_user,
 } from '@src/models/init-models';
 import logger from "jet-logger";
 import {getClientIP} from "@src/util/ip-util";
 import {S3File} from "@src/routes/shared/awsMultipart";
+import { tt_user_group } from '../models/dummy/tt_user_group';
 
 
 // **** Variables **** //
@@ -93,12 +95,30 @@ const paths = {
  *     }
  */
 async function getAll(req: IReq, res: IRes) {
-  const notices = await noticeService.getAll();
+  const userGroup = await getUser(req);
+  let notices;
+  if(userGroup == tt_user_group.ADMIN){
+    notices = await noticeService.getAllByAdmin();
+  }else{
+    notices = await noticeService.getAll();
+  }
   logger.info(notices);
   //todo 이미지 Array 추가되게끔 하기.
   return res.status(HttpStatusCodes.OK).json(notices);
 }
 
+async function getUser(req:IReq){
+  const userToken = req.headers['authorization']?.split(" ")[1];
+  if(!userToken){
+    return 0;
+  }
+  const user = await tt_user.findOne(
+    { 
+      attributes: ["GROUP"],
+      where: {ACCESSTOKEN: userToken},
+    });
+  return user?.GROUP;
+}
 /**
  * @api {get} /notices/category/:id Get Notices by Category
  * @apiName GetNoticesByCategory

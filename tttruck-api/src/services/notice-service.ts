@@ -48,7 +48,12 @@ async function getAllByAdmin(): Promise<tt_notice[]> {
   const persists = await tt_notice.findAll(
     {
       include:
-        [{model: tt_notice_image, as: "tt_notice_images"}],
+        [{model: tt_notice_image, as: "tt_notice_images"},
+          {
+            model: tt_notice_master,
+            as: "NOTICE_MASTER",
+            attributes: ["NOTICE_MASTER_ID", "TITLE"],
+          }],
     });
   if (!persists) {
     throw new RouteError(

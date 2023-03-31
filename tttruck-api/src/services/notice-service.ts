@@ -1,4 +1,9 @@
-import {tt_notice, tt_notice_image, tt_user} from '@src/models/init-models';
+import {
+  tt_notice,
+  tt_notice_image,
+  tt_notice_master,
+  tt_user,
+} from '@src/models/init-models';
 import {RouteError} from '@src/declarations/classes';
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import logger from "jet-logger";
@@ -21,8 +26,14 @@ async function getAll(): Promise<tt_notice[]> {
   const persists = await tt_notice.findAll(
     {
       include:
-        [{model: tt_notice_image, as: "tt_notice_images"}],
-      where:{DISPLAY_TF:1},
+        [{model: tt_notice_image, as: "tt_notice_images"},
+          {
+            model: tt_notice_master,
+            as: "NOTICE_MASTER",
+            attributes: ["NOTICE_MASTER_ID", "TITLE"],
+          },
+        ],
+      where: {DISPLAY_TF: 1},
     });
   if (!persists) {
     throw new RouteError(
@@ -33,7 +44,7 @@ async function getAll(): Promise<tt_notice[]> {
   return persists;
 }
 
-async function getAllByAdmin():Promise<tt_notice[]>{
+async function getAllByAdmin(): Promise<tt_notice[]> {
   const persists = await tt_notice.findAll(
     {
       include:
@@ -70,7 +81,7 @@ async function getByCategory(id: number): Promise<tt_notice[]> {
  * Get Notice by ID
  */
 async function getById(id: number): Promise<tt_notice> {
-  const persists = await tt_notice.findByPk(id,{
+  const persists = await tt_notice.findByPk(id, {
     include:
       [{model: tt_notice_image, as: "tt_notice_images"}],
   });
@@ -114,7 +125,7 @@ async function updateOne(user: tt_user, notice: tt_notice): Promise<tt_notice> {
     );
   }
   // Return user
-  const affectedCount = await tt_notice.update(notice,{where: {NOTICE_ID : notice.NOTICE_ID}});
+  const affectedCount = await tt_notice.update(notice, {where: {NOTICE_ID: notice.NOTICE_ID}});
   logger.info(affectedCount);
   return notice;
 }

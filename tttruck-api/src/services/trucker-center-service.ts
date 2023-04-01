@@ -1,5 +1,7 @@
 import {
-  tt_trucker_center, tt_trucker_center_image, tt_trucker_center_master,
+  tt_trucker_center,
+  tt_trucker_center_image,
+  tt_trucker_center_master,
   tt_user,
 } from '@src/models/init-models';
 import {RouteError} from '@src/declarations/classes';
@@ -7,7 +9,6 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import logger from "jet-logger";
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
 import {S3File} from "@src/routes/shared/awsMultipart";
-import {tt_trucker_centerPk} from "@src/models/tt_trucker_center";
 
 
 // **** Variables **** //
@@ -25,7 +26,12 @@ async function getAll(): Promise<tt_trucker_center[]> {
   const persists = await tt_trucker_center.findAll(
     {
       include:
-        [{model: tt_trucker_center_image, as: "tt_trucker_center_images"}],
+        [{model: tt_trucker_center_image, as: "tt_trucker_center_images"},
+          {
+            model: tt_trucker_center_master,
+            as: "TRUCKER_CENTER_MASTER",
+            attributes: ["TRUCKER_CENTER_MASTER_ID", "TITLE"],
+          }],
     });
   if (!persists) {
     throw new RouteError(
@@ -43,7 +49,13 @@ async function getByCategory(id: number): Promise<tt_trucker_center[]> {
   const persists = await tt_trucker_center.findAll({
     where: {$TRUCKER_CENTER_MASTER_ID$: id},
     include:
-      [{model: tt_trucker_center_image, as: "tt_trucker_center_images"}],
+      [{model: tt_trucker_center_image, as: "tt_trucker_center_images"},
+        {
+          model: tt_trucker_center_master,
+          as: "TRUCKER_CENTER_MASTER",
+          attributes: ["TRUCKER_CENTER_MASTER_ID", "TITLE"],
+        }
+      ],
   });
   if (!persists) {
     throw new RouteError(
@@ -58,9 +70,14 @@ async function getByCategory(id: number): Promise<tt_trucker_center[]> {
  * Get TruckerCenter by ID
  */
 async function getById(id: number): Promise<tt_trucker_center> {
-  const persists = await tt_trucker_center.findByPk(id,{
+  const persists = await tt_trucker_center.findByPk(id, {
     include:
-      [{model: tt_trucker_center_image, as: "tt_trucker_center_images"}],
+      [{model: tt_trucker_center_image, as: "tt_trucker_center_images"},
+        {
+          model: tt_trucker_center_master,
+          as: "TRUCKER_CENTER_MASTER",
+          attributes: ["TRUCKER_CENTER_MASTER_ID", "TITLE"],
+        }],
   });
   if (!persists) {
     throw new RouteError(
@@ -102,7 +119,7 @@ async function updateOne(user: tt_user, truckerCenter: tt_trucker_center): Promi
     );
   }
   // Return user
-  const affectedCount = await tt_trucker_center.update(truckerCenter,{where: {TRUCKER_CENTER_ID: truckerCenter.TRUCKER_CENTER_ID}});
+  const affectedCount = await tt_trucker_center.update(truckerCenter, {where: {TRUCKER_CENTER_ID: truckerCenter.TRUCKER_CENTER_ID}});
   logger.info(affectedCount);
   return truckerCenter;
 }

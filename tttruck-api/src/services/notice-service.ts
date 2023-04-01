@@ -71,7 +71,12 @@ async function getByCategory(id: number): Promise<tt_notice[]> {
   const persists = await tt_notice.findAll({
     where: {$NOTICE_MASTER_ID$: id},
     include:
-      [{model: tt_notice_image, as: "tt_notice_images"}],
+      [{model: tt_notice_image, as: "tt_notice_images"},
+        {
+          model: tt_notice_master,
+          as: "NOTICE_MASTER",
+          attributes: ["NOTICE_MASTER_ID", "TITLE"],
+        }],
   });
   if (!persists) {
     throw new RouteError(
@@ -88,7 +93,12 @@ async function getByCategory(id: number): Promise<tt_notice[]> {
 async function getById(id: number): Promise<tt_notice> {
   const persists = await tt_notice.findByPk(id, {
     include:
-      [{model: tt_notice_image, as: "tt_notice_images"}],
+      [{model: tt_notice_image, as: "tt_notice_images"},
+        {
+          model: tt_notice_master,
+          as: "NOTICE_MASTER",
+          attributes: ["NOTICE_MASTER_ID", "TITLE"],
+        }],
   });
   if (!persists) {
     throw new RouteError(

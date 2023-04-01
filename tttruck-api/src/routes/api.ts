@@ -17,6 +17,7 @@ import {paginationCheck} from "@src/routes/shared/paginationCheck";
 import badgeRoutes from "@src/routes/badge-routes";
 import truckerCenterRoutes from "@src/routes/trucker-center-routes";
 import imageRoutes from "@src/routes/image-routes";
+import userRoutes from "@src/routes/user-routes";
 // **** Init **** //
 
 const apiRouter = Router(),
@@ -82,6 +83,32 @@ apiRouter.use(
   chatRoutes.paths.basePath,
   chatRouter,
 );
+
+const userRouter = Router();
+
+userRouter.get(
+  userRoutes.paths.get,
+  adminMw,
+  userRoutes.getAll,
+);
+
+userRouter.get(
+  userRoutes.paths.getSignOut,
+  adminMw,
+  userRoutes.getSignOut,
+);
+
+userRouter.post(
+  userRoutes.paths.getByFilter,
+  adminMw,
+  userRoutes.getByFilter,
+);
+
+apiRouter.use(
+  userRoutes.paths.basePath,
+  userRouter,
+);
+
 // **** Setup auth routes **** //
 
 const authRouter = Router();

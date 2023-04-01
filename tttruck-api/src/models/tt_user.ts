@@ -54,11 +54,12 @@ export interface tt_userAttributes {
   JOIN_PERMIT_USER_ID?: number;
   JOIN_AGREE: string;
   AGREE_UPD_TIME: Date;
+  ACCESS_TIME: Date;
 }
 
 export type tt_userPk = "USER_ID";
 export type tt_userId = tt_user[tt_userPk];
-export type tt_userOptionalAttributes = "USER_ID" | "NICKNAME" | "NAME" | "BUYING_SAVINGS" | "SELLING_SAVINGS" | "WASTE_SAVINGS" | "GREENGAS_SAVINGS" | "COST_SAVINGS" | "PROFILE_IMAGE" | "INTERIOR_COMPANY_TF" | "INTERIOR_COMPANY_NAME" | "BIRTHDAY" | "GENDER" | "ZIP_CODE" | "ADDRESS" | "DETAIL_ADDRESS" | "JOIN_STATE" | "RESTING_TF" | "LEAVE_TF" | "PHONE_AUTH_CODE" | "PHONE_AUTH_DATE" | "PHONE_AUTH_SUCCEED_DATE" | "PHONE_AUTH_TF" | "REG_TIME" | "UPD_TIME" | "JOIN_TIME" | "JOIN_PERMIT_USER_ID" | "JOIN_AGREE" | "AGREE_UPD_TIME";
+export type tt_userOptionalAttributes = "USER_ID" | "NICKNAME" | "NAME" | "BUYING_SAVINGS" | "SELLING_SAVINGS" | "WASTE_SAVINGS" | "GREENGAS_SAVINGS" | "COST_SAVINGS" | "PROFILE_IMAGE" | "INTERIOR_COMPANY_TF" | "INTERIOR_COMPANY_NAME" | "BIRTHDAY" | "GENDER" | "ZIP_CODE" | "ADDRESS" | "DETAIL_ADDRESS" | "JOIN_STATE" | "RESTING_TF" | "LEAVE_TF" | "PHONE_AUTH_CODE" | "PHONE_AUTH_DATE" | "PHONE_AUTH_SUCCEED_DATE" | "PHONE_AUTH_TF" | "REG_TIME" | "UPD_TIME" | "JOIN_TIME" | "JOIN_PERMIT_USER_ID" | "JOIN_AGREE" | "AGREE_UPD_TIME" | "ACCESS_TIME";
 export type tt_userCreationAttributes = Optional<tt_userAttributes, tt_userOptionalAttributes>;
 
 export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes> implements tt_userAttributes {
@@ -95,6 +96,7 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   JOIN_PERMIT_USER_ID?: number;
   JOIN_AGREE!: string;
   AGREE_UPD_TIME!: Date;
+  ACCESS_TIME!: Date;
 
   // tt_user hasMany tt_access_log via USER_ID
   tt_access_logs!: tt_access_log[];
@@ -584,6 +586,11 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
       comment: "가입 약관 동의 여부(0: 개인정보 수집 및 이용동의 1: 개인정보 수집 목적 내 제3자 제공 동의 2: 14세 미만 법정 대리인 동의)"
     },
     AGREE_UPD_TIME: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: Sequelize.Sequelize.fn('current_timestamp')
+    },
+    ACCESS_TIME: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: Sequelize.Sequelize.fn('current_timestamp')

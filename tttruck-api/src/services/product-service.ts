@@ -113,11 +113,12 @@ async function getByFilter(filter1: ProductFilter): Promise<tt_product[]> {
   const categories = await tt_product_category.findAll({
     where: {
       [Op.or]:
-        [{
-          PRODUCT_CATEGORY_ID: {
-            [Op.in]: filter.categories,
+        [
+          {
+            PRODUCT_CATEGORY_ID: {
+              [Op.in]: filter.categories,
+            },
           },
-        },
           {
             PARENT_CATEGORY_ID: {
               [Op.in]: filter.categories,
@@ -332,9 +333,9 @@ async function getByCategories(longitude: string, latitude: string, categories: 
  */
 async function getById(id: number): Promise<tt_product> {
   const persists = await tt_product.findAll({
-    where:{
+    where: {
       PRODUCT_ID: id,
-      DELETE_TF : 0,
+      DELETE_TF: 0,
     },
     include:
       [{model: tt_product_image, as: "tt_product_images"},

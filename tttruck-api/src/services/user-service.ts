@@ -1,7 +1,8 @@
-import userRepo from '@src/repos/user-repo';
-import { IUser } from '@src/models/User';
-import { RouteError } from '@src/declarations/classes';
+import {RouteError} from '@src/declarations/classes';
 import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
+import {tt_user_signout} from "@src/models/tt_user_signout";
+import {tt_user} from "@src/models/tt_user";
+import {tt_user_group} from "@src/models/dummy/tt_user_group";
 
 
 // **** Variables **** //
@@ -14,53 +15,45 @@ export const userNotFoundErr = 'User not found';
 /**
  * Get all users.
  */
-function getAll(): Promise<IUser[]> {
-  return userRepo.getAll();
-}
-
-/**
- * Add one user.
- */
-function addOne(user: IUser): Promise<void> {
-  return userRepo.add(user);
-}
-
-/**
- * Update one user.
- */
-async function updateOne(user: IUser): Promise<void> {
-  const persists = await userRepo.persists(user.id);
-  if (!persists) {
+async function getAll(user: tt_user): Promise<tt_user[]> {
+  if (user.GROUP !== tt_user_group.ADMIN) {
     throw new RouteError(
-      HttpStatusCodes.NOT_FOUND,
-      userNotFoundErr,
+      HttpStatusCodes.UNAUTHORIZED,
+      "User can't perform this action",
     );
   }
-  // Return user
-  return userRepo.update(user);
+  const users = await tt_user.findAll({
+    attributes:
+      ["USER_ID", "PHONE", "NAME", "NICKNAME", "UPD_TIME", "JOIN_TIME"],
+  });
+  return users;
 }
 
-/**
- * Delete a user by their id.
- */
-async function _delete(id: number): Promise<void> {
-  const persists = await userRepo.persists(id);
-  if (!persists) {
+async function getSignout(user: tt_user): Promise<tt_user_signout[]> {
+  if (user.GROUP !== tt_user_group.ADMIN) {
     throw new RouteError(
-      HttpStatusCodes.NOT_FOUND,
-      userNotFoundErr,
+      HttpStatusCodes.UNAUTHORIZED,
+      "User can't perform this action",
     );
   }
-  // Delete user
-  return userRepo.delete(id);
-}
+  const userFeedbacks = await tt_user_signout.findAll({
+    attributes:
+      ["TEXT", "TIME"],
+    order:
+      [["TIME", "DESC"]],
+    include:
+      [{
+        model: tt_user, as: "USER",
+        attributes: ["USER_ID", "PHONE", "NAME", "NICKNAME", "UPD_TIME", "JOIN_TIME"],
+      }],
+  });
 
+  return userFeedbacks;
+}
 
 // **** Export default **** //
 
 export default {
   getAll,
-  addOne,
-  updateOne,
-  delete: _delete,
+  getSignout,
 } as const;

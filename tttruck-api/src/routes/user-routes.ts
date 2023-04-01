@@ -14,6 +14,7 @@ const paths = {
   add: '/add',
   update: '/update',
   delete: '/delete/:id',
+  getSignOut: '/feedback/all',
 } as const;
 
 
@@ -23,44 +24,19 @@ const paths = {
  * Get all users.
  */
 async function getAll(_: IReq, res: IRes) {
-  const users = await userService.getAll();
-  return res.status(HttpStatusCodes.OK).json({ users });
+  const users = await userService.getAll(res.locals.user);
+  return res.status(HttpStatusCodes.OK).json(users);
 }
 
-/**
- * Add one user.
- */
-async function add(req: IReq<{user: IUser}>, res: IRes) {
-  const { user } = req.body;
-  await userService.addOne(user);
-  return res.status(HttpStatusCodes.CREATED).end();
+async function getSignOut(_:IReq, res:IRes){
+  const userFeedbacks = await userService.getSignout(res.locals.user);
+  return res.status(HttpStatusCodes.OK).json(userFeedbacks);
 }
-
-/**
- * Update one user.
- */
-async function update(req: IReq<{user: IUser}>, res: IRes) {
-  const { user } = req.body;
-  await userService.updateOne(user);
-  return res.status(HttpStatusCodes.OK).end();
-}
-
-/**
- * Delete one user.
- */
-async function _delete(req: IReq, res: IRes) {
-  const id = +req.params.id;
-  await userService.delete(id);
-  return res.status(HttpStatusCodes.OK).end();
-}
-
 
 // **** Export default **** //
 
 export default {
   paths,
   getAll,
-  add,
-  update,
-  delete: _delete,
+  getSignOut,
 } as const;

@@ -34,6 +34,7 @@ async function getAll(): Promise<tt_notice[]> {
           },
         ],
       where: {DISPLAY_TF: 1},
+      order: [['POST_TIME','DESC']],
     });
   if (!persists) {
     throw new RouteError(
@@ -54,6 +55,7 @@ async function getAllByAdmin(): Promise<tt_notice[]> {
             as: "NOTICE_MASTER",
             attributes: ["NOTICE_MASTER_ID", "TITLE"],
           }],
+      order: [['POST_TIME','DESC']],
     });
   if (!persists) {
     throw new RouteError(
@@ -77,6 +79,7 @@ async function getByCategory(id: number): Promise<tt_notice[]> {
           as: "NOTICE_MASTER",
           attributes: ["NOTICE_MASTER_ID", "TITLE"],
         }],
+    order: [['POST_TIME','DESC']],
   });
   if (!persists) {
     throw new RouteError(

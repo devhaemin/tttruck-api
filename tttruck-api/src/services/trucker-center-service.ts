@@ -32,6 +32,7 @@ async function getAll(): Promise<tt_trucker_center[]> {
             as: "TRUCKER_CENTER_MASTER",
             attributes: ["TRUCKER_CENTER_MASTER_ID", "TITLE"],
           }],
+      order: [['POST_TIME','DESC']],
     });
   if (!persists) {
     throw new RouteError(
@@ -54,8 +55,9 @@ async function getByCategory(id: number): Promise<tt_trucker_center[]> {
           model: tt_trucker_center_master,
           as: "TRUCKER_CENTER_MASTER",
           attributes: ["TRUCKER_CENTER_MASTER_ID", "TITLE"],
-        }
+        },
       ],
+    order: [['POST_TIME','DESC']],
   });
   if (!persists) {
     throw new RouteError(
@@ -78,6 +80,7 @@ async function getById(id: number): Promise<tt_trucker_center> {
           as: "TRUCKER_CENTER_MASTER",
           attributes: ["TRUCKER_CENTER_MASTER_ID", "TITLE"],
         }],
+    order: [['POST_TIME','DESC']],
   });
   if (!persists) {
     throw new RouteError(

@@ -227,6 +227,7 @@ async function getJwtUser(phone: string, password: string): Promise<tt_user> {
 
 // **** Export default **** //
 
+
 export default {
   addNormalUser,
   setPhoneAuth,

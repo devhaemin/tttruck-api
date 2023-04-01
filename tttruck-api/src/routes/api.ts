@@ -98,10 +98,16 @@ userRouter.get(
   userRoutes.getSignOut,
 );
 
+userRouter.post(
+  userRoutes.paths.getByFilter,
+  adminMw,
+  userRoutes.getByFilter,
+);
+
 apiRouter.use(
   userRoutes.paths.basePath,
   userRouter,
-)
+);
 
 // **** Setup auth routes **** //
 

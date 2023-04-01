@@ -3,11 +3,21 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import {tt_user_signout} from "@src/models/tt_user_signout";
 import {tt_user} from "@src/models/tt_user";
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
+import {Op, Sequelize} from "sequelize";
+import {tt_product_image} from "@src/models/init-models";
 
 
 // **** Variables **** //
 
 export const userNotFoundErr = 'User not found';
+export interface UserFilter {
+  offset?: number,
+  limit?: number,
+  queryString?: string,
+  orderBy?: string,
+  orderDesc?: boolean,
+}
+
 
 
 // **** Functions **** //
@@ -51,9 +61,57 @@ async function getSignout(user: tt_user): Promise<tt_user_signout[]> {
   return userFeedbacks;
 }
 
+async function getByFilter(filter1: UserFilter): Promise<tt_user[]> {
+  const filter = getAvailableFilter(filter1);
+  const offset = filter.offset || 0;
+  const limit = filter.limit || 30;
+  const {orderBy, orderDesc, queryString} = filter;
+  const users = await tt_user.findAll({
+    where: {
+      LEAVE_TF: 0,
+      [Op.or]: [
+        {
+          PHONE: {
+            [Op.like]: "%" + queryString + "%",
+          },
+        },
+        {
+          NICKNAME: {
+            [Op.like]: "%" + queryString + "%",
+          },
+        },
+      ],
+    },
+    order: [
+      [
+        orderBy,
+        orderDesc ? "DESC" : "ASC",
+      ],
+    ],
+  });
+  return users;
+}
+
+function getAvailableFilter({
+  offset = 0,
+  limit = 30,
+  queryString = "",
+  orderBy = "JOIN_TIME",
+  orderDesc = true,
+}) {
+  return {
+    offset,
+    limit,
+    queryString,
+    orderBy,
+    orderDesc,
+  };
+}
+
 // **** Export default **** //
 
 export default {
   getAll,
   getSignout,
+  getByFilter,
 } as const;

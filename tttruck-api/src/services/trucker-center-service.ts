@@ -48,7 +48,7 @@ async function getAll(): Promise<tt_trucker_center[]> {
  */
 async function getByCategory(id: number): Promise<tt_trucker_center[]> {
   const persists = await tt_trucker_center.findAll({
-    where: {$TRUCKER_CENTER_MASTER_ID$: id},
+    where: {TRUCKER_CENTER_MASTER_ID: id},
     include:
       [{model: tt_trucker_center_image, as: "tt_trucker_center_images"},
         {

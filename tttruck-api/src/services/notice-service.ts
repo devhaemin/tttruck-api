@@ -71,7 +71,7 @@ async function getAllByAdmin(): Promise<tt_notice[]> {
  */
 async function getByCategory(id: number): Promise<tt_notice[]> {
   const persists = await tt_notice.findAll({
-    where: {$NOTICE_MASTER_ID$: id},
+    where: {NOTICE_MASTER_ID: id},
     include:
       [{model: tt_notice_image, as: "tt_notice_images"},
         {

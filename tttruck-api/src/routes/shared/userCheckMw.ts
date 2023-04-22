@@ -152,6 +152,10 @@ export async function accessLogMw(
     return next();
   }
   userToken = userToken.split(" ")[1];
+  if (!userToken) {
+    await accessLog.save();
+    return next();
+  }
   const clientData = await tt_user.findAll(
     {
       where: {ACCESSTOKEN: userToken},

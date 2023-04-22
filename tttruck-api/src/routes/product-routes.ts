@@ -147,7 +147,7 @@ const paths = {
 async function getByFilter(req:IReq<{filter:ProductFilter}>, res:IRes){
   const {filter} = req.body;
   filter.categories ??= [0];
-  const products = await productService.getByFilter(filter);
+  const products = await productService.getByFilter(filter, getClientIP(req), res.locals.user);
   return res.status(HttpStatusCodes.OK).json(products);
 }
 /**

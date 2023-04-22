@@ -9,11 +9,12 @@ export interface tt_access_logAttributes {
   ACCESS_DATE: Date;
   IPv4?: number;
   IPv6?: any;
+  ACCESS_PATH?: string;
 }
 
 export type tt_access_logPk = "API_LOG_ID";
 export type tt_access_logId = tt_access_log[tt_access_logPk];
-export type tt_access_logOptionalAttributes = "API_LOG_ID" | "USER_ID" | "ACCESS_DATE" | "IPv4" | "IPv6";
+export type tt_access_logOptionalAttributes = "API_LOG_ID" | "USER_ID" | "ACCESS_DATE" | "IPv4" | "IPv6" | "ACCESS_PATH";
 export type tt_access_logCreationAttributes = Optional<tt_access_logAttributes, tt_access_logOptionalAttributes>;
 
 export class tt_access_log extends Model<tt_access_logAttributes, tt_access_logCreationAttributes> implements tt_access_logAttributes {
@@ -23,6 +24,7 @@ export class tt_access_log extends Model<tt_access_logAttributes, tt_access_logC
   ACCESS_DATE!: Date;
   IPv4?: number;
   IPv6?: any;
+  ACCESS_PATH?: string;
 
   // tt_access_log belongsTo tt_user via USER_ID
   USER!: tt_user;
@@ -68,6 +70,10 @@ export class tt_access_log extends Model<tt_access_logAttributes, tt_access_logC
       type: DataTypes.BLOB,
       allowNull: true,
       comment: "IPv6"
+    },
+    ACCESS_PATH: {
+      type: DataTypes.STRING(500),
+      allowNull: true
     }
   }, {
     sequelize,

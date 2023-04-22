@@ -27,6 +27,8 @@ import { tt_product_category as _tt_product_category } from "./tt_product_catego
 import type { tt_product_categoryAttributes, tt_product_categoryCreationAttributes } from "./tt_product_category";
 import { tt_product_image as _tt_product_image } from "./tt_product_image";
 import type { tt_product_imageAttributes, tt_product_imageCreationAttributes } from "./tt_product_image";
+import { tt_search_log as _tt_search_log } from "./tt_search_log";
+import type { tt_search_logAttributes, tt_search_logCreationAttributes } from "./tt_search_log";
 import { tt_sns_auth as _tt_sns_auth } from "./tt_sns_auth";
 import type { tt_sns_authAttributes, tt_sns_authCreationAttributes } from "./tt_sns_auth";
 import { tt_talkplus_channel as _tt_talkplus_channel } from "./tt_talkplus_channel";
@@ -71,6 +73,7 @@ export {
   _tt_product as tt_product,
   _tt_product_category as tt_product_category,
   _tt_product_image as tt_product_image,
+  _tt_search_log as tt_search_log,
   _tt_sns_auth as tt_sns_auth,
   _tt_talkplus_channel as tt_talkplus_channel,
   _tt_talkplus_file as tt_talkplus_file,
@@ -116,6 +119,8 @@ export type {
   tt_product_categoryCreationAttributes,
   tt_product_imageAttributes,
   tt_product_imageCreationAttributes,
+  tt_search_logAttributes,
+  tt_search_logCreationAttributes,
   tt_sns_authAttributes,
   tt_sns_authCreationAttributes,
   tt_talkplus_channelAttributes,
@@ -161,6 +166,7 @@ export function initModels(sequelize: Sequelize) {
   const tt_product = _tt_product.initModel(sequelize);
   const tt_product_category = _tt_product_category.initModel(sequelize);
   const tt_product_image = _tt_product_image.initModel(sequelize);
+  const tt_search_log = _tt_search_log.initModel(sequelize);
   const tt_sns_auth = _tt_sns_auth.initModel(sequelize);
   const tt_talkplus_channel = _tt_talkplus_channel.initModel(sequelize);
   const tt_talkplus_file = _tt_talkplus_file.initModel(sequelize);
@@ -230,6 +236,8 @@ export function initModels(sequelize: Sequelize) {
   tt_user.hasMany(tt_product_category, { as: "tt_product_categories", foreignKey: "UPDATE_USER_ID"});
   tt_product_category.belongsTo(tt_user, { as: "CREATE_USER", foreignKey: "CREATE_USER_ID"});
   tt_user.hasMany(tt_product_category, { as: "CREATE_USER_tt_product_categories", foreignKey: "CREATE_USER_ID"});
+  tt_search_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
+  tt_user.hasMany(tt_search_log, { as: "tt_search_logs", foreignKey: "USER_ID"});
   tt_sns_auth.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasMany(tt_sns_auth, { as: "tt_sns_auths", foreignKey: "USER_ID"});
   tt_talkplus_file.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
@@ -282,6 +290,7 @@ export function initModels(sequelize: Sequelize) {
     tt_product: tt_product,
     tt_product_category: tt_product_category,
     tt_product_image: tt_product_image,
+    tt_search_log: tt_search_log,
     tt_sns_auth: tt_sns_auth,
     tt_talkplus_channel: tt_talkplus_channel,
     tt_talkplus_file: tt_talkplus_file,

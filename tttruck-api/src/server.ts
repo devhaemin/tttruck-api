@@ -12,6 +12,7 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import {NodeEnvs} from '@src/declarations/enums';
 import {RouteError} from '@src/declarations/classes';
 import cors from 'cors';
+import {accessLogMw} from "@src/routes/shared/userCheckMw";
 
 // **** Init express **** //
 
@@ -39,6 +40,7 @@ if (EnvVars.nodeEnv === NodeEnvs.Production) {
 // **** Add API routes **** //
 
 // Add APIs
+app.use(accessLogMw);
 app.use('/api/v1', v1BaseRouter);
 
 // Setup error handler

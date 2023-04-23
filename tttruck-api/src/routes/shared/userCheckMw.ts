@@ -10,7 +10,8 @@ import {IUser} from '@src/models/User';
 import {tt_user} from "@src/models/tt_user";
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
 import logger from "jet-logger";
-import {tt_user_talkplus} from "@src/models/init-models";
+import {tt_access_log, tt_user_talkplus} from "@src/models/init-models";
+import {getClientIP} from "@src/util/ip-util";
 
 
 // **** Variables **** //
@@ -112,10 +113,10 @@ export async function normalUserMw(
       include: [{model: tt_user_talkplus, as: "tt_user_talkplu"}],
     });
   if (clientData && clientData.length > 0) {
-    if(clientData[0].LEAVE_TF){
+    if (clientData[0].LEAVE_TF) {
       return res
         .status(HttpStatusCodes.FORBIDDEN)
-        .json({error:userLeftErr});
+        .json({error: userLeftErr});
     }
     if ((clientData[0].GROUP >= tt_user_group.NORMAL) &&
       clientData[0].PHONE_AUTH_TF
@@ -129,5 +130,42 @@ export async function normalUserMw(
       .status(HttpStatusCodes.UNAUTHORIZED)
       .json({error: userUnauthErr});
   }
+}
+
+export async function accessLogMw(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  req.method;
+  req.originalUrl;
+  const accessLog = tt_access_log.build({
+    ACCESS_IP: "",
+    ACCESS_PATH: req.method+"#"+req.originalUrl,
+    IPv4: getClientIP(req),
+    IPv6: undefined,
+    USER_ID: 0,
+  });
+  let userToken = req.headers['authorization'];
+  if (!userToken) {
+    await accessLog.save();
+    return next();
+  }
+  userToken = userToken.split(" ")[1];
+  if (!userToken) {
+    await accessLog.save();
+    return next();
+  }
+  const clientData = await tt_user.findAll(
+    {
+      where: {ACCESSTOKEN: userToken},
+      include: [{model: tt_user_talkplus, as: "tt_user_talkplu"}],
+    });
+
+  if (clientData && clientData.length > 0) {
+    accessLog.USER_ID = clientData[0].USER_ID;
+    await accessLog.save();
+  }
+  return next();
 }
 

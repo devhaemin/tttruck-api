@@ -8,6 +8,7 @@ import type { tt_notice, tt_noticeId } from './tt_notice';
 import type { tt_notice_master, tt_notice_masterId } from './tt_notice_master';
 import type { tt_product, tt_productId } from './tt_product';
 import type { tt_product_category, tt_product_categoryId } from './tt_product_category';
+import type { tt_search_log, tt_search_logId } from './tt_search_log';
 import type { tt_sns_auth, tt_sns_authId } from './tt_sns_auth';
 import type { tt_talkplus_file, tt_talkplus_fileId } from './tt_talkplus_file';
 import type { tt_talkplus_message, tt_talkplus_messageId } from './tt_talkplus_message';
@@ -242,6 +243,18 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   hasCREATE_USER_tt_product_category!: Sequelize.HasManyHasAssociationMixin<tt_product_category, tt_product_categoryId>;
   hasCREATE_USER_tt_product_categories!: Sequelize.HasManyHasAssociationsMixin<tt_product_category, tt_product_categoryId>;
   countCREATE_USER_tt_product_categories!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_search_log via USER_ID
+  tt_search_logs!: tt_search_log[];
+  getTt_search_logs!: Sequelize.HasManyGetAssociationsMixin<tt_search_log>;
+  setTt_search_logs!: Sequelize.HasManySetAssociationsMixin<tt_search_log, tt_search_logId>;
+  addTt_search_log!: Sequelize.HasManyAddAssociationMixin<tt_search_log, tt_search_logId>;
+  addTt_search_logs!: Sequelize.HasManyAddAssociationsMixin<tt_search_log, tt_search_logId>;
+  createTt_search_log!: Sequelize.HasManyCreateAssociationMixin<tt_search_log>;
+  removeTt_search_log!: Sequelize.HasManyRemoveAssociationMixin<tt_search_log, tt_search_logId>;
+  removeTt_search_logs!: Sequelize.HasManyRemoveAssociationsMixin<tt_search_log, tt_search_logId>;
+  hasTt_search_log!: Sequelize.HasManyHasAssociationMixin<tt_search_log, tt_search_logId>;
+  hasTt_search_logs!: Sequelize.HasManyHasAssociationsMixin<tt_search_log, tt_search_logId>;
+  countTt_search_logs!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user hasMany tt_sns_auth via USER_ID
   tt_sns_auths!: tt_sns_auth[];
   getTt_sns_auths!: Sequelize.HasManyGetAssociationsMixin<tt_sns_auth>;

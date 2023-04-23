@@ -27,6 +27,8 @@ import { tt_product_category as _tt_product_category } from "./tt_product_catego
 import type { tt_product_categoryAttributes, tt_product_categoryCreationAttributes } from "./tt_product_category";
 import { tt_product_image as _tt_product_image } from "./tt_product_image";
 import type { tt_product_imageAttributes, tt_product_imageCreationAttributes } from "./tt_product_image";
+import { tt_search_log as _tt_search_log } from "./tt_search_log";
+import type { tt_search_logAttributes, tt_search_logCreationAttributes } from "./tt_search_log";
 import { tt_sns_auth as _tt_sns_auth } from "./tt_sns_auth";
 import type { tt_sns_authAttributes, tt_sns_authCreationAttributes } from "./tt_sns_auth";
 import { tt_talkplus_channel as _tt_talkplus_channel } from "./tt_talkplus_channel";
@@ -35,6 +37,8 @@ import { tt_talkplus_file as _tt_talkplus_file } from "./tt_talkplus_file";
 import type { tt_talkplus_fileAttributes, tt_talkplus_fileCreationAttributes } from "./tt_talkplus_file";
 import { tt_talkplus_message as _tt_talkplus_message } from "./tt_talkplus_message";
 import type { tt_talkplus_messageAttributes, tt_talkplus_messageCreationAttributes } from "./tt_talkplus_message";
+import { tt_temp_images as _tt_temp_images } from "./tt_temp_images";
+import type { tt_temp_imagesAttributes, tt_temp_imagesCreationAttributes } from "./tt_temp_images";
 import { tt_trade_log as _tt_trade_log } from "./tt_trade_log";
 import type { tt_trade_logAttributes, tt_trade_logCreationAttributes } from "./tt_trade_log";
 import { tt_trade_review as _tt_trade_review } from "./tt_trade_review";
@@ -71,10 +75,12 @@ export {
   _tt_product as tt_product,
   _tt_product_category as tt_product_category,
   _tt_product_image as tt_product_image,
+  _tt_search_log as tt_search_log,
   _tt_sns_auth as tt_sns_auth,
   _tt_talkplus_channel as tt_talkplus_channel,
   _tt_talkplus_file as tt_talkplus_file,
   _tt_talkplus_message as tt_talkplus_message,
+  _tt_temp_images as tt_temp_images,
   _tt_trade_log as tt_trade_log,
   _tt_trade_review as tt_trade_review,
   _tt_trucker_center as tt_trucker_center,
@@ -116,6 +122,8 @@ export type {
   tt_product_categoryCreationAttributes,
   tt_product_imageAttributes,
   tt_product_imageCreationAttributes,
+  tt_search_logAttributes,
+  tt_search_logCreationAttributes,
   tt_sns_authAttributes,
   tt_sns_authCreationAttributes,
   tt_talkplus_channelAttributes,
@@ -124,6 +132,8 @@ export type {
   tt_talkplus_fileCreationAttributes,
   tt_talkplus_messageAttributes,
   tt_talkplus_messageCreationAttributes,
+  tt_temp_imagesAttributes,
+  tt_temp_imagesCreationAttributes,
   tt_trade_logAttributes,
   tt_trade_logCreationAttributes,
   tt_trade_reviewAttributes,
@@ -161,10 +171,12 @@ export function initModels(sequelize: Sequelize) {
   const tt_product = _tt_product.initModel(sequelize);
   const tt_product_category = _tt_product_category.initModel(sequelize);
   const tt_product_image = _tt_product_image.initModel(sequelize);
+  const tt_search_log = _tt_search_log.initModel(sequelize);
   const tt_sns_auth = _tt_sns_auth.initModel(sequelize);
   const tt_talkplus_channel = _tt_talkplus_channel.initModel(sequelize);
   const tt_talkplus_file = _tt_talkplus_file.initModel(sequelize);
   const tt_talkplus_message = _tt_talkplus_message.initModel(sequelize);
+  const tt_temp_images = _tt_temp_images.initModel(sequelize);
   const tt_trade_log = _tt_trade_log.initModel(sequelize);
   const tt_trade_review = _tt_trade_review.initModel(sequelize);
   const tt_trucker_center = _tt_trucker_center.initModel(sequelize);
@@ -230,6 +242,8 @@ export function initModels(sequelize: Sequelize) {
   tt_user.hasMany(tt_product_category, { as: "tt_product_categories", foreignKey: "UPDATE_USER_ID"});
   tt_product_category.belongsTo(tt_user, { as: "CREATE_USER", foreignKey: "CREATE_USER_ID"});
   tt_user.hasMany(tt_product_category, { as: "CREATE_USER_tt_product_categories", foreignKey: "CREATE_USER_ID"});
+  tt_search_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
+  tt_user.hasMany(tt_search_log, { as: "tt_search_logs", foreignKey: "USER_ID"});
   tt_sns_auth.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasMany(tt_sns_auth, { as: "tt_sns_auths", foreignKey: "USER_ID"});
   tt_talkplus_file.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
@@ -282,10 +296,12 @@ export function initModels(sequelize: Sequelize) {
     tt_product: tt_product,
     tt_product_category: tt_product_category,
     tt_product_image: tt_product_image,
+    tt_search_log: tt_search_log,
     tt_sns_auth: tt_sns_auth,
     tt_talkplus_channel: tt_talkplus_channel,
     tt_talkplus_file: tt_talkplus_file,
     tt_talkplus_message: tt_talkplus_message,
+    tt_temp_images: tt_temp_images,
     tt_trade_log: tt_trade_log,
     tt_trade_review: tt_trade_review,
     tt_trucker_center: tt_trucker_center,

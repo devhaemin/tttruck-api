@@ -1,7 +1,7 @@
 import {
   tt_product,
   tt_product_category,
-  tt_product_image,
+  tt_product_image, tt_search_log,
   tt_user,
 } from '@src/models/init-models';
 import {RouteError} from '@src/declarations/classes';
@@ -108,7 +108,8 @@ async function getMinMaxPrice(filter1: ProductFilter): Promise<tt_product> {
 }
 
 // **** Functions **** //
-async function getByFilter(filter1: ProductFilter): Promise<tt_product[]> {
+async function getByFilter(filter1: ProductFilter, ip : number, user?:tt_user):
+  Promise<tt_product[]> {
   const filter = getAvailableFilter(filter1);
   const categories = await tt_product_category.findAll({
     where: {
@@ -137,6 +138,12 @@ async function getByFilter(filter1: ProductFilter): Promise<tt_product[]> {
   const limit = filter.limit || DEFAULT_LIMIT;
   const {longitude, latitude, orderBy, orderDesc, queryString} = filter;
   const {priceMin, priceMax} = filter;
+  const newSearchLog = tt_search_log.build({
+    USER_ID: user?user.USER_ID:0,
+    SEARCH_STR: queryString, // Replace with the actual search string
+    IPv4: ip, // Replace with the actual IPv4 address or null
+  });
+  await newSearchLog.save();
   const persists = await tt_product.findAll(
     {
       offset: offset,

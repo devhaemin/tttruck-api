@@ -90,7 +90,7 @@ export class tt_trade_log extends Model<tt_trade_logAttributes, tt_trade_logCrea
       allowNull: true
     },
     PRODUCT_WEIGHT: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false
     },
     PRODUCT_SIZE: {

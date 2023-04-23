@@ -24,6 +24,8 @@ const paths = {
   getById: '/:id',
   add: '/add',
   imageUpload: '/image/upload',
+  uploadTempImages: '/image/temp/upload',
+  associateTempImage: '/image/associate',
   update: '/update',
   delete: '/delete/:id',
 } as const;
@@ -113,7 +115,7 @@ async function getUser(req:IReq){
     return 0;
   }
   const user = await tt_user.findOne(
-    { 
+    {
       attributes: ["GROUP"],
       where: {ACCESSTOKEN: userToken},
     });
@@ -359,6 +361,7 @@ async function _delete(req: IReq, res: IRes) {
   await noticeService.delete(res.locals.user, id);
   return res.status(HttpStatusCodes.OK).end();
 }
+
 /**
  * @api {get} /notices/category Get All Categories
  * @apiName GetNoticeCategories
@@ -460,6 +463,76 @@ async function getCategories(req:IReq, res:IRes){
   return res.status(HttpStatusCodes.OK).json(categories).end();
 }
 
+/**
+ * @api {post} /notices/image/temp/upload Add Notice Temp image file
+ * @apiName AddNoticeTempImage
+ * @apiGroup Notice
+ *
+ * @apiPermission normalUser
+ *
+ * @apiBody {File} file 소식에 추가할 이미지
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ * {
+ *     "TIME": {
+ *         "fn": "current_timestamp",
+ *         "args": []
+ *     },
+ *     "TEMP_IMAGE_ID": 2,
+ *     "FILE_NAME": "notice/image/1682265098931_Untitled.png",
+ *     "FILE_URL": "https://tttruck-1.s3.ap-northeast-2.amazonaws.com/notice%2Fimage%2F1682265098931_Untitled.png",
+ *     "FILE_SIZE": 0
+ * }
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "NoticeNotFound"
+ *     }
+ */
+async function uploadTempImages(req:IReq, res:IRes){
+  const file = req.file as S3File;
+  const result = await noticeService.uploadTempImage(file,res.locals.user,getClientIP(req));
+  return res.status(HttpStatusCodes.CREATED).json(result).end();
+}
+
+/**
+ * @api {put} /notice/image/associate Associate Temp Image with Normal
+ * @apiName AssociateTempImage
+ * @apiGroup Notice
+ *
+ *
+ * @apiPermission normalUser
+ *
+ * @apiParamExample {json} Request-Example:
+ * {
+ *     tempImageIds:[1,2,3],
+ *     noticeId 소식 ID 값
+ * }
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ * {
+ *     "TRUCKER_CENTER_ID": 1,
+ *     "TRUCKER_CENTER_MASTER_ID": 1,
+ *     "SUBJECT": "TEST SUBJECT 2",
+ *     "CONTENTS": "TEST CONTENTS 2"
+ * }
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "TruckerCenterNotFound"
+ *     }
+ */
+
+async function associateTempImage(req: IReq<{  tempImageIds:[number], noticeId:number }>, res: IRes) {
+  const {tempImageIds, noticeId} = req.body;
+  const result = await noticeService.associateTempImage(res.locals.user, tempImageIds, noticeId);
+  return res.status(HttpStatusCodes.OK).json(result).end();
+}
+
 
 // **** Export default **** //
 
@@ -473,4 +546,6 @@ export default {
   update,
   delete: _delete,
   getCategories,
+  uploadTempImages,
+  associateTempImage,
 } as const;

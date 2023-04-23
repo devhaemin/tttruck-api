@@ -179,7 +179,7 @@ export class tt_product extends Model<tt_productAttributes, tt_productCreationAt
       comment: "규격 ( 분위별 규격 )"
     },
     PRODUCT_WEIGHT: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       comment: "상품 무게"
     },

@@ -331,12 +331,27 @@ noticeRouter.put(
   noticeRoutes.update,
 );
 
+// Update a notice
+noticeRouter.put(
+  noticeRoutes.paths.associateTempImage,
+  adminMw,
+  noticeRoutes.associateTempImage,
+);
+
 noticeRouter.post(
   noticeRoutes.paths.imageUpload,
   //validate(["productId","number","body"]),
   adminMw,
   noticeImageMulter.single('file'),
   noticeRoutes.imageUpload,
+);
+
+noticeRouter.post(
+  noticeRoutes.paths.uploadTempImages,
+  //validate(["productId","number","body"]),
+  adminMw,
+  noticeImageMulter.single('file'),
+  noticeRoutes.uploadTempImages,
 );
 
 // Delete one notice
@@ -380,12 +395,29 @@ truckerCenterRouter.put(
 );
 
 truckerCenterRouter.post(
-  noticeRoutes.paths.imageUpload,
+  truckerCenterRoutes.paths.imageUpload,
   //validate(["productId","number","body"]),
   adminMw,
   truckerCenterImageMulter.single('file'),
   truckerCenterRoutes.imageUpload,
 );
+
+truckerCenterRouter.post(
+  truckerCenterRoutes.paths.uploadTempImages,
+  //validate(["productId","number","body"]),
+  adminMw,
+  truckerCenterImageMulter.single('file'),
+  truckerCenterRoutes.uploadTempImages,
+);
+
+// Update a notice
+truckerCenterRouter.put(
+  truckerCenterRoutes.paths.associateTempImage,
+  adminMw,
+  truckerCenterRoutes.associateTempImage,
+);
+
+
 
 // Delete one notice
 truckerCenterRouter.delete(

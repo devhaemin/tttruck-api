@@ -37,6 +37,8 @@ import { tt_talkplus_file as _tt_talkplus_file } from "./tt_talkplus_file";
 import type { tt_talkplus_fileAttributes, tt_talkplus_fileCreationAttributes } from "./tt_talkplus_file";
 import { tt_talkplus_message as _tt_talkplus_message } from "./tt_talkplus_message";
 import type { tt_talkplus_messageAttributes, tt_talkplus_messageCreationAttributes } from "./tt_talkplus_message";
+import { tt_temp_images as _tt_temp_images } from "./tt_temp_images";
+import type { tt_temp_imagesAttributes, tt_temp_imagesCreationAttributes } from "./tt_temp_images";
 import { tt_trade_log as _tt_trade_log } from "./tt_trade_log";
 import type { tt_trade_logAttributes, tt_trade_logCreationAttributes } from "./tt_trade_log";
 import { tt_trade_review as _tt_trade_review } from "./tt_trade_review";
@@ -78,6 +80,7 @@ export {
   _tt_talkplus_channel as tt_talkplus_channel,
   _tt_talkplus_file as tt_talkplus_file,
   _tt_talkplus_message as tt_talkplus_message,
+  _tt_temp_images as tt_temp_images,
   _tt_trade_log as tt_trade_log,
   _tt_trade_review as tt_trade_review,
   _tt_trucker_center as tt_trucker_center,
@@ -129,6 +132,8 @@ export type {
   tt_talkplus_fileCreationAttributes,
   tt_talkplus_messageAttributes,
   tt_talkplus_messageCreationAttributes,
+  tt_temp_imagesAttributes,
+  tt_temp_imagesCreationAttributes,
   tt_trade_logAttributes,
   tt_trade_logCreationAttributes,
   tt_trade_reviewAttributes,
@@ -171,6 +176,7 @@ export function initModels(sequelize: Sequelize) {
   const tt_talkplus_channel = _tt_talkplus_channel.initModel(sequelize);
   const tt_talkplus_file = _tt_talkplus_file.initModel(sequelize);
   const tt_talkplus_message = _tt_talkplus_message.initModel(sequelize);
+  const tt_temp_images = _tt_temp_images.initModel(sequelize);
   const tt_trade_log = _tt_trade_log.initModel(sequelize);
   const tt_trade_review = _tt_trade_review.initModel(sequelize);
   const tt_trucker_center = _tt_trucker_center.initModel(sequelize);
@@ -295,6 +301,7 @@ export function initModels(sequelize: Sequelize) {
     tt_talkplus_channel: tt_talkplus_channel,
     tt_talkplus_file: tt_talkplus_file,
     tt_talkplus_message: tt_talkplus_message,
+    tt_temp_images: tt_temp_images,
     tt_trade_log: tt_trade_log,
     tt_trade_review: tt_trade_review,
     tt_trucker_center: tt_trucker_center,

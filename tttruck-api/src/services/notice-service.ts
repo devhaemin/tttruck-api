@@ -1,7 +1,7 @@
 import {
   tt_notice,
   tt_notice_image,
-  tt_notice_master,
+  tt_notice_master, tt_temp_images, tt_trucker_center, tt_trucker_center_image,
   tt_user,
 } from '@src/models/init-models';
 import {RouteError} from '@src/declarations/classes';
@@ -9,6 +9,8 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import logger from "jet-logger";
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
 import {S3File} from "@src/routes/shared/awsMultipart";
+import {Op} from "sequelize";
+import {truckerCenterNotFoundErr} from "@src/services/trucker-center-service";
 
 
 // **** Variables **** //
@@ -195,6 +197,53 @@ async function _delete(user: tt_user, id: number): Promise<void> {
   await tt_notice.destroy({where: {NOTICE_ID: id}});
 }
 
+async function uploadTempImage( file: S3File | null, user: tt_user, ip: number) {
+  if (!file) {
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      "AWS API Connection error.",
+    );
+  }
+  const tmpImage = await tt_temp_images.create({
+    FILE_NAME: file.key,
+    FILE_PATH: file.path,
+    FILE_URL: file.location,
+    FILE_SIZE: file.size,
+  });
+  return tmpImage;
+}
+
+async function associateTempImage(user: tt_user, tempImageIds: [number], noticeId: number) {
+  const notice = await tt_notice.findByPk(noticeId);
+  if (!notice) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      noticeNotFoundErr,
+    );
+  }
+  const tmpImages = await tt_temp_images.findAll({
+    where: {
+      TEMP_IMAGE_ID: {
+        [Op.in]: tempImageIds,
+      },
+    },
+  });
+  if (!tmpImages) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      noticeNotFoundErr,
+    );
+  }
+  const newImages = tmpImages.map(obj => {
+    return {
+      ...obj,
+      NOTICE_ID: notice.NOTICE_ID,
+    };
+  });
+  const newNoticeImages = await tt_notice_image.bulkCreate(newImages);
+  return newNoticeImages;
+}
+
 
 // **** Export default **** //
 
@@ -206,5 +255,7 @@ export default {
   addOne,
   updateOne,
   uploadImage,
+  uploadTempImage,
+  associateTempImage,
   delete: _delete,
 } as const;

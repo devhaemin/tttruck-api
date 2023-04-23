@@ -1,4 +1,5 @@
 import {
+  tt_temp_images,
   tt_trucker_center,
   tt_trucker_center_image,
   tt_trucker_center_master,
@@ -9,6 +10,7 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import logger from "jet-logger";
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
 import {S3File} from "@src/routes/shared/awsMultipart";
+import {Op} from "sequelize";
 
 
 // **** Variables **** //
@@ -32,7 +34,7 @@ async function getAll(): Promise<tt_trucker_center[]> {
             as: "TRUCKER_CENTER_MASTER",
             attributes: ["TRUCKER_CENTER_MASTER_ID", "TITLE"],
           }],
-      order: [['POST_TIME','DESC']],
+      order: [['POST_TIME', 'DESC']],
     });
   if (!persists) {
     throw new RouteError(
@@ -57,7 +59,7 @@ async function getByCategory(id: number): Promise<tt_trucker_center[]> {
           attributes: ["TRUCKER_CENTER_MASTER_ID", "TITLE"],
         },
       ],
-    order: [['POST_TIME','DESC']],
+    order: [['POST_TIME', 'DESC']],
   });
   if (!persists) {
     throw new RouteError(
@@ -80,7 +82,7 @@ async function getById(id: number): Promise<tt_trucker_center> {
           as: "TRUCKER_CENTER_MASTER",
           attributes: ["TRUCKER_CENTER_MASTER_ID", "TITLE"],
         }],
-    order: [['POST_TIME','DESC']],
+    order: [['POST_TIME', 'DESC']],
   });
   if (!persists) {
     throw new RouteError(
@@ -174,6 +176,52 @@ async function _delete(user: tt_user, id: number): Promise<void> {
   await tt_trucker_center.destroy({where: {TRUCKER_CENTER_ID: id}});
 }
 
+async function uploadTempImage(file: S3File | null, user: tt_user, ip: number) {
+  if (!file) {
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      "AWS API Connection error.",
+    );
+  }
+  const tmpImage = await tt_temp_images.create({
+    FILE_NAME: file.key,
+    FILE_PATH: file.path,
+    FILE_URL: file.location,
+    FILE_SIZE: file.size,
+  });
+  return tmpImage;
+}
+
+async function associateTempImage(user: tt_user, tempImageIds: [number], truckerCenterId: number) {
+  const truckerCenter = await tt_trucker_center.findByPk(truckerCenterId);
+  if (!truckerCenter) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      truckerCenterNotFoundErr,
+    );
+  }
+  const tmpImages = await tt_temp_images.findAll({
+    where: {
+      TEMP_IMAGE_ID: {
+        [Op.in]: tempImageIds,
+      },
+    },
+  });
+  if (!tmpImages) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      truckerCenterNotFoundErr,
+    );
+  }
+  const newImages = tmpImages.map(obj => {
+    return {
+      ...obj,
+      TRUCKER_CENTER_ID: truckerCenter.TRUCKER_CENTER_ID,
+    };
+  });
+  const newTruckerImages = await tt_trucker_center_image.bulkCreate(newImages);
+  return newTruckerImages;
+}
 
 // **** Export default **** //
 
@@ -184,5 +232,7 @@ export default {
   addOne,
   updateOne,
   uploadImage,
+  uploadTempImage,
   delete: _delete,
+  associateTempImage,
 } as const;

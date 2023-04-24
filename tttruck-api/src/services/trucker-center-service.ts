@@ -129,7 +129,7 @@ async function updateOne(user: tt_user, truckerCenter: tt_trucker_center): Promi
   return truckerCenter;
 }
 
-async function uploadImage(truckerCenterId: number, file: S3File | null, user: tt_user, ip: number) {
+async function uploadImage(truckerCenterId: number, file: S3File | null, user: tt_user, ip: number){
   const truckerCenter = await tt_trucker_center.findByPk(truckerCenterId);
   if (!truckerCenter) {
     throw new RouteError(
@@ -145,14 +145,14 @@ async function uploadImage(truckerCenterId: number, file: S3File | null, user: t
   }
   truckerCenter.UPDATE_IPv4 = ip;
   truckerCenter.UPDATE_USER_ID = user.USER_ID;
-  tt_trucker_center_image.create({
+  await truckerCenter.update(truckerCenter);
+  return await tt_trucker_center_image.create({
     TRUCKER_CENTER_ID: truckerCenter.TRUCKER_CENTER_ID,
     FILE_NAME: file.key,
     FILE_PATH: file.path,
     FILE_URL: file.location,
     FILE_SIZE: file.size,
   });
-  return await truckerCenter.update(truckerCenter);
 }
 
 /**

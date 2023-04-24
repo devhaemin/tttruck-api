@@ -166,14 +166,14 @@ async function uploadImage(noticeId: number, file: S3File | null, user: tt_user,
   }
   notice.UPDATE_IPv4 = ip;
   notice.UPDATE_USER_ID = user.USER_ID;
-  tt_notice_image.create({
+  await notice.update(notice);
+  return await tt_notice_image.create({
     NOTICE_ID: notice.NOTICE_ID,
     FILE_NAME: file.key,
     FILE_PATH: file.path,
     FILE_URL: file.location,
     FILE_SIZE: file.size,
   });
-  return await notice.update(notice);
 }
 
 /**

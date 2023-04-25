@@ -18,6 +18,7 @@ import badgeRoutes from "@src/routes/badge-routes";
 import truckerCenterRoutes from "@src/routes/trucker-center-routes";
 import imageRoutes from "@src/routes/image-routes";
 import userRoutes from "@src/routes/user-routes";
+import alarmRoutes from "@src/routes/alarm-routes";
 // **** Init **** //
 
 const apiRouter = Router(),
@@ -32,6 +33,27 @@ imageRouter.get(
 apiRouter.use(
   imageRoutes.paths.basePath,
   imageRouter,
+);
+
+const alarmRouter = Router();
+alarmRouter.get(
+  alarmRoutes.paths.getAlarm,
+  normalUserMw,
+  alarmRoutes.getAlarm,
+);
+alarmRouter.post(
+  alarmRoutes.paths.sendAlarm,
+  normalUserMw,
+  alarmRoutes.sendAlarm,
+);
+alarmRouter.post(
+  alarmRoutes.paths.registerFCMToken,
+  normalUserMw,
+  alarmRoutes.registerFCMToken,
+);
+apiRouter.use(
+  alarmRoutes.paths.basePath,
+  alarmRouter,
 );
 
 const chatRouter = Router();

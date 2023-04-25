@@ -1,6 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_access_log, tt_access_logId } from './tt_access_log';
+import type { tt_alarm, tt_alarmId } from './tt_alarm';
 import type { tt_badge, tt_badgeId } from './tt_badge';
 import type { tt_login_log, tt_login_logId } from './tt_login_log';
 import type { tt_nickname_log, tt_nickname_logId } from './tt_nickname_log';
@@ -28,6 +29,7 @@ export interface tt_userAttributes {
   NICKNAME?: string;
   NAME?: string;
   ACCESSTOKEN: string;
+  FCMTOKEN?: string;
   BUYING_SAVINGS: number;
   SELLING_SAVINGS: number;
   WASTE_SAVINGS: number;
@@ -60,7 +62,7 @@ export interface tt_userAttributes {
 
 export type tt_userPk = "USER_ID";
 export type tt_userId = tt_user[tt_userPk];
-export type tt_userOptionalAttributes = "USER_ID" | "NICKNAME" | "NAME" | "BUYING_SAVINGS" | "SELLING_SAVINGS" | "WASTE_SAVINGS" | "GREENGAS_SAVINGS" | "COST_SAVINGS" | "PROFILE_IMAGE" | "INTERIOR_COMPANY_TF" | "INTERIOR_COMPANY_NAME" | "BIRTHDAY" | "GENDER" | "ZIP_CODE" | "ADDRESS" | "DETAIL_ADDRESS" | "JOIN_STATE" | "RESTING_TF" | "LEAVE_TF" | "PHONE_AUTH_CODE" | "PHONE_AUTH_DATE" | "PHONE_AUTH_SUCCEED_DATE" | "PHONE_AUTH_TF" | "REG_TIME" | "UPD_TIME" | "JOIN_TIME" | "JOIN_PERMIT_USER_ID" | "JOIN_AGREE" | "AGREE_UPD_TIME" | "ACCESS_TIME";
+export type tt_userOptionalAttributes = "USER_ID" | "NICKNAME" | "NAME" | "FCMTOKEN" | "BUYING_SAVINGS" | "SELLING_SAVINGS" | "WASTE_SAVINGS" | "GREENGAS_SAVINGS" | "COST_SAVINGS" | "PROFILE_IMAGE" | "INTERIOR_COMPANY_TF" | "INTERIOR_COMPANY_NAME" | "BIRTHDAY" | "GENDER" | "ZIP_CODE" | "ADDRESS" | "DETAIL_ADDRESS" | "JOIN_STATE" | "RESTING_TF" | "LEAVE_TF" | "PHONE_AUTH_CODE" | "PHONE_AUTH_DATE" | "PHONE_AUTH_SUCCEED_DATE" | "PHONE_AUTH_TF" | "REG_TIME" | "UPD_TIME" | "JOIN_TIME" | "JOIN_PERMIT_USER_ID" | "JOIN_AGREE" | "AGREE_UPD_TIME" | "ACCESS_TIME";
 export type tt_userCreationAttributes = Optional<tt_userAttributes, tt_userOptionalAttributes>;
 
 export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes> implements tt_userAttributes {
@@ -70,6 +72,7 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   NICKNAME?: string;
   NAME?: string;
   ACCESSTOKEN!: string;
+  FCMTOKEN?: string;
   BUYING_SAVINGS!: number;
   SELLING_SAVINGS!: number;
   WASTE_SAVINGS!: number;
@@ -111,6 +114,18 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   hasTt_access_log!: Sequelize.HasManyHasAssociationMixin<tt_access_log, tt_access_logId>;
   hasTt_access_logs!: Sequelize.HasManyHasAssociationsMixin<tt_access_log, tt_access_logId>;
   countTt_access_logs!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_alarm via USER_ID
+  tt_alarms!: tt_alarm[];
+  getTt_alarms!: Sequelize.HasManyGetAssociationsMixin<tt_alarm>;
+  setTt_alarms!: Sequelize.HasManySetAssociationsMixin<tt_alarm, tt_alarmId>;
+  addTt_alarm!: Sequelize.HasManyAddAssociationMixin<tt_alarm, tt_alarmId>;
+  addTt_alarms!: Sequelize.HasManyAddAssociationsMixin<tt_alarm, tt_alarmId>;
+  createTt_alarm!: Sequelize.HasManyCreateAssociationMixin<tt_alarm>;
+  removeTt_alarm!: Sequelize.HasManyRemoveAssociationMixin<tt_alarm, tt_alarmId>;
+  removeTt_alarms!: Sequelize.HasManyRemoveAssociationsMixin<tt_alarm, tt_alarmId>;
+  hasTt_alarm!: Sequelize.HasManyHasAssociationMixin<tt_alarm, tt_alarmId>;
+  hasTt_alarms!: Sequelize.HasManyHasAssociationsMixin<tt_alarm, tt_alarmId>;
+  countTt_alarms!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user hasMany tt_badge via UPDATE_USER_ID
   tt_badges!: tt_badge[];
   getTt_badges!: Sequelize.HasManyGetAssociationsMixin<tt_badge>;
@@ -456,6 +471,10 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
       type: DataTypes.STRING(500),
       allowNull: false,
       comment: "접근 토큰"
+    },
+    FCMTOKEN: {
+      type: DataTypes.STRING(500),
+      allowNull: true
     },
     BUYING_SAVINGS: {
       type: DataTypes.BIGINT,

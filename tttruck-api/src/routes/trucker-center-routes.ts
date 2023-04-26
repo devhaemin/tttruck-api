@@ -40,50 +40,85 @@ const paths = {
  * @apiSuccess {String} Nothing
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
- * [
- *     {
- *         "TRUCKER_CENTER_MASTER_ID": 1,
- *         "TRUCKER_CENTER_ID": 1,
- *         "SUBJECT": "TEST SUBJECT",
- *         "HTML_TF": false,
- *         "CONTENTS": "TEST CONTENTS",
- *         "DISPLAY_TF": true,
- *         "DISPLAY_START_TIME": "2022-12-24T07:42:53.000Z",
- *         "DISPLAY_END_TIME": "2022-12-24T07:42:53.000Z",
- *         "POST_USER_ID": 4,
- *         "POST_TIME": "2022-12-24T07:42:53.000Z",
- *         "POST_IPv4": 0,
- *         "POST_IPv6": null,
- *         "UPDATE_USER_ID": 4,
- *         "UPDATE_TIME": "2022-12-24T07:42:53.000Z",
- *         "UPDATE_IPv4": 0,
- *         "UPDATE_IPv6": null,
- *         "CONTENT_ID": null,
- *         "TOP_FIX_TF": false
- *     },
- *     {
- *         "TRUCKER_CENTER_MASTER_ID": 1,
- *         "TRUCKER_CENTER_ID": 2,
- *         "SUBJECT": "TEST SUBJECT",
- *         "HTML_TF": false,
- *         "CONTENTS": "TEST CONTENTS",
- *         "DISPLAY_TF": true,
- *         "DISPLAY_START_TIME": "2022-12-24T07:43:38.000Z",
- *         "DISPLAY_END_TIME": "2022-12-24T07:43:38.000Z",
- *         "POST_USER_ID": 4,
- *         "POST_TIME": "2022-12-24T07:43:38.000Z",
- *         "POST_IPv4": 0,
- *         "POST_IPv6": null,
- *         "UPDATE_USER_ID": 4,
- *         "UPDATE_TIME": "2022-12-24T07:43:38.000Z",
- *         "UPDATE_IPv4": 0,
- *         "UPDATE_IPv6": null,
- *         "CONTENT_ID": null,
- *         "TOP_FIX_TF": false
- *     }
- * ]
- *
+ [
+    {
+        "TRUCKER_CENTER_MASTER_ID": 2,
+        "TRUCKER_CENTER_ID": 2,
+        "SUBJECT": "TEST SUBJECT",
+        "HTML_TF": false,
+        "CONTENTS": "TEST CONTENTS",
+        "DISPLAY_TF": true,
+        "DISPLAY_START_TIME": "2023-03-14T04:37:35.000Z",
+        "DISPLAY_END_TIME": "2023-03-14T04:37:35.000Z",
+        "POST_USER_ID": 26,
+        "POST_TIME": "2023-03-14T04:37:35.000Z",
+        "POST_IPv4": 0,
+        "POST_IPv6": null,
+        "UPDATE_USER_ID": 26,
+        "UPDATE_TIME": "2023-03-14T04:37:35.000Z",
+        "UPDATE_IPv4": 0,
+        "UPDATE_IPv6": null,
+        "CONTENT_ID": null,
+        "TOP_FIX_TF": false,
+        "tt_trucker_center_images": [
+            {
+                "TRUCKER_CENTER_IMAGE_ID": 1,
+                "TRUCKER_CENTER_ID": 2,
+                "FILE_NAME": "truckercenter/image/1678768949260_스크린샷 2023-03-14 오후 1.39.46.png",
+                "FILE_PATH": null,
+                "FILE_SIZE": 26049,
+                "ORG_FILE_SEQ": null,
+                "FILE_URL": "https://tttruck-1.s3.ap-northeast-2.amazonaws.com/truckercenter/image/1678768949260_%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202023-03-14%20%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE%201.39.46.png",
+                "THUMB_PATH": null,
+                "FILE_ID": null,
+                "CONTENT_ID": null,
+                "TIME": "2023-03-14T04:42:29.000Z"
+            },
+            {
+                "TRUCKER_CENTER_IMAGE_ID": 2,
+                "TRUCKER_CENTER_ID": 2,
+                "FILE_NAME": null,
+                "FILE_PATH": null,
+                "FILE_SIZE": null,
+                "ORG_FILE_SEQ": null,
+                "FILE_URL": null,
+                "THUMB_PATH": null,
+                "FILE_ID": null,
+                "CONTENT_ID": null,
+                "TIME": "2023-04-23T16:32:16.000Z"
+            }
+        ],
+        "TRUCKER_CENTER_MASTER": {
+            "TRUCKER_CENTER_MASTER_ID": 2,
+            "TITLE": "구매/판매"
+        }
+    },
+    {
+        "TRUCKER_CENTER_MASTER_ID": 1,
+        "TRUCKER_CENTER_ID": 1,
+        "SUBJECT": "TEST SUBJECT 2",
+        "HTML_TF": false,
+        "CONTENTS": "TEST CONTENTS 2",
+        "DISPLAY_TF": true,
+        "DISPLAY_START_TIME": "2023-03-14T04:36:15.000Z",
+        "DISPLAY_END_TIME": "2023-03-14T04:36:15.000Z",
+        "POST_USER_ID": 26,
+        "POST_TIME": "2023-03-14T04:36:15.000Z",
+        "POST_IPv4": 0,
+        "POST_IPv6": null,
+        "UPDATE_USER_ID": 26,
+        "UPDATE_TIME": "2023-03-14T04:36:15.000Z",
+        "UPDATE_IPv4": 0,
+        "UPDATE_IPv6": null,
+        "CONTENT_ID": null,
+        "TOP_FIX_TF": false,
+        "tt_trucker_center_images": [],
+        "TRUCKER_CENTER_MASTER": {
+            "TRUCKER_CENTER_MASTER_ID": 1,
+            "TITLE": "자주묻는질문"
+        }
+    }
+]
  *
  * @apiError ProductNotFound The id of the User was not found.
  *
@@ -109,12 +144,60 @@ async function getAll(req: IReq, res: IRes) {
  * @apiParam {Number} id
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *
- *     ]
- * }
- *
+[
+    {
+        "TRUCKER_CENTER_MASTER_ID": 2,
+        "TRUCKER_CENTER_ID": 2,
+        "SUBJECT": "TEST SUBJECT",
+        "HTML_TF": false,
+        "CONTENTS": "TEST CONTENTS",
+        "DISPLAY_TF": true,
+        "DISPLAY_START_TIME": "2023-03-14T04:37:35.000Z",
+        "DISPLAY_END_TIME": "2023-03-14T04:37:35.000Z",
+        "POST_USER_ID": 26,
+        "POST_TIME": "2023-03-14T04:37:35.000Z",
+        "POST_IPv4": 0,
+        "POST_IPv6": null,
+        "UPDATE_USER_ID": 26,
+        "UPDATE_TIME": "2023-03-14T04:37:35.000Z",
+        "UPDATE_IPv4": 0,
+        "UPDATE_IPv6": null,
+        "CONTENT_ID": null,
+        "TOP_FIX_TF": false,
+        "tt_trucker_center_images": [
+            {
+                "TRUCKER_CENTER_IMAGE_ID": 1,
+                "TRUCKER_CENTER_ID": 2,
+                "FILE_NAME": "truckercenter/image/1678768949260_스크린샷 2023-03-14 오후 1.39.46.png",
+                "FILE_PATH": null,
+                "FILE_SIZE": 26049,
+                "ORG_FILE_SEQ": null,
+                "FILE_URL": "https://tttruck-1.s3.ap-northeast-2.amazonaws.com/truckercenter/image/1678768949260_%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202023-03-14%20%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE%201.39.46.png",
+                "THUMB_PATH": null,
+                "FILE_ID": null,
+                "CONTENT_ID": null,
+                "TIME": "2023-03-14T04:42:29.000Z"
+            },
+            {
+                "TRUCKER_CENTER_IMAGE_ID": 2,
+                "TRUCKER_CENTER_ID": 2,
+                "FILE_NAME": null,
+                "FILE_PATH": null,
+                "FILE_SIZE": null,
+                "ORG_FILE_SEQ": null,
+                "FILE_URL": null,
+                "THUMB_PATH": null,
+                "FILE_ID": null,
+                "CONTENT_ID": null,
+                "TIME": "2023-04-23T16:32:16.000Z"
+            }
+        ],
+        "TRUCKER_CENTER_MASTER": {
+            "TRUCKER_CENTER_MASTER_ID": 2,
+            "TITLE": "구매/판매"
+        }
+    }
+]
  * @apiError TruckerCenterNotFound The id of the User was not found.
  *
  * @apiErrorExample Error-Response:
@@ -140,10 +223,58 @@ async function getByCategory(req: IReq, res: IRes) {
  * @apiParam {Number} id
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *
- * }
+{
+    "TRUCKER_CENTER_MASTER_ID": 2,
+    "TRUCKER_CENTER_ID": 2,
+    "SUBJECT": "TEST SUBJECT",
+    "HTML_TF": false,
+    "CONTENTS": "TEST CONTENTS",
+    "DISPLAY_TF": true,
+    "DISPLAY_START_TIME": "2023-03-14T04:37:35.000Z",
+    "DISPLAY_END_TIME": "2023-03-14T04:37:35.000Z",
+    "POST_USER_ID": 26,
+    "POST_TIME": "2023-03-14T04:37:35.000Z",
+    "POST_IPv4": 0,
+    "POST_IPv6": null,
+    "UPDATE_USER_ID": 26,
+    "UPDATE_TIME": "2023-03-14T04:37:35.000Z",
+    "UPDATE_IPv4": 0,
+    "UPDATE_IPv6": null,
+    "CONTENT_ID": null,
+    "TOP_FIX_TF": false,
+    "tt_trucker_center_images": [
+        {
+            "TRUCKER_CENTER_IMAGE_ID": 1,
+            "TRUCKER_CENTER_ID": 2,
+            "FILE_NAME": "truckercenter/image/1678768949260_스크린샷 2023-03-14 오후 1.39.46.png",
+            "FILE_PATH": null,
+            "FILE_SIZE": 26049,
+            "ORG_FILE_SEQ": null,
+            "FILE_URL": "https://tttruck-1.s3.ap-northeast-2.amazonaws.com/truckercenter/image/1678768949260_%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202023-03-14%20%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE%201.39.46.png",
+            "THUMB_PATH": null,
+            "FILE_ID": null,
+            "CONTENT_ID": null,
+            "TIME": "2023-03-14T04:42:29.000Z"
+        },
+        {
+            "TRUCKER_CENTER_IMAGE_ID": 2,
+            "TRUCKER_CENTER_ID": 2,
+            "FILE_NAME": null,
+            "FILE_PATH": null,
+            "FILE_SIZE": null,
+            "ORG_FILE_SEQ": null,
+            "FILE_URL": null,
+            "THUMB_PATH": null,
+            "FILE_ID": null,
+            "CONTENT_ID": null,
+            "TIME": "2023-04-23T16:32:16.000Z"
+        }
+    ],
+    "TRUCKER_CENTER_MASTER": {
+        "TRUCKER_CENTER_MASTER_ID": 2,
+        "TITLE": "구매/판매"
+    }
+}
  *
  * @apiError TruckerCenterNotFound The id of the TruckerCenter was not found.
  *
@@ -177,35 +308,35 @@ async function getById(req: IReq, res: IRes) {
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
- * {
- *     "HTML_TF": false,
- *     "DISPLAY_TF": true,
- *     "DISPLAY_START_TIME": {
- *         "fn": "current_timestamp",
- *         "args": []
- *     },
- *     "DISPLAY_END_TIME": {
- *         "fn": "current_timestamp",
- *         "args": []
- *     },
- *     "POST_TIME": {
- *         "fn": "current_timestamp",
- *         "args": []
- *     },
- *     "UPDATE_TIME": {
- *         "fn": "current_timestamp",
- *         "args": []
- *     },
- *     "TOP_FIX_TF": false,
- *     "TRUCKER_CENTER_ID": 2,
- *     "TRUCKER_CENTER_MASTER_ID": 1,
- *     "SUBJECT": "TEST SUBJECT",
- *     "CONTENTS": "TEST CONTENTS",
- *     "UPDATE_IPv4": null,
- *     "POST_IPv4": null,
- *     "POST_USER_ID": 4,
- *     "UPDATE_USER_ID": 4
- * }
+ {
+    "HTML_TF": false,
+    "DISPLAY_TF": true,
+    "DISPLAY_START_TIME": {
+        "fn": "current_timestamp",
+        "args": []
+    },
+    "DISPLAY_END_TIME": {
+        "fn": "current_timestamp",
+        "args": []
+    },
+    "POST_TIME": {
+        "fn": "current_timestamp",
+        "args": []
+    },
+    "UPDATE_TIME": {
+        "fn": "current_timestamp",
+        "args": []
+    },
+    "TOP_FIX_TF": false,
+    "TRUCKER_CENTER_ID": 4,
+    "TRUCKER_CENTER_MASTER_ID": 1,
+    "SUBJECT": "TEST SUBJECT",
+    "CONTENTS": "TEST CONTENTS",
+    "UPDATE_IPv4": null,
+    "POST_IPv4": null,
+    "POST_USER_ID": 1,
+    "UPDATE_USER_ID": 1
+}
  *
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 404 Not Found
@@ -237,27 +368,26 @@ async function add(req: IReq<{ truckerCenter: tt_trucker_center }>, res: IRes) {
  * @apiBody {File} file 소식에 추가할 이미지
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
- *{
- *     "TRUCKER_CENTER_MASTER_ID": 1,
- *     "TRUCKER_CENTER_ID": 1,
- *     "SUBJECT": "TEST SUBJECT 2",
- *     "HTML_TF": false,
- *     "CONTENTS": "TEST CONTENTS 2",
- *     "DISPLAY_TF": true,
- *     "DISPLAY_START_TIME": "2022-12-24T07:42:53.000Z",
- *     "DISPLAY_END_TIME": "2022-12-24T07:42:53.000Z",
- *     "POST_USER_ID": 4,
- *     "POST_TIME": "2022-12-24T07:42:53.000Z",
- *     "POST_IPv4": 0,
- *     "POST_IPv6": null,
- *     "UPDATE_USER_ID": 4,
- *     "UPDATE_TIME": "2022-12-24T16:45:58.000Z",
- *     "UPDATE_IPv4": null,
- *     "UPDATE_IPv6": null,
- *     "CONTENT_ID": null,
- *     "TOP_FIX_TF": false
- * }
+ {
+    "TRUCKER_CENTER_MASTER_ID": 2,
+    "TRUCKER_CENTER_ID": 2,
+    "SUBJECT": "TEST SUBJECT",
+    "HTML_TF": false,
+    "CONTENTS": "TEST CONTENTS",
+    "DISPLAY_TF": true,
+    "DISPLAY_START_TIME": "2023-03-14T04:37:35.000Z",
+    "DISPLAY_END_TIME": "2023-03-14T04:37:35.000Z",
+    "POST_USER_ID": 26,
+    "POST_TIME": "2023-03-14T04:37:35.000Z",
+    "POST_IPv4": 0,
+    "POST_IPv6": null,
+    "UPDATE_USER_ID": 1,
+    "UPDATE_TIME": "2023-03-14T04:37:35.000Z",
+    "UPDATE_IPv4": null,
+    "UPDATE_IPv6": null,
+    "CONTENT_ID": null,
+    "TOP_FIX_TF": false
+}
  *
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 404 Not Found
@@ -350,49 +480,128 @@ async function _delete(req: IReq, res: IRes) {
  *     {
  *     }
  * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     [
- *     {
- *         "TRUCKER_CENTER_MASTER_ID": 1,
- *         "TITLE": "자주묻는질문",
- *         "COMMENT_TF": true,
- *         "SECRET_TF": false,
- *         "ATTACH_TF": true,
- *         "DISPLAY_TF": false,
- *         "DIV_CODE": null,
- *         "CREATE_USER_ID": 1,
- *         "CREATE_TIME": "2022-12-24T07:17:28.000Z",
- *         "REG_IPv4": null,
- *         "REG_IPv6": null,
- *         "UPDATE_USER_ID": null,
- *         "UPDATE_TIME": "2022-12-24T07:17:28.000Z",
- *         "UPDATE_IPv4": null,
- *         "UPDATE_IPv6": null,
- *         "EXTRA_FIELD_FIRST_LABEL": null,
- *         "EXTRA_FIELD_FIRST_CODE": null,
- *         "DELETE_TF": false
- *     },
- *     {
- *         "TRUCKER_CENTER_MASTER_ID": 2,
- *         "TITLE": "구매/판매",
- *         "COMMENT_TF": true,
- *         "SECRET_TF": false,
- *         "ATTACH_TF": true,
- *         "DISPLAY_TF": false,
- *         "DIV_CODE": null,
- *         "CREATE_USER_ID": 1,
- *         "CREATE_TIME": "2022-12-24T07:17:28.000Z",
- *         "REG_IPv4": null,
- *         "REG_IPv6": null,
- *         "UPDATE_USER_ID": null,
- *         "UPDATE_TIME": "2022-12-24T07:17:28.000Z",
- *         "UPDATE_IPv4": null,
- *         "UPDATE_IPv6": null,
- *         "EXTRA_FIELD_FIRST_LABEL": null,
- *         "EXTRA_FIELD_FIRST_CODE": null,
- *         "DELETE_TF": false
- *     }
- * ]
+ [
+    {
+        "TRUCKER_CENTER_MASTER_ID": 1,
+        "TITLE": "자주묻는질문",
+        "COMMENT_TF": true,
+        "SECRET_TF": false,
+        "ATTACH_TF": true,
+        "DISPLAY_TF": false,
+        "DIV_CODE": null,
+        "CREATE_USER_ID": 1,
+        "CREATE_TIME": "2023-03-13T02:09:29.000Z",
+        "REG_IPv4": null,
+        "REG_IPv6": null,
+        "UPDATE_USER_ID": 1,
+        "UPDATE_TIME": "2023-03-13T02:09:29.000Z",
+        "UPDATE_IPv4": null,
+        "UPDATE_IPv6": null,
+        "EXTRA_FIELD_FIRST_LABEL": null,
+        "EXTRA_FIELD_FIRST_CODE": null,
+        "DELETE_TF": false
+    },
+    {
+        "TRUCKER_CENTER_MASTER_ID": 2,
+        "TITLE": "구매/판매",
+        "COMMENT_TF": true,
+        "SECRET_TF": false,
+        "ATTACH_TF": true,
+        "DISPLAY_TF": false,
+        "DIV_CODE": null,
+        "CREATE_USER_ID": 1,
+        "CREATE_TIME": "2023-03-13T02:10:50.000Z",
+        "REG_IPv4": null,
+        "REG_IPv6": null,
+        "UPDATE_USER_ID": null,
+        "UPDATE_TIME": "2023-03-13T02:10:50.000Z",
+        "UPDATE_IPv4": null,
+        "UPDATE_IPv6": null,
+        "EXTRA_FIELD_FIRST_LABEL": null,
+        "EXTRA_FIELD_FIRST_CODE": null,
+        "DELETE_TF": false
+    },
+    {
+        "TRUCKER_CENTER_MASTER_ID": 3,
+        "TITLE": "계정/인증",
+        "COMMENT_TF": true,
+        "SECRET_TF": false,
+        "ATTACH_TF": true,
+        "DISPLAY_TF": false,
+        "DIV_CODE": null,
+        "CREATE_USER_ID": 1,
+        "CREATE_TIME": "2023-03-13T02:10:50.000Z",
+        "REG_IPv4": null,
+        "REG_IPv6": null,
+        "UPDATE_USER_ID": null,
+        "UPDATE_TIME": "2023-03-13T02:10:50.000Z",
+        "UPDATE_IPv4": null,
+        "UPDATE_IPv6": null,
+        "EXTRA_FIELD_FIRST_LABEL": null,
+        "EXTRA_FIELD_FIRST_CODE": null,
+        "DELETE_TF": false
+    },
+    {
+        "TRUCKER_CENTER_MASTER_ID": 4,
+        "TITLE": "거래품목",
+        "COMMENT_TF": true,
+        "SECRET_TF": false,
+        "ATTACH_TF": true,
+        "DISPLAY_TF": false,
+        "DIV_CODE": null,
+        "CREATE_USER_ID": 1,
+        "CREATE_TIME": "2023-03-13T02:10:50.000Z",
+        "REG_IPv4": null,
+        "REG_IPv6": null,
+        "UPDATE_USER_ID": null,
+        "UPDATE_TIME": "2023-03-13T02:10:50.000Z",
+        "UPDATE_IPv4": null,
+        "UPDATE_IPv6": null,
+        "EXTRA_FIELD_FIRST_LABEL": null,
+        "EXTRA_FIELD_FIRST_CODE": null,
+        "DELETE_TF": false
+    },
+    {
+        "TRUCKER_CENTER_MASTER_ID": 5,
+        "TITLE": "이용 제재",
+        "COMMENT_TF": true,
+        "SECRET_TF": false,
+        "ATTACH_TF": true,
+        "DISPLAY_TF": false,
+        "DIV_CODE": null,
+        "CREATE_USER_ID": 1,
+        "CREATE_TIME": "2023-03-13T02:10:50.000Z",
+        "REG_IPv4": null,
+        "REG_IPv6": null,
+        "UPDATE_USER_ID": null,
+        "UPDATE_TIME": "2023-03-13T02:10:50.000Z",
+        "UPDATE_IPv4": null,
+        "UPDATE_IPv6": null,
+        "EXTRA_FIELD_FIRST_LABEL": null,
+        "EXTRA_FIELD_FIRST_CODE": null,
+        "DELETE_TF": false
+    },
+    {
+        "TRUCKER_CENTER_MASTER_ID": 6,
+        "TITLE": "성과관리",
+        "COMMENT_TF": true,
+        "SECRET_TF": false,
+        "ATTACH_TF": true,
+        "DISPLAY_TF": false,
+        "DIV_CODE": null,
+        "CREATE_USER_ID": 1,
+        "CREATE_TIME": "2023-03-13T02:10:50.000Z",
+        "REG_IPv4": null,
+        "REG_IPv6": null,
+        "UPDATE_USER_ID": null,
+        "UPDATE_TIME": "2023-03-13T02:10:50.000Z",
+        "UPDATE_IPv4": null,
+        "UPDATE_IPv6": null,
+        "EXTRA_FIELD_FIRST_LABEL": null,
+        "EXTRA_FIELD_FIRST_CODE": null,
+        "DELETE_TF": false
+    }
+]
  *
  */
 async function getCategories(req:IReq, res:IRes){

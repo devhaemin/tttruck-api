@@ -130,11 +130,33 @@ async function getUser(req:IReq){
  * @apiParam {Number} id
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *
- *     ]
- * }
+ [
+    {
+        "NOTICE_MASTER_ID": 2,
+        "NOTICE_ID": 18,
+        "SUBJECT": "test",
+        "HTML_TF": false,
+        "CONTENTS": "<p>안녕하세요</p>\n<p></p>\n<img src=\"https://cdn.tttruck.co.kr/notice/image/1682423884936_áá³áá¥áá¥áá¦á«áá¥ááµááµááµ.png\" alt=\"undefined\" style=\"height: 100px;width: 100px\"/>\n<p>TEST</p>\n",
+        "DISPLAY_TF": true,
+        "DISPLAY_START_TIME": "2023-04-25T11:58:17.000Z",
+        "DISPLAY_END_TIME": "2023-04-25T11:58:17.000Z",
+        "POST_USER_ID": 22,
+        "POST_TIME": "2023-04-25T11:58:17.000Z",
+        "POST_IPv4": 3716520229,
+        "POST_IPv6": null,
+        "UPDATE_USER_ID": 22,
+        "UPDATE_TIME": "2023-04-25T11:58:17.000Z",
+        "UPDATE_IPv4": 3716520229,
+        "UPDATE_IPv6": null,
+        "CONTENT_ID": null,
+        "TOP_FIX_TF": false,
+        "tt_notice_images": [],
+        "NOTICE_MASTER": {
+            "NOTICE_MASTER_ID": 2,
+            "TITLE": "공지사항"
+        }
+    }
+]
  *
  * @apiError NoticeNotFound The id of the User was not found.
  *
@@ -161,10 +183,97 @@ async function getByCategory(req: IReq, res: IRes) {
  * @apiParam {Number} id
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *
- * }
+ {
+    "NOTICE_MASTER_ID": 4,
+    "NOTICE_ID": 17,
+    "SUBJECT": "test3",
+    "HTML_TF": false,
+    "CONTENTS": "<p>test5</p>\n<div style=\"text-align:left;\"><img src=\"https://cdn.tttruck.co.kr/notice/image/1682425145145_áá³áá¥áá¥áá¦á«áá¥ááµááµááµ.png\" alt=\"undefined\" style=\"height: 100px;width: 100px\"/></div>\n<p>test</p>\n<img src=\"https://cdn.tttruck.co.kr/notice/image/1682425157753_áá³áá¥áá¥áá¦á«áá¥ááµááµááµ.png\" alt=\"undefined\" style=\"height: 200px;width: 200px\"/>\n<p></p>\n",
+    "DISPLAY_TF": true,
+    "DISPLAY_START_TIME": "2023-04-23T12:40:29.000Z",
+    "DISPLAY_END_TIME": "2023-04-23T12:40:29.000Z",
+    "POST_USER_ID": null,
+    "POST_TIME": "2023-04-23T12:40:29.000Z",
+    "POST_IPv4": null,
+    "POST_IPv6": null,
+    "UPDATE_USER_ID": null,
+    "UPDATE_TIME": "2023-04-25T12:19:24.000Z",
+    "UPDATE_IPv4": null,
+    "UPDATE_IPv6": null,
+    "CONTENT_ID": null,
+    "TOP_FIX_TF": false,
+    "tt_notice_images": [
+        {
+            "NOTICE_IMAGE_ID": 24,
+            "NOTICE_ID": 17,
+            "FILE_NAME": "notice/image/1682253634826_img-y2MK4pUenSFjBbj0lRZQTQIy.png",
+            "FILE_PATH": null,
+            "FILE_SIZE": 787387,
+            "ORG_FILE_SEQ": null,
+            "FILE_URL": "https://tttruck-1.s3.ap-northeast-2.amazonaws.com/notice/image/1682253634826_img-y2MK4pUenSFjBbj0lRZQTQIy.png",
+            "THUMB_PATH": null,
+            "FILE_ID": null,
+            "CONTENT_ID": null,
+            "TIME": "2023-04-23T12:40:35.000Z"
+        },
+        {
+            "NOTICE_IMAGE_ID": 25,
+            "NOTICE_ID": 17,
+            "FILE_NAME": null,
+            "FILE_PATH": null,
+            "FILE_SIZE": null,
+            "ORG_FILE_SEQ": null,
+            "FILE_URL": null,
+            "THUMB_PATH": null,
+            "FILE_ID": null,
+            "CONTENT_ID": null,
+            "TIME": "2023-04-23T16:31:21.000Z"
+        },
+        {
+            "NOTICE_IMAGE_ID": 26,
+            "NOTICE_ID": 17,
+            "FILE_NAME": null,
+            "FILE_PATH": null,
+            "FILE_SIZE": null,
+            "ORG_FILE_SEQ": null,
+            "FILE_URL": null,
+            "THUMB_PATH": null,
+            "FILE_ID": null,
+            "CONTENT_ID": null,
+            "TIME": "2023-04-23T16:31:21.000Z"
+        },
+        {
+            "NOTICE_IMAGE_ID": 27,
+            "NOTICE_ID": 17,
+            "FILE_NAME": "notice/image/1682425145145_áá³áá¥áá¥áá¦á«áá¥ááµááµááµ.png",
+            "FILE_PATH": null,
+            "FILE_SIZE": 399330,
+            "ORG_FILE_SEQ": null,
+            "FILE_URL": "https://tttruck-1.s3.ap-northeast-2.amazonaws.com/notice/image/1682425145145_%C3%A1%C2%84%C2%90%C3%A1%C2%85%C2%B3%C3%A1%C2%84%C2%85%C3%A1%C2%85%C2%A5%C3%A1%C2%84%C2%8F%C3%A1%C2%85%C2%A5%C3%A1%C2%84%C2%89%C3%A1%C2%85%C2%A6%C3%A1%C2%86%C2%AB%C3%A1%C2%84%C2%90%C3%A1%C2%85%C2%A5%C3%A1%C2%84%C2%8B%C3%A1%C2%85%C2%B5%C3%A1%C2%84%C2%86%C3%A1%C2%85%C2%B5%C3%A1%C2%84%C2%8C%C3%A1%C2%85%C2%B5.png",
+            "THUMB_PATH": null,
+            "FILE_ID": null,
+            "CONTENT_ID": null,
+            "TIME": "2023-04-25T12:19:05.000Z"
+        },
+        {
+            "NOTICE_IMAGE_ID": 28,
+            "NOTICE_ID": 17,
+            "FILE_NAME": "notice/image/1682425157753_áá³áá¥áá¥áá¦á«áá¥ááµááµááµ.png",
+            "FILE_PATH": null,
+            "FILE_SIZE": 399330,
+            "ORG_FILE_SEQ": null,
+            "FILE_URL": "https://tttruck-1.s3.ap-northeast-2.amazonaws.com/notice/image/1682425157753_%C3%A1%C2%84%C2%90%C3%A1%C2%85%C2%B3%C3%A1%C2%84%C2%85%C3%A1%C2%85%C2%A5%C3%A1%C2%84%C2%8F%C3%A1%C2%85%C2%A5%C3%A1%C2%84%C2%89%C3%A1%C2%85%C2%A6%C3%A1%C2%86%C2%AB%C3%A1%C2%84%C2%90%C3%A1%C2%85%C2%A5%C3%A1%C2%84%C2%8B%C3%A1%C2%85%C2%B5%C3%A1%C2%84%C2%86%C3%A1%C2%85%C2%B5%C3%A1%C2%84%C2%8C%C3%A1%C2%85%C2%B5.png",
+            "THUMB_PATH": null,
+            "FILE_ID": null,
+            "CONTENT_ID": null,
+            "TIME": "2023-04-25T12:19:17.000Z"
+        }
+    ],
+    "NOTICE_MASTER": {
+        "NOTICE_MASTER_ID": 4,
+        "TITLE": "팁"
+    }
+}
  *
  * @apiError NoticeNotFound The id of the Notice was not found.
  *

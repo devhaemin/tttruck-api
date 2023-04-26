@@ -33,8 +33,9 @@ if (EnvVars.nodeEnv === NodeEnvs.Dev) {
 // Security
 if (EnvVars.nodeEnv === NodeEnvs.Production) {
   app.use(morgan('combined'));
-  app.use(helmet());
+  //app.use(helmet());
 }
+app.use(helmet());
 
 
 // **** Add API routes **** //

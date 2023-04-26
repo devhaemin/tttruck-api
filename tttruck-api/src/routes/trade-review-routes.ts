@@ -26,6 +26,92 @@ const paths = {
  * @apiGroup TradeReview
  * @apiPermission normalUser
  *
+ * @apiSuccessExample {json} Success-Response:
+ * [
+    {
+        "TRADE_REVIEW_ID": 31,
+        "PRODUCT_ID": 120,
+        "TRADE_REVIEW_TYPE": null,
+        "USER_ID": null,
+        "RATINGS": 0,
+        "SUBJECT": "안녕하세요 리뷰 제목",
+        "CONTENTS": "판매자 리뷰 내용",
+        "IPv4": null,
+        "IPv6": null,
+        "CREATE_TIME": "2023-03-14T12:14:21.000Z",
+        "UPDATE_TIME": "2023-03-14T12:14:21.000Z",
+        "DELETE_TF": false,
+        "USER": null
+    },
+    {
+        "TRADE_REVIEW_ID": 32,
+        "PRODUCT_ID": 120,
+        "TRADE_REVIEW_TYPE": null,
+        "USER_ID": null,
+        "RATINGS": 0,
+        "SUBJECT": "안녕하세요 리뷰 제목",
+        "CONTENTS": "판매자 리뷰 내용",
+        "IPv4": null,
+        "IPv6": null,
+        "CREATE_TIME": "2023-03-14T12:14:41.000Z",
+        "UPDATE_TIME": "2023-03-14T12:14:41.000Z",
+        "DELETE_TF": false,
+        "USER": null
+    },
+    {
+        "TRADE_REVIEW_ID": 33,
+        "PRODUCT_ID": 120,
+        "TRADE_REVIEW_TYPE": null,
+        "USER_ID": null,
+        "RATINGS": 2,
+        "SUBJECT": "TEST 판매자 리뷰 제목",
+        "CONTENTS": "판매자 리뷰 내용",
+        "IPv4": null,
+        "IPv6": null,
+        "CREATE_TIME": "2023-03-14T12:15:07.000Z",
+        "UPDATE_TIME": "2023-03-14T13:36:13.000Z",
+        "DELETE_TF": true,
+        "USER": null
+    },
+    {
+        "TRADE_REVIEW_ID": 34,
+        "PRODUCT_ID": 120,
+        "TRADE_REVIEW_TYPE": 0,
+        "USER_ID": 26,
+        "RATINGS": 0,
+        "SUBJECT": "TEST 구매자 리뷰 제목",
+        "CONTENTS": null,
+        "IPv4": null,
+        "IPv6": null,
+        "CREATE_TIME": "2023-03-14T12:56:01.000Z",
+        "UPDATE_TIME": "2023-03-14T12:56:01.000Z",
+        "DELETE_TF": false,
+        "USER": {
+            "USER_ID": 26,
+            "PROFILE_IMAGE": "profile/1673239954601_img-ObBaphDQMth1gVfJIwiS0HUh.png",
+            "NICKNAME": "정해민"
+        }
+    },
+    {
+        "TRADE_REVIEW_ID": 35,
+        "PRODUCT_ID": 120,
+        "TRADE_REVIEW_TYPE": 1,
+        "USER_ID": 26,
+        "RATINGS": 2,
+        "SUBJECT": "TEST 판매자 리뷰 제목",
+        "CONTENTS": null,
+        "IPv4": null,
+        "IPv6": null,
+        "CREATE_TIME": "2023-03-14T12:57:04.000Z",
+        "UPDATE_TIME": "2023-03-14T13:35:26.000Z",
+        "DELETE_TF": false,
+        "USER": {
+            "USER_ID": 26,
+            "PROFILE_IMAGE": "profile/1673239954601_img-ObBaphDQMth1gVfJIwiS0HUh.png",
+            "NICKNAME": "정해민"
+        }
+    }
+]
  * @apiParam {number} id productId
  *
  */

@@ -316,80 +316,109 @@ async function updateStatus(req: IReq<{ status: number }>, res: IRes) {
  * }
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
- * [
- *     {
- *         "PRODUCT_ID": 8,
- *         "SUBJECT": "SUBJECT 1",
- *         "PRIORITY": 1,
- *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 30000,
- *         "PRODUCT_SIZE": "1024x1024",
- *         "PRODUCT_WEIGHT": 500,
- *         "CONTENTS": "CONTENTS 1",
- *         "SELLER_USER_ID": 4,
- *         "SELLER_USER_IPv4": 0,
- *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-26T08:19:55.000Z",
- *         "TAG": "TAG 1",
- *         "ADDRESS": "ADDRESS 1",
- *         "LATITUDE": "37.626356",
- *         "LONGITUDE": "127.074697",
- *         "LOCATION": {
- *             "type": "Point",
- *             "coordinates": [
- *                 127.074697,
- *                 37.626356
- *             ]
- *         },
- *         "UPDATE_USER_ID": 4,
- *         "UPDATE_USER_IPv4": 0,
- *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-26T08:19:55.000Z",
- *         "DISTANCE": null,
- *         "tt_product_images": [],
- *         "SELLER_USER": {
- *             "NICKNAME": "꼬리무123",
- *             "PROFILE_IMAGE": null,
- *             "USER_ID": 4
- *         }
- *     },
- *     {
- *         "PRODUCT_ID": 9,
- *         "SUBJECT": "SUBJECT 1",
- *         "PRIORITY": 1,
- *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 30000,
- *         "PRODUCT_SIZE": "1024x1024",
- *         "PRODUCT_WEIGHT": 500,
- *         "CONTENTS": "CONTENTS 1",
- *         "SELLER_USER_ID": 4,
- *         "SELLER_USER_IPv4": 1794396811,
- *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-27T05:33:48.000Z",
- *         "TAG": "TAG 1",
- *         "ADDRESS": "ADDRESS 1",
- *         "LATITUDE": "37.626356",
- *         "LONGITUDE": "127.074697",
- *         "LOCATION": {
- *             "type": "Point",
- *             "coordinates": [
- *                 127.074697,
- *                 37.626356
- *             ]
- *         },
- *         "UPDATE_USER_ID": 4,
- *         "UPDATE_USER_IPv4": 1794396811,
- *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-27T05:33:48.000Z",
- *         "DISTANCE": null,
- *         "tt_product_images": [],
- *         "SELLER_USER": {
- *             "NICKNAME": "꼬리무123",
- *             "PROFILE_IMAGE": null,
- *             "USER_ID": 4
- *         }
- *     }
- * ]
+ * {
+    {
+        "PRODUCT_ID": 168,
+        "SUBJECT": "제일타카630r 목공용 타카건",
+        "PRIORITY": 1,
+        "PRODUCT_CATEGORY_ID": 999,
+        "PRODUCT_PRICE": 65000,
+        "PRODUCT_SIZE": "240*40*188",
+        "PRODUCT_WEIGHT": 2500,
+        "CONTENTS": "목공용 실타카건 630r판매합니다.\n거의새것입니다.",
+        "SELLER_USER_ID": 51,
+        "SELLER_USER_IPv4": 1964096058,
+        "SELLER_USER_IPv6": null,
+        "UPLOAD_TIME": "2023-03-22T01:24:12.000Z",
+        "TAG": "",
+        "ADDRESS": "서울 구로구 개봉동 403-160",
+        "LATITUDE": "37.4882301404849",
+        "LONGITUDE": "126.856538739778",
+        "LOCATION": {
+            "type": "Point",
+            "coordinates": [
+                126.856538739778,
+                37.4882301404849
+            ]
+        },
+        "UPDATE_USER_ID": 51,
+        "UPDATE_USER_IPv4": 1964096058,
+        "UPDATE_USER_IPv6": null,
+        "UPDATE_DATE": "2023-03-22T01:24:12.000Z",
+        "TRADE_STATUS": 0,
+        "TRADE_TIME": "2023-03-22T01:24:12.000Z",
+        "BUYER_USER_ID": null,
+        "BUYER_USER_IPv4": null,
+        "BUYER_USER_IPv6": null,
+        "DELETE_TF": false,
+        "QUANTITY": "1개",
+        "CHAT_TF": false,
+        "DISTANCE": 131.0391517155931,
+        "tt_product_images": [
+            {
+                "PRODUCT_IMAGE_ID": 441,
+                "PRODUCT_ID": 168,
+                "FILE_NAME": "product/image/1679448252861_62B3E52A-58EF-47F2-A3AE-38A70F09BED4.jpeg",
+                "FILE_PATH": null,
+                "FILE_SIZE": 2751442,
+                "ORG_FILE_SEQ": null,
+                "FILE_URL": "https://tttruck-1.s3.ap-northeast-2.amazonaws.com/product/image/1679448252861_62B3E52A-58EF-47F2-A3AE-38A70F09BED4.jpeg",
+                "THUMB_PATH": null,
+                "FILE_ID": null,
+                "CONTENT_ID": null,
+                "TIME": "2023-03-22T01:24:15.000Z",
+                "PRIORITY": 0
+            },
+            {
+                "PRODUCT_IMAGE_ID": 442,
+                "PRODUCT_ID": 168,
+                "FILE_NAME": "product/image/1679448253003_4E1FA397-CE49-4C7E-8EFA-9DBBC1DD9B89.jpeg",
+                "FILE_PATH": null,
+                "FILE_SIZE": 3540510,
+                "ORG_FILE_SEQ": null,
+                "FILE_URL": "https://tttruck-1.s3.ap-northeast-2.amazonaws.com/product/image/1679448253003_4E1FA397-CE49-4C7E-8EFA-9DBBC1DD9B89.jpeg",
+                "THUMB_PATH": null,
+                "FILE_ID": null,
+                "CONTENT_ID": null,
+                "TIME": "2023-03-22T01:24:18.000Z",
+                "PRIORITY": 0
+            },
+            {
+                "PRODUCT_IMAGE_ID": 443,
+                "PRODUCT_ID": 168,
+                "FILE_NAME": "product/image/1679448253013_CFEB7328-1047-459E-A3E1-8E2691755892.jpeg",
+                "FILE_PATH": null,
+                "FILE_SIZE": 4950553,
+                "ORG_FILE_SEQ": null,
+                "FILE_URL": "https://tttruck-1.s3.ap-northeast-2.amazonaws.com/product/image/1679448253013_CFEB7328-1047-459E-A3E1-8E2691755892.jpeg",
+                "THUMB_PATH": null,
+                "FILE_ID": null,
+                "CONTENT_ID": null,
+                "TIME": "2023-03-22T01:24:18.000Z",
+                "PRIORITY": 0
+            },
+            {
+                "PRODUCT_IMAGE_ID": 444,
+                "PRODUCT_ID": 168,
+                "FILE_NAME": "product/image/1679448252998_653924A5-D5DE-4591-929F-36A7A9D282E2.jpeg",
+                "FILE_PATH": null,
+                "FILE_SIZE": 2212421,
+                "ORG_FILE_SEQ": null,
+                "FILE_URL": "https://tttruck-1.s3.ap-northeast-2.amazonaws.com/product/image/1679448252998_653924A5-D5DE-4591-929F-36A7A9D282E2.jpeg",
+                "THUMB_PATH": null,
+                "FILE_ID": null,
+                "CONTENT_ID": null,
+                "TIME": "2023-03-22T01:24:19.000Z",
+                "PRIORITY": 0
+            }
+        ],
+        "SELLER_USER": {
+            "NICKNAME": "디자인forever",
+            "PROFILE_IMAGE": null,
+            "USER_ID": 51
+        }
+    }
+  }
  * @apiError ProductNotFound The id of the User was not found.
  *
  * @apiErrorExample Error-Response:
@@ -639,316 +668,6 @@ async function getByCategory(req: IReqQuery<{ limit: string, offset: string }>, 
  *         "UPDATE_USER_IPv4": 0,
  *         "UPDATE_USER_IPv6": null,
  *         "UPDATE_DATE": "2022-12-26T08:19:55.000Z",
- *         "DISTANCE": null,
- *         "tt_product_images": []
- *     },
- *     {
- *         "PRODUCT_ID": 9,
- *         "SUBJECT": "SUBJECT 1",
- *         "PRIORITY": 1,
- *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 30000,
- *         "PRODUCT_SIZE": "1024x1024",
- *         "PRODUCT_WEIGHT": 500,
- *         "CONTENTS": "CONTENTS 1",
- *         "SELLER_USER_ID": 4,
- *         "SELLER_USER_IPv4": 1794396811,
- *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-27T05:33:48.000Z",
- *         "TAG": "TAG 1",
- *         "ADDRESS": "ADDRESS 1",
- *         "LATITUDE": "37.626356",
- *         "LONGITUDE": "127.074697",
- *         "LOCATION": {
- *             "type": "Point",
- *             "coordinates": [
- *                 127.074697,
- *                 37.626356
- *             ]
- *         },
- *         "UPDATE_USER_ID": 4,
- *         "UPDATE_USER_IPv4": 1794396811,
- *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-27T05:33:48.000Z",
- *         "DISTANCE": null,
- *         "tt_product_images": []
- *     },
- *     {
- *         "PRODUCT_ID": 10,
- *         "SUBJECT": "SUBJECT 1",
- *         "PRIORITY": 1,
- *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 30000,
- *         "PRODUCT_SIZE": "1024x1024",
- *         "PRODUCT_WEIGHT": 500,
- *         "CONTENTS": "CONTENTS 1",
- *         "SELLER_USER_ID": 4,
- *         "SELLER_USER_IPv4": 1794396811,
- *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-27T05:35:41.000Z",
- *         "TAG": "TAG 1",
- *         "ADDRESS": "ADDRESS 1",
- *         "LATITUDE": "37.626356",
- *         "LONGITUDE": "127.074697",
- *         "LOCATION": {
- *             "type": "Point",
- *             "coordinates": [
- *                 127.074697,
- *                 37.626356
- *             ]
- *         },
- *         "UPDATE_USER_ID": 4,
- *         "UPDATE_USER_IPv4": 1794396811,
- *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-27T05:35:41.000Z",
- *         "DISTANCE": null,
- *         "tt_product_images": []
- *     },
- *     {
- *         "PRODUCT_ID": 11,
- *         "SUBJECT": "SUBJECT 1",
- *         "PRIORITY": 1,
- *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 30000,
- *         "PRODUCT_SIZE": "1024x1024",
- *         "PRODUCT_WEIGHT": 500,
- *         "CONTENTS": "CONTENTS 1",
- *         "SELLER_USER_ID": 4,
- *         "SELLER_USER_IPv4": 1794396811,
- *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-27T05:36:15.000Z",
- *         "TAG": "TAG 1",
- *         "ADDRESS": "ADDRESS 1",
- *         "LATITUDE": "37.626356",
- *         "LONGITUDE": "127.074697",
- *         "LOCATION": {
- *             "type": "Point",
- *             "coordinates": [
- *                 127.074697,
- *                 37.626356
- *             ]
- *         },
- *         "UPDATE_USER_ID": 4,
- *         "UPDATE_USER_IPv4": 1794396811,
- *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-27T05:36:15.000Z",
- *         "DISTANCE": null,
- *         "tt_product_images": []
- *     },
- *     {
- *         "PRODUCT_ID": 12,
- *         "SUBJECT": "SUBJECT 1",
- *         "PRIORITY": 1,
- *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 30000,
- *         "PRODUCT_SIZE": "1024x1024",
- *         "PRODUCT_WEIGHT": 500,
- *         "CONTENTS": "CONTENTS 1",
- *         "SELLER_USER_ID": 4,
- *         "SELLER_USER_IPv4": 0,
- *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-27T05:40:02.000Z",
- *         "TAG": "TAG 1",
- *         "ADDRESS": "ADDRESS 1",
- *         "LATITUDE": "37.626356",
- *         "LONGITUDE": "127.074697",
- *         "LOCATION": {
- *             "type": "Point",
- *             "coordinates": [
- *                 127.074697,
- *                 37.626356
- *             ]
- *         },
- *         "UPDATE_USER_ID": 4,
- *         "UPDATE_USER_IPv4": 0,
- *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-27T05:40:02.000Z",
- *         "DISTANCE": null,
- *         "tt_product_images": []
- *     },
- *     {
- *         "PRODUCT_ID": 13,
- *         "SUBJECT": "SUBJECT 1",
- *         "PRIORITY": 1,
- *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 30000,
- *         "PRODUCT_SIZE": "1024x1024",
- *         "PRODUCT_WEIGHT": 500,
- *         "CONTENTS": "CONTENTS 1",
- *         "SELLER_USER_ID": 4,
- *         "SELLER_USER_IPv4": 0,
- *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-27T05:43:11.000Z",
- *         "TAG": "TAG 1",
- *         "ADDRESS": "ADDRESS 1",
- *         "LATITUDE": "37.626356",
- *         "LONGITUDE": "127.074697",
- *         "LOCATION": {
- *             "type": "Point",
- *             "coordinates": [
- *                 127.074697,
- *                 37.626356
- *             ]
- *         },
- *         "UPDATE_USER_ID": 4,
- *         "UPDATE_USER_IPv4": 0,
- *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-27T05:43:11.000Z",
- *         "DISTANCE": null,
- *         "tt_product_images": []
- *     },
- *     {
- *         "PRODUCT_ID": 14,
- *         "SUBJECT": "SUBJECT 1",
- *         "PRIORITY": 1,
- *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 30000,
- *         "PRODUCT_SIZE": "1024x1024",
- *         "PRODUCT_WEIGHT": 500,
- *         "CONTENTS": "CONTENTS 1",
- *         "SELLER_USER_ID": 4,
- *         "SELLER_USER_IPv4": 1794396811,
- *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-27T05:44:06.000Z",
- *         "TAG": "TAG 1",
- *         "ADDRESS": "ADDRESS 1",
- *         "LATITUDE": "37.626356",
- *         "LONGITUDE": "127.074697",
- *         "LOCATION": {
- *             "type": "Point",
- *             "coordinates": [
- *                 127.074697,
- *                 37.626356
- *             ]
- *         },
- *         "UPDATE_USER_ID": 4,
- *         "UPDATE_USER_IPv4": 1794396811,
- *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-27T05:44:06.000Z",
- *         "DISTANCE": null,
- *         "tt_product_images": []
- *     },
- *     {
- *         "PRODUCT_ID": 15,
- *         "SUBJECT": "SUBJECT 1",
- *         "PRIORITY": 1,
- *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 30000,
- *         "PRODUCT_SIZE": "1024x1024",
- *         "PRODUCT_WEIGHT": 500,
- *         "CONTENTS": "CONTENTS 1",
- *         "SELLER_USER_ID": 4,
- *         "SELLER_USER_IPv4": 0,
- *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-27T05:47:54.000Z",
- *         "TAG": "TAG 1",
- *         "ADDRESS": "ADDRESS 1",
- *         "LATITUDE": "37.626356",
- *         "LONGITUDE": "127.074697",
- *         "LOCATION": {
- *             "type": "Point",
- *             "coordinates": [
- *                 127.074697,
- *                 37.626356
- *             ]
- *         },
- *         "UPDATE_USER_ID": 4,
- *         "UPDATE_USER_IPv4": 0,
- *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-27T05:47:54.000Z",
- *         "DISTANCE": null,
- *         "tt_product_images": []
- *     },
- *     {
- *         "PRODUCT_ID": 16,
- *         "SUBJECT": "SUBJECT 1",
- *         "PRIORITY": 1,
- *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 30000,
- *         "PRODUCT_SIZE": "1024x1024",
- *         "PRODUCT_WEIGHT": 500,
- *         "CONTENTS": "CONTENTS 1",
- *         "SELLER_USER_ID": 4,
- *         "SELLER_USER_IPv4": 0,
- *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-27T05:47:59.000Z",
- *         "TAG": "TAG 1",
- *         "ADDRESS": "ADDRESS 1",
- *         "LATITUDE": "37.541",
- *         "LONGITUDE": "126.986",
- *         "LOCATION": {
- *             "type": "Point",
- *             "coordinates": [
- *                 126.986,
- *                 37.541
- *             ]
- *         },
- *         "UPDATE_USER_ID": 4,
- *         "UPDATE_USER_IPv4": 0,
- *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-27T05:47:59.000Z",
- *         "DISTANCE": null,
- *         "tt_product_images": []
- *     },
- *     {
- *         "PRODUCT_ID": 20,
- *         "SUBJECT": "SUBJECT 1",
- *         "PRIORITY": 1,
- *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 30000,
- *         "PRODUCT_SIZE": "1024x1024",
- *         "PRODUCT_WEIGHT": 500,
- *         "CONTENTS": "CONTENTS 1",
- *         "SELLER_USER_ID": 4,
- *         "SELLER_USER_IPv4": 0,
- *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-27T13:10:00.000Z",
- *         "TAG": "TAG 1",
- *         "ADDRESS": "ADDRESS 1",
- *         "LATITUDE": "37.541",
- *         "LONGITUDE": "126.986",
- *         "LOCATION": {
- *             "type": "Point",
- *             "coordinates": [
- *                 126.986,
- *                 37.541
- *             ]
- *         },
- *         "UPDATE_USER_ID": 4,
- *         "UPDATE_USER_IPv4": 0,
- *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-27T13:10:00.000Z",
- *         "DISTANCE": null,
- *         "tt_product_images": []
- *     },
- *     {
- *         "PRODUCT_ID": 22,
- *         "SUBJECT": "SUBJECT 1",
- *         "PRIORITY": 1,
- *         "PRODUCT_CATEGORY_ID": 1,
- *         "PRODUCT_PRICE": 30000,
- *         "PRODUCT_SIZE": "1024x1024",
- *         "PRODUCT_WEIGHT": 500,
- *         "CONTENTS": "CONTENTS 1",
- *         "SELLER_USER_ID": 4,
- *         "SELLER_USER_IPv4": 0,
- *         "SELLER_USER_IPv6": null,
- *         "UPLOAD_TIME": "2022-12-27T13:20:08.000Z",
- *         "TAG": "TAG 1",
- *         "ADDRESS": "ADDRESS 1",
- *         "LATITUDE": "10",
- *         "LONGITUDE": "120",
- *         "LOCATION": {
- *             "type": "Point",
- *             "coordinates": [
- *                 120,
- *                 10
- *             ]
- *         },
- *         "UPDATE_USER_ID": 4,
- *         "UPDATE_USER_IPv4": 0,
- *         "UPDATE_USER_IPv6": null,
- *         "UPDATE_DATE": "2022-12-27T13:20:08.000Z",
  *         "DISTANCE": null,
  *         "tt_product_images": []
  *     }

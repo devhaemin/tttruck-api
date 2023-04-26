@@ -6,7 +6,7 @@ import {tt_alarm} from "@src/models/tt_alarm";
 import firebase from "firebase-admin";
 
 import serviceAccount
-  from "../../tttruck-android-firebase-adminsdk-n1mzw-ec2d931538.json";
+  from "@src/tttruck-android-firebase-adminsdk-n1mzw-ec2d931538.json";
 
 
 firebase.initializeApp({

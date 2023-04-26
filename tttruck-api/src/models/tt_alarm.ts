@@ -73,7 +73,7 @@ export class tt_alarm extends Model<tt_alarmAttributes, tt_alarmCreationAttribut
     VIEW_TF: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: 1
+      defaultValue: 0
     },
     IMAGEURL: {
       type: DataTypes.TEXT,

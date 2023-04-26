@@ -41,6 +41,11 @@ alarmRouter.get(
   normalUserMw,
   alarmRoutes.getAlarm,
 );
+alarmRouter.get(
+  alarmRoutes.paths.getNewAlarm,
+  normalUserMw,
+  alarmRoutes.getNewAlarm,
+);
 alarmRouter.post(
   alarmRoutes.paths.sendAlarm,
   normalUserMw,

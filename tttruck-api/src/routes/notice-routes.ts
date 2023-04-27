@@ -498,7 +498,7 @@ async function uploadTempImages(req:IReq, res:IRes){
 }
 
 /**
- * @api {put} /notice/image/associate Associate Temp Image with Normal
+ * @api {put} /notices/image/associate Associate Temp Image with Normal
  * @apiName AssociateTempImage
  * @apiGroup Notice
  *

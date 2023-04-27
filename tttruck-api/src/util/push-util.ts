@@ -30,10 +30,16 @@ export async function sendPushMessage(targetSeq: number,
   }
   const fcm_target_token = user.FCMTOKEN;
   if (!fcm_target_token) {
-    throw new RouteError(
-      HttpStatusCodes.FORBIDDEN,
-      "User's fcmToken is not valid.",
+    const newAlarm = await tt_alarm.create(
+      {
+        USER_ID: targetSeq,
+        SUBJECT: title,
+        CONTENTS: content,
+        REDIRECT_URL: redirectUrl,
+        FCM_MSG_ID: "WITHOUTFCM",
+      },
     );
+    return newAlarm;
   }
 
   const fcm_message = {

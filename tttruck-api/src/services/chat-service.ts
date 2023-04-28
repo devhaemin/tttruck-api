@@ -14,11 +14,17 @@ import authService from "@src/services/auth-service";
 import {userNotFoundErr} from "@src/services/user-service";
 import {prodNotFoundErr} from "@src/services/product-service";
 import {S3File} from "@src/routes/shared/awsMultipart";
+import {sendPushMessage} from "@src/util/push-util";
 
 const baseUrl = "https://api.talkplus.io/v1.4/";
 const apiKey = process.env.TALKPLUS_API_KEY ? process.env.TALKPLUS_API_KEY : "";
 const appId = process.env.TALKPLUS_APP_ID ? process.env.TALKPLUS_APP_ID : "";
 const cdnBaseUrl: string = process.env.CDN_BASE_URL ? process.env.CDN_BASE_URL : "";
+
+
+const CHAT_ALARM_TITLE = "";
+const CHAT_ALARM_CONTENT = "";
+const CHAT_ALARM_REDIRECTURL = "/chat/";
 
 interface HttpResponse<T> extends Response {
   parsedBody?: T;
@@ -202,7 +208,36 @@ async function sendFileMessage(user: tt_user, msg: string, channelId: string, fi
 
 async function sendMessage(user: tt_user, msg: string, channelId: string)
   : Promise<tt_talkplus_message> {
-
+  if (!channelId) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      "Channel is not found",
+    );
+  }
+  const talkPlusChannel = await tt_talkplus_channel.findOne({
+    where: {TALKPLUS_CHANNEL_ID: channelId},
+    include:
+      [{
+        model: tt_user_talkplus, as: "BUYER",
+        attributes: ["USER_ID", "TALKPLUS_USERNAME", "TALKPLUS_ID", "TALKPLUS_PROFILE_IMAGE_URL"],
+      },
+        {
+          model: tt_user_talkplus, as: "SELLER",
+          attributes: ["USER_ID", "TALKPLUS_USERNAME", "TALKPLUS_ID", "TALKPLUS_PROFILE_IMAGE_URL"],
+        }],
+  });
+  if (!talkPlusChannel) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      "Channel is not found",
+    );
+  }
+  const oppoUser = user.tt_user_talkplu.TALKPLUS_ID == talkPlusChannel.BUYER_ID ?
+    talkPlusChannel.SELLER : talkPlusChannel.BUYER;
+  await sendPushMessage(oppoUser.USER_ID,
+    user.NICKNAME? user.NICKNAME : "비회원",
+    msg + CHAT_ALARM_CONTENT,
+    CHAT_ALARM_REDIRECTURL+channelId);
   return await tt_talkplus_message.create(
     {
       TALKPLUS_CHANNEL_ID: channelId,

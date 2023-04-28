@@ -18,6 +18,7 @@ import {Model, Op, Sequelize} from "sequelize";
 import {S3File} from "@src/routes/shared/awsMultipart";
 import {prodNotFoundErr} from "@src/services/product-service";
 import badgeUtils from "@src/services/utils/badgeUtils";
+import {sendPushMessage} from "@src/util/push-util";
 
 // Errors
 export const errors = {
@@ -26,6 +27,10 @@ export const errors = {
   userBadgeNotFound :  (userBadge:string) => `"${userBadge}" not found`,
   userNotFound :  (user:string) => `"${user}" not found`,
 } as const;
+
+const BADGE_ALARM_TITLE="뱃지 획득!";
+const BADGE_ALARM_CONTENT="새로운 뱃지를 얻었습니다.";
+const BADGE_ALARM_REDIRECTURL="/performance";
 
 async function getUserBadges(user:tt_user):Promise<tt_badge[]>{
   if(!user){
@@ -133,6 +138,7 @@ async function checkBadgeAvailable(user:tt_user):Promise<tt_badge[]>{
     }
   }
   for (const item of newBadges) {
+    await sendPushMessage(user.USER_ID, BADGE_ALARM_TITLE, BADGE_ALARM_CONTENT, BADGE_ALARM_REDIRECTURL);
     await tt_user_badge.create({
       BADGE_ID: item.BADGE_ID,
       USER_ID: user.USER_ID,

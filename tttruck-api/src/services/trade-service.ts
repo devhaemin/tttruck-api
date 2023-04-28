@@ -9,6 +9,7 @@ import HttpStatusCodes from '@src/declarations/major/HttpStatusCodes';
 import {tt_user_group} from "@src/models/dummy/tt_user_group";
 import {tt_trade_status} from "@src/models/dummy/tt_trade_status";
 import {Sequelize} from "sequelize";
+import {sendPushMessage} from "@src/util/push-util";
 
 
 // **** Variables **** //
@@ -16,6 +17,11 @@ export const prodNotFoundErr = 'Product not found';
 export const tradeNotFoundErr = 'Trade Log not found';
 export const tradeAuthorityErr = 'Can not modify trade with your authority';
 
+
+const TRADE_ALARM_TITLE="거래 완료!";
+const TRADE_ALARM_CONTENT="상품에 대한 거래가 완료되었습니다.";
+const TRADE_ALARM_SOLD_REDIRECTURL="/trade?tab=판매";
+const TRADE_ALARM_BOUGHT_REDIRECTURL="/trade?tab=구매";
 // **** Functions **** //
 
 
@@ -125,8 +131,18 @@ async function doTrade(user: tt_user, buyerId: number, productId: number): Promi
   await seller.update({SELLING_SAVINGS:seller.SELLING_SAVINGS+trade.PRODUCT_WEIGHT});
   await buyer.update({WASTE_SAVINGS:buyer.WASTE_SAVINGS+trade.PRODUCT_WEIGHT});
   await buyer.update({BUYING_SAVINGS:buyer.BUYING_SAVINGS+trade.PRODUCT_WEIGHT});
+  await sendPushMessage(buyer.USER_ID, TRADE_ALARM_TITLE,
+    truncateString(trade.SUBJECT)
+    +" "+TRADE_ALARM_CONTENT, TRADE_ALARM_BOUGHT_REDIRECTURL);
   const productResult = await trade.save();
   return productResult;
+}
+function truncateString(str: string, maxLength = 10): string {
+  if (str.length > maxLength) {
+    return str.substring(0, maxLength) + "...";
+  } else {
+    return str;
+  }
 }
 
 // **** Export default **** //

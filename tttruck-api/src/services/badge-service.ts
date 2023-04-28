@@ -118,11 +118,11 @@ async function checkBadgeAvailable(user:tt_user):Promise<tt_badge[]>{
       );
     }
     badgeConditions.forEach(condition=>{
-      const categoryId = condition.PRODUCT_CATEGORY_ID;
+      const conditionCategoryId = condition.PRODUCT_CATEGORY_ID;
       const requireWeight = condition.WEIGHT;
       let categoryExist = false;
       userTradeLogs.forEach(tradeLog=>{
-        if(tradeLog.dataValues.PRODUCT_CATEGORY_ID === categoryId){
+        if(tradeLog.dataValues.PRODUCT_CATEGORY_ID === conditionCategoryId || conditionCategoryId === 0){
           categoryExist = true;
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore

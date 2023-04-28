@@ -181,6 +181,7 @@ async function getByFilter(filter1: ProductFilter, ip : number, user?:tt_user):
             attributes: ["NICKNAME", "PROFILE_IMAGE", "USER_ID"],
           }],
       order: [
+        ["TRADE_STATUS", "ASC"],
         [
           orderBy === "DISTANCE" ? Sequelize.literal("DISTANCE") : orderBy,
           orderDesc ? "DESC" : "ASC"],

@@ -236,7 +236,7 @@ async function associateTempImage(user: tt_user, tempImageIds: [number], noticeI
   }
   const newImages = tmpImages.map(obj => {
     return {
-      ...obj,
+      ...obj.dataValues,
       NOTICE_ID: notice.NOTICE_ID,
     };
   });

@@ -215,7 +215,7 @@ async function associateTempImage(user: tt_user, tempImageIds: [number], trucker
   }
   const newImages = tmpImages.map(obj => {
     return {
-      ...obj,
+      ...obj.dataValues,
       TRUCKER_CENTER_ID: truckerCenter.TRUCKER_CENTER_ID,
     };
   });

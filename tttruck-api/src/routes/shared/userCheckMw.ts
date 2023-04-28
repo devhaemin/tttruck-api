@@ -50,6 +50,11 @@ export async function adminMw(
       .json({error: jwtNotPresentErr});
   }
   userToken = userToken.split(" ")[1];
+  if (!userToken) {
+    return res
+      .status(HttpStatusCodes.UNAUTHORIZED)
+      .json({error: jwtNotPresentErr});
+  }
   const clientData = await tt_user.findAll({where: {ACCESSTOKEN: userToken}});
   logger.info(JSON.stringify(clientData));
   if (
@@ -107,6 +112,11 @@ export async function normalUserMw(
       .json({error: jwtNotPresentErr});
   }
   userToken = userToken.split(" ")[1];
+  if (!userToken) {
+    return res
+      .status(HttpStatusCodes.UNAUTHORIZED)
+      .json({error: jwtNotPresentErr});
+  }
   const clientData = await tt_user.findAll(
     {
       where: {ACCESSTOKEN: userToken},

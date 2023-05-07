@@ -34,7 +34,7 @@ async function getAll(): Promise<tt_trucker_center[]> {
             as: "TRUCKER_CENTER_MASTER",
             attributes: ["TRUCKER_CENTER_MASTER_ID", "TITLE"],
           }],
-      order: [['POST_TIME', 'DESC']],
+      order: [["TOP_FIX_TF","DESC"],['UPDATE_TIME','DESC']],
     });
   if (!persists) {
     throw new RouteError(
@@ -59,7 +59,7 @@ async function getByCategory(id: number): Promise<tt_trucker_center[]> {
           attributes: ["TRUCKER_CENTER_MASTER_ID", "TITLE"],
         },
       ],
-    order: [['POST_TIME', 'DESC']],
+    order: [["TOP_FIX_TF","DESC"],['UPDATE_TIME','DESC']],
   });
   if (!persists) {
     throw new RouteError(
@@ -175,6 +175,25 @@ async function _delete(user: tt_user, id: number): Promise<void> {
   // Delete user
   await tt_trucker_center.destroy({where: {TRUCKER_CENTER_ID: id}});
 }
+async function updateTopFix(user: tt_user, truckerCenterId:number, topFix: boolean): Promise<tt_trucker_center>{
+  const persist = await tt_trucker_center.findByPk(truckerCenterId);
+  if (!persist) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      truckerCenterNotFoundErr,
+    );
+  }
+  if (persist.POST_USER_ID !== user.USER_ID && user.GROUP !== tt_user_group.ADMIN) {
+    throw new RouteError(
+      HttpStatusCodes.FORBIDDEN,
+      truckerCenterAuthorityErr,
+    );
+  }
+  return await persist.update({
+    TOP_FIX_TF : topFix? 1 : 0,
+    UPDATE_USER_ID : user.USER_ID,
+  });
+}
 
 async function uploadTempImage(file: S3File | null, user: tt_user, ip: number) {
   if (!file) {
@@ -232,6 +251,7 @@ export default {
   addOne,
   updateOne,
   uploadImage,
+  updateTopFix,
   uploadTempImage,
   delete: _delete,
   associateTempImage,

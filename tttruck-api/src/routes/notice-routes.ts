@@ -22,6 +22,7 @@ const paths = {
   getCategories: '/category',
   getByCategory: '/category/:id',
   getById: '/:id',
+  updateTopfix: '/:id/topfix',
   add: '/add',
   imageUpload: '/image/upload',
   uploadTempImages: '/image/temp/upload',
@@ -335,6 +336,34 @@ async function update(req: IReq<{  notice: tt_notice }>, res: IRes) {
 }
 
 /**
+ * @api {put} /notices/:id/topfix Set Notice Topfix
+ * @apiName TopfixNotice
+ * @apiGroup Notice
+ *
+ * @apiParam {Number} noticeId
+ *
+ * @apiPermission adminUser
+ *
+ * @apiParamExample {json} Request-Example:
+ * {
+ *     topfix : true
+ * }
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "NoticeNotFound"
+ *     }
+ */
+
+async function updateTopfix(req: IReq<{  topfix:boolean }>, res: IRes) {
+  const {topfix} = req.body;
+  const noticeId = +req.params.id;
+  const result = await noticeService.updateTopFix(res.locals.user, noticeId, topfix);
+  return res.status(HttpStatusCodes.OK).json(result).end();
+}
+
+/**
  * @api {delete} /notices/delete/:id delete notice
  * @apiName DeleteNotice
  * @apiGroup Notice
@@ -543,6 +572,7 @@ export default {
   getById,
   add,
   imageUpload,
+  updateTopfix,
   update,
   delete: _delete,
   getCategories,

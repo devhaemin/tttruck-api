@@ -364,6 +364,11 @@ noticeRouter.put(
   adminMw,
   noticeRoutes.associateTempImage,
 );
+noticeRouter.put(
+  noticeRoutes.paths.updateTopfix,
+  adminMw,
+  noticeRoutes.updateTopfix,
+);
 
 noticeRouter.post(
   noticeRoutes.paths.imageUpload,
@@ -442,6 +447,12 @@ truckerCenterRouter.put(
   truckerCenterRoutes.paths.associateTempImage,
   adminMw,
   truckerCenterRoutes.associateTempImage,
+);
+
+truckerCenterRouter.put(
+  truckerCenterRoutes.paths.updateTopfix,
+  adminMw,
+  truckerCenterRoutes.updateTopfix,
 );
 
 

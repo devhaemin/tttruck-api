@@ -8,6 +8,7 @@ import {
 import logger from "jet-logger";
 import {getClientIP} from "@src/util/ip-util";
 import {S3File} from "@src/routes/shared/awsMultipart";
+import noticeService from "@src/services/notice-service";
 
 
 // **** Variables **** //
@@ -22,6 +23,7 @@ const paths = {
   add: '/add',
   imageUpload: '/image/upload',
   uploadTempImages: '/image/temp/upload',
+  updateTopfix: '/:id/topfix',
   update: '/update',
   delete: '/delete/:id',
   associateTempImage: '/image/associate',
@@ -98,6 +100,34 @@ async function getAll(req: IReq, res: IRes) {
   logger.info(truckerCenters);
   //todo 이미지 Array 추가되게끔 하기.
   return res.status(HttpStatusCodes.OK).json(truckerCenters);
+}
+
+/**
+ * @api {put} /truckercenter/:id/topfix Set TruckerCenter Topfix
+ * @apiName TopfixTruckerCenter
+ * @apiGroup TruckerCenter
+ *
+ * @apiParam {Number} truckerCenterId
+ *
+ * @apiPermission adminUser
+ *
+ * @apiParamExample {json} Request-Example:
+ * {
+ *     topfix : true
+ * }
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "NoticeNotFound"
+ *     }
+ */
+
+async function updateTopfix(req: IReq<{  topfix:boolean }>, res: IRes) {
+  const {topfix} = req.body;
+  const truckerCenterId = +req.params.id;
+  const result = await truckerCenterService.updateTopFix(res.locals.user, truckerCenterId, topfix);
+  return res.status(HttpStatusCodes.OK).json(result).end();
 }
 
 /**
@@ -482,6 +512,7 @@ export default {
   add,
   imageUpload,
   update,
+  updateTopfix,
   delete: _delete,
   getCategories,
   uploadTempImages,

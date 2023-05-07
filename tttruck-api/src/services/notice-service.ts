@@ -36,7 +36,7 @@ async function getAll(): Promise<tt_notice[]> {
           },
         ],
       where: {DISPLAY_TF: 1},
-      order: [['POST_TIME','DESC']],
+      order: [["TOP_FIX_TF","DESC"],['UPDATE_TIME','DESC']],
     });
   if (!persists) {
     throw new RouteError(
@@ -57,7 +57,7 @@ async function getAllByAdmin(): Promise<tt_notice[]> {
             as: "NOTICE_MASTER",
             attributes: ["NOTICE_MASTER_ID", "TITLE"],
           }],
-      order: [['POST_TIME','DESC']],
+      order: [["TOP_FIX_TF","DESC"],['UPDATE_TIME','DESC']],
     });
   if (!persists) {
     throw new RouteError(
@@ -81,7 +81,7 @@ async function getByCategory(id: number): Promise<tt_notice[]> {
           as: "NOTICE_MASTER",
           attributes: ["NOTICE_MASTER_ID", "TITLE"],
         }],
-    order: [['POST_TIME','DESC']],
+    order: [["TOP_FIX_TF","DESC"],['UPDATE_TIME','DESC']],
   });
   if (!persists) {
     throw new RouteError(
@@ -119,6 +119,26 @@ async function getById(id: number): Promise<tt_notice> {
  */
 function addOne(notice: tt_notice): Promise<tt_notice> {
   return tt_notice.create(notice);
+}
+
+async function updateTopFix(user: tt_user, noticeId:number, topFix: boolean): Promise<tt_notice>{
+  const persist = await tt_notice.findByPk(noticeId);
+  if (!persist) {
+    throw new RouteError(
+      HttpStatusCodes.NOT_FOUND,
+      noticeNotFoundErr,
+    );
+  }
+  if (persist.POST_USER_ID !== user.USER_ID && user.GROUP !== tt_user_group.ADMIN) {
+    throw new RouteError(
+      HttpStatusCodes.FORBIDDEN,
+      noticeAuthorityErr,
+    );
+  }
+  return await persist.update({
+    TOP_FIX_TF : topFix? 1 : 0,
+    UPDATE_USER_ID : user.USER_ID,
+  });
 }
 
 /**
@@ -252,6 +272,7 @@ export default {
   getAllByAdmin,
   getByCategory,
   getById,
+  updateTopFix,
   addOne,
   updateOne,
   uploadImage,

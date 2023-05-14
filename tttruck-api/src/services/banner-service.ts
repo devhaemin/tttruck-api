@@ -139,7 +139,8 @@ async function uploadImage(bannerId: number, file: S3File | null, user: tt_user,
   banner.UPDATE_USER_ID = user.USER_ID;
   banner.FILE_NAME = file.filename;
   banner.FILE_PATH = file.key;
-  return await banner.update(banner);
+  await banner.save();
+  return banner;
 }
 
 

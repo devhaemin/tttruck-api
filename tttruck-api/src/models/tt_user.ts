@@ -3,6 +3,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import type { tt_access_log, tt_access_logId } from './tt_access_log';
 import type { tt_alarm, tt_alarmId } from './tt_alarm';
 import type { tt_badge, tt_badgeId } from './tt_badge';
+import type { tt_banner, tt_bannerId } from './tt_banner';
 import type { tt_login_log, tt_login_logId } from './tt_login_log';
 import type { tt_nickname_log, tt_nickname_logId } from './tt_nickname_log';
 import type { tt_notice, tt_noticeId } from './tt_notice';
@@ -138,6 +139,30 @@ export class tt_user extends Model<tt_userAttributes, tt_userCreationAttributes>
   hasTt_badge!: Sequelize.HasManyHasAssociationMixin<tt_badge, tt_badgeId>;
   hasTt_badges!: Sequelize.HasManyHasAssociationsMixin<tt_badge, tt_badgeId>;
   countTt_badges!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_banner via UPDATE_USER_ID
+  tt_banners!: tt_banner[];
+  getTt_banners!: Sequelize.HasManyGetAssociationsMixin<tt_banner>;
+  setTt_banners!: Sequelize.HasManySetAssociationsMixin<tt_banner, tt_bannerId>;
+  addTt_banner!: Sequelize.HasManyAddAssociationMixin<tt_banner, tt_bannerId>;
+  addTt_banners!: Sequelize.HasManyAddAssociationsMixin<tt_banner, tt_bannerId>;
+  createTt_banner!: Sequelize.HasManyCreateAssociationMixin<tt_banner>;
+  removeTt_banner!: Sequelize.HasManyRemoveAssociationMixin<tt_banner, tt_bannerId>;
+  removeTt_banners!: Sequelize.HasManyRemoveAssociationsMixin<tt_banner, tt_bannerId>;
+  hasTt_banner!: Sequelize.HasManyHasAssociationMixin<tt_banner, tt_bannerId>;
+  hasTt_banners!: Sequelize.HasManyHasAssociationsMixin<tt_banner, tt_bannerId>;
+  countTt_banners!: Sequelize.HasManyCountAssociationsMixin;
+  // tt_user hasMany tt_banner via POST_USER_ID
+  POST_USER_tt_banners!: tt_banner[];
+  getPOST_USER_tt_banners!: Sequelize.HasManyGetAssociationsMixin<tt_banner>;
+  setPOST_USER_tt_banners!: Sequelize.HasManySetAssociationsMixin<tt_banner, tt_bannerId>;
+  addPOST_USER_tt_banner!: Sequelize.HasManyAddAssociationMixin<tt_banner, tt_bannerId>;
+  addPOST_USER_tt_banners!: Sequelize.HasManyAddAssociationsMixin<tt_banner, tt_bannerId>;
+  createPOST_USER_tt_banner!: Sequelize.HasManyCreateAssociationMixin<tt_banner>;
+  removePOST_USER_tt_banner!: Sequelize.HasManyRemoveAssociationMixin<tt_banner, tt_bannerId>;
+  removePOST_USER_tt_banners!: Sequelize.HasManyRemoveAssociationsMixin<tt_banner, tt_bannerId>;
+  hasPOST_USER_tt_banner!: Sequelize.HasManyHasAssociationMixin<tt_banner, tt_bannerId>;
+  hasPOST_USER_tt_banners!: Sequelize.HasManyHasAssociationsMixin<tt_banner, tt_bannerId>;
+  countPOST_USER_tt_banners!: Sequelize.HasManyCountAssociationsMixin;
   // tt_user hasMany tt_login_log via USER_ID
   tt_login_logs!: tt_login_log[];
   getTt_login_logs!: Sequelize.HasManyGetAssociationsMixin<tt_login_log>;

@@ -19,6 +19,7 @@ import truckerCenterRoutes from "@src/routes/trucker-center-routes";
 import imageRoutes from "@src/routes/image-routes";
 import userRoutes from "@src/routes/user-routes";
 import alarmRoutes from "@src/routes/alarm-routes";
+import bannerRoutes from "@src/routes/banner-routes";
 // **** Init **** //
 
 const apiRouter = Router(),
@@ -326,6 +327,48 @@ productRouter.delete(
 );
 apiRouter.use(productRoutes.paths.basePath, productRouter);
 // **** Setup Product routes **** //
+
+// **** Setup Banner routes **** //
+
+const bannerRouter = Router();
+const bannerImageMulter = getS3ImageMulter('banner/image');
+
+// Get all banners
+bannerRouter.get(bannerRoutes.paths.getAll, bannerRoutes.getAll);
+
+// Get banner by ID
+bannerRouter.get(bannerRoutes.paths.getById, bannerRoutes.getById);
+
+// Add a banner
+bannerRouter.post(
+  bannerRoutes.paths.add,
+  adminMw,
+  bannerRoutes.add,
+);
+
+// Update a banner
+bannerRouter.put(
+  bannerRoutes.paths.update,
+  adminMw,
+  bannerRoutes.update,
+);
+
+bannerRouter.put(
+  bannerRoutes.paths.updateTopfix,
+  adminMw,
+  bannerRoutes.updateTopfix,
+);
+
+bannerRouter.post(
+  bannerRoutes.paths.imageUpload,
+  //validate(["productId","number","body"]),
+  adminMw,
+  bannerImageMulter.single('file'),
+  bannerRoutes.imageUpload,
+);
+
+apiRouter.use(bannerRoutes.paths.basePath, bannerRouter);
+
 
 // **** Setup Notice routes **** //
 

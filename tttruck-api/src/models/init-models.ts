@@ -7,6 +7,8 @@ import { tt_badge as _tt_badge } from "./tt_badge";
 import type { tt_badgeAttributes, tt_badgeCreationAttributes } from "./tt_badge";
 import { tt_badge_condition as _tt_badge_condition } from "./tt_badge_condition";
 import type { tt_badge_conditionAttributes, tt_badge_conditionCreationAttributes } from "./tt_badge_condition";
+import { tt_banner as _tt_banner } from "./tt_banner";
+import type { tt_bannerAttributes, tt_bannerCreationAttributes } from "./tt_banner";
 import { tt_content as _tt_content } from "./tt_content";
 import type { tt_contentAttributes, tt_contentCreationAttributes } from "./tt_content";
 import { tt_login_log as _tt_login_log } from "./tt_login_log";
@@ -65,6 +67,7 @@ export {
   _tt_alarm as tt_alarm,
   _tt_badge as tt_badge,
   _tt_badge_condition as tt_badge_condition,
+  _tt_banner as tt_banner,
   _tt_content as tt_content,
   _tt_login_log as tt_login_log,
   _tt_nickname_log as tt_nickname_log,
@@ -102,6 +105,8 @@ export type {
   tt_badgeCreationAttributes,
   tt_badge_conditionAttributes,
   tt_badge_conditionCreationAttributes,
+  tt_bannerAttributes,
+  tt_bannerCreationAttributes,
   tt_contentAttributes,
   tt_contentCreationAttributes,
   tt_login_logAttributes,
@@ -161,6 +166,7 @@ export function initModels(sequelize: Sequelize) {
   const tt_alarm = _tt_alarm.initModel(sequelize);
   const tt_badge = _tt_badge.initModel(sequelize);
   const tt_badge_condition = _tt_badge_condition.initModel(sequelize);
+  const tt_banner = _tt_banner.initModel(sequelize);
   const tt_content = _tt_content.initModel(sequelize);
   const tt_login_log = _tt_login_log.initModel(sequelize);
   const tt_nickname_log = _tt_nickname_log.initModel(sequelize);
@@ -224,6 +230,10 @@ export function initModels(sequelize: Sequelize) {
   tt_user.hasMany(tt_alarm, { as: "tt_alarms", foreignKey: "USER_ID"});
   tt_badge.belongsTo(tt_user, { as: "UPDATE_USER", foreignKey: "UPDATE_USER_ID"});
   tt_user.hasMany(tt_badge, { as: "tt_badges", foreignKey: "UPDATE_USER_ID"});
+  tt_banner.belongsTo(tt_user, { as: "UPDATE_USER", foreignKey: "UPDATE_USER_ID"});
+  tt_user.hasMany(tt_banner, { as: "tt_banners", foreignKey: "UPDATE_USER_ID"});
+  tt_banner.belongsTo(tt_user, { as: "POST_USER", foreignKey: "POST_USER_ID"});
+  tt_user.hasMany(tt_banner, { as: "POST_USER_tt_banners", foreignKey: "POST_USER_ID"});
   tt_login_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
   tt_user.hasMany(tt_login_log, { as: "tt_login_logs", foreignKey: "USER_ID"});
   tt_nickname_log.belongsTo(tt_user, { as: "USER", foreignKey: "USER_ID"});
@@ -288,6 +298,7 @@ export function initModels(sequelize: Sequelize) {
     tt_alarm: tt_alarm,
     tt_badge: tt_badge,
     tt_badge_condition: tt_badge_condition,
+    tt_banner: tt_banner,
     tt_content: tt_content,
     tt_login_log: tt_login_log,
     tt_nickname_log: tt_nickname_log,

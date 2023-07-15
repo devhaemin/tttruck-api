@@ -142,7 +142,7 @@ async function sendAlarm(req: IReq<{ userId: number, title: string, content: str
 
 /**
  * @api {post} /alarm/fcm/register Register FCM Push Token
- * @apiName SendAlarm
+ * @apiName RegisterFCMToken
  * @apiGroup Alarm
  *
  * @apiParamExample {json} Request-Example:

@@ -43,6 +43,15 @@ export async function sendPushMessage(targetSeq: number,
   }
 
   const fcm_message = {
+    notification: {
+      title: title,
+      body: content,
+    },
+    android: {
+      notification: {
+        icon: 'stock_ticker_update',
+      },
+    },
     data: {
       title: title,
       content: content,
